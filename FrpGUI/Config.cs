@@ -4,7 +4,6 @@ using System.IO;
 
 namespace FrpGUI
 {
-
     public class Config : JsonSerializationBase
     {
         private static Config instance;
@@ -31,5 +30,7 @@ namespace FrpGUI
 
         public ClientConfig Client { get; set; }
         public ServerConfig Server { get; set; }
+        public bool ClientOn { get; set; }
+        public bool ServerOn { get; set; }
     }
 }

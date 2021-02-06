@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<local:PanelBase
     x:Class="FrpGUI.ClientPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -41,24 +41,14 @@
                         <Setter Property="Width" Value="120" />
                     </Style>
                 </StackPanel.Resources>
-                <Button
-                    x:Name="btnStart"
-                    Click="btnStart_Click"
-                    Content="启动" />
-                <Button
-                    x:Name="btnRestart"
-                    Click="btnRestart_Click"
-                    Content="重置 " />
-                <Button
-                    x:Name="btnStop"
-                    Click="btnStop_Click"
-                    Content="停止" />
+                <Button x:Name="btnStart" Content="启动" />
+                <Button x:Name="btnRestart" Content="重置 " />
+                <Button x:Name="btnStop" Content="停止" />
             </StackPanel>
         </Grid>
         <DataGrid
             Grid.Row="2"
             local:CustomColumnHeadersProperty.ItemType="{x:Type local:Rule}"
-            ItemsSource="{Binding Rules}"
-            CurrentCellChanged="DataGrid_CurrentCellChanged" />
+            ItemsSource="{Binding Rules}" />
     </Grid>
-</UserControl>
+</local:PanelBase>
