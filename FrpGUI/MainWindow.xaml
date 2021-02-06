@@ -6,46 +6,124 @@
     xmlns:local="clr-namespace:FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
+    x:Name="Window"
     Title="FRP GUI - 端口转发"
     Width="800"
     Height="450"
+    ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
+    ui:TitleBar.ExtendViewIntoTitleBar="True"
+    ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
     ui:WindowHelper.UseModernWindowStyle="True"
+    Closing="Window_Closing"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
+    <Window.Resources>
+        <Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
+            <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
+        </Style>
+        <Style x:Key="AppTitleBarButtonStyle" TargetType="ui:TitleBarButton">
+            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <GridSplitter
-            Grid.Column="1"
-            Width="8"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            Background="Transparent" />
-        <ListBox
-            x:Name="lbxLogs"
-            Grid.Column="2"
-            DockPanel.Dock="Right">
-            <!--<ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource DefaultListBoxItemStyle}">
-                    <Setter Property=""
-                </Style>
-            </ListBox.ItemContainerStyle>-->
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding .}" TextWrapping="Wrap" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TabControl DockPanel.Dock="Left">
-            <TabItem Header="服务端">
-                <local:ServerPanel />
-            </TabItem>
-            <TabItem Header="客户端">
-                <local:ClientPanel />
-            </TabItem>
-        </TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Border Padding="12,0,144,0">
+            <Grid x:Name="AppTitleBar" Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
+                                <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Text="{Binding ElementName=Window, Path=Title}" />
+                <ui:TitleBarButton
+                    x:Name="btnStartup"
+                    Grid.Column="2"
+                    Width="NaN"
+                    Padding="16,0"
+                    Click="TitleBarButton_Click_1"
+                    Content="×开机自启"
+                    FontFamily="{DynamicResource ContentControlThemeFontFamily}"
+                    FontSize="13"
+                    Foreground="{DynamicResource SystemControlBackgroundBaseMediumHighBrush}"
+                    Style="{StaticResource AppTitleBarButtonStyle}" />
+                <ui:TitleBarButton
+                    Grid.Column="4"
+                    Width="NaN"
+                    Padding="16,0"
+                    Click="TitleBarButton_Click"
+                    Content="最小化到托盘"
+                    FontFamily="{DynamicResource ContentControlThemeFontFamily}"
+                    FontSize="13"
+                    Foreground="{DynamicResource SystemControlBackgroundBaseMediumHighBrush}"
+                    Style="{StaticResource AppTitleBarButtonStyle}" />
+            </Grid>
+        </Border>
+        <Grid Grid.Row="99">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <GridSplitter
+                Grid.Column="1"
+                Width="8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                Background="Transparent" />
+            <ListBox
+                x:Name="lbxLogs"
+                Grid.Column="2"
+                Background="Transparent"
+                DockPanel.Dock="Right">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding .}" TextWrapping="Wrap" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TabControl DockPanel.Dock="Left" Style="{StaticResource TabControlPivotStyle}">
+                <TabItem Header="服务端">
+                    <local:ServerPanel x:Name="server" />
+                </TabItem>
+                <TabItem Header="客户端">
+                    <local:ClientPanel x:Name="client" />
+                </TabItem>
+            </TabControl>
+            <ui:ContentDialog
+                x:Name="dialog"
+                Title="注意"
+                Grid.ColumnSpan="999"
+                CloseButtonText="确定">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="tbkDialogMessage" />
+                </Grid>
+            </ui:ContentDialog>
+        </Grid>
     </Grid>
 </Window>

@@ -21,61 +21,38 @@ namespace FrpGUI
     /// <summary>
     /// ServerPanel.xaml 的交互逻辑
     /// </summary>
-    public partial class ClientPanel : UserControl
+    public partial class ClientPanel : PanelBase
     {
-        private ProcessHelper process = new ProcessHelper();
-
         public ClientPanel()
         {
-            InitializeComponent();
-            DataContext = this;
-            process.Exited += Process_Exited;
             Rules = new ObservableCollection<Rule>(Client.Rules);
-
-            SetUIEnable(false);
+            InitializeComponent();
         }
 
         private void Process_Exited(object sender, EventArgs e)
         {
-            SetUIEnable(false);
         }
 
-        private void SetUIEnable(bool running)
+        protected override void ChangeStatus(ProcessStatus status)
         {
-            Dispatcher.Invoke(() =>
+            base.ChangeStatus(status);
+            if (status == ProcessStatus.Running)
             {
-                btnStart.IsEnabled = !running;
-                btnRestart.IsEnabled = running;
-                btnStop.IsEnabled = running;
-            });
+                Config.Instance.ClientOn = true;
+            }
+            else
+            {
+                Config.Instance.ClientOn = false;
+            }
         }
 
         public ClientConfig Client => Config.Instance.Client;
-        public ObservableCollection<Rule> Rules { get; set; }
-
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            SetUIEnable(true);
-            Client.Rules = Rules.ToList();
-            process.Start("c", Client);
-            Config.Instance.Save();
-        }
-
-        private void btnRestart_Click(object sender, RoutedEventArgs e)
-        {
-            process.Restart();
-            SetUIEnable(true);
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            process.Stop();
-            SetUIEnable(false);
-        }
-
-        private void DataGrid_CurrentCellChanged(object sender, EventArgs e)
-        {
-        }
+        public ObservableCollection<Rule> Rules { get; }
+        protected override Button StartButton => btnStart;
+        protected override Button StopButton => btnStop;
+        protected override Button RestartButton => btnRestart;
+        protected override string Type => "c";
+        protected override IToIni ConfigItem => Client;
     }
 
     public static class CustomColumnHeadersProperty

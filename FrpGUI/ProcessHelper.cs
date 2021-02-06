@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.Devices.SerialCommunication;
 
 namespace FrpGUI
 {
@@ -14,18 +16,26 @@ namespace FrpGUI
         private string type;
         private IToIni obj;
 
-        public void Start(string type, IToIni obj)
+        public async Task StartAsync(string type, IToIni obj)
         {
+            if (frpProcess != null)
+            {
+                throw new Exception("存在仍在运行的Frp实例");
+            }
             this.type = type;
             this.obj = obj;
-            var existProcess = Process.GetProcessesByName($"frp{type}");
-
+            Process[] existProcess = null;
+            await Task.Run(() =>
+             {
+                 existProcess = Process.GetProcessesByName($"frp{type}");
+             });
             if (existProcess.Length > 0)
             {
                 foreach (var p in existProcess)
                 {
                     p.Kill(true);
                 }
+                await Task.Delay(500);
             }
             string ini = $"./frp/frp{type}.ini";
             File.WriteAllText(ini, obj.ToIni());
@@ -47,23 +57,36 @@ namespace FrpGUI
             frpProcess.Start();
             frpProcess.BeginOutputReadLine();
             frpProcess.BeginErrorReadLine();
-            frpProcess.Exited += (p1, p2) => Exited?.Invoke(p1, p2);
+            frpProcess.Exited += FrpProcess_Exited;
         }
 
-        public void Restart()
+        private void FrpProcess_Exited(object sender, EventArgs e)
+        {
+            Exited?.Invoke(sender, e);
+        }
+
+        public async Task RestartAsync()
         {
             if (frpProcess == null)
             {
                 throw new Exception();
             }
-            Stop();
-            Start(type, obj);
+            await StopAsync();
+            await StartAsync(type, obj);
         }
 
-        public void Stop()
+        public Task StopAsync()
         {
+            var tcs = new TaskCompletionSource<int>();
+            frpProcess.Exited -= FrpProcess_Exited;
+            frpProcess.Exited += (p1, p2) =>
+            {
+                tcs.SetResult(frpProcess.ExitCode);
+                frpProcess.Dispose();
+                frpProcess = null;
+            };
             frpProcess.Kill(true);
-            frpProcess = null;
+            return tcs.Task;
         }
 
         private void P_OutputDataReceived(object sender, DataReceivedEventArgs e)

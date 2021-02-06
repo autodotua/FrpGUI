@@ -18,55 +18,34 @@ namespace FrpGUI
     /// <summary>
     /// ServerPanel.xaml 的交互逻辑
     /// </summary>
-    public partial class ServerPanel : UserControl
+    public partial class ServerPanel : PanelBase
     {
-        private ProcessHelper process = new ProcessHelper();
-
         public ServerPanel()
         {
             InitializeComponent();
-            DataContext = this;
-            process.Exited += Process_Exited;
-
-            SetUIEnable(false);
         }
 
-        private void Process_Exited(object sender, EventArgs e)
+        protected override void ChangeStatus(ProcessStatus status)
         {
-            SetUIEnable(false);
-        }
-
-        private void SetUIEnable(bool running)
-        {
-            Dispatcher.Invoke(() =>
+            base.ChangeStatus(status);
+            btnOpenDashBoard.IsEnabled = status == ProcessStatus.Running;
+            if (status == ProcessStatus.Running)
             {
-                btnStart.IsEnabled = !running;
-                btnRestart.IsEnabled = running;
-                btnStop.IsEnabled = running;
-                btnOpenDashBoard.IsEnabled = running;
-            });
+                Config.Instance.ServerOn = true;
+            }
+            else
+            {
+                Config.Instance.ServerOn = false;
+            }
         }
 
         public ServerConfig Server => Config.Instance.Server;
 
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            process.Start("s", Server);
-            SetUIEnable(true);
-            Config.Instance.Save();
-        }
-
-        private void btnRestart_Click(object sender, RoutedEventArgs e)
-        {
-            process.Restart();
-            SetUIEnable(true);
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            process.Stop();
-            SetUIEnable(false);
-        }
+        protected override Button StartButton => btnStart;
+        protected override Button StopButton => btnStop;
+        protected override Button RestartButton => btnRestart;
+        protected override string Type => "s";
+        protected override IToIni ConfigItem => Server;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
