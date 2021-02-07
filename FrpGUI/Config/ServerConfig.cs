@@ -4,8 +4,9 @@ namespace FrpGUI
 {
     public class ServerConfig : IToIni
     {
-        public short Port { get; set; } = 7000;
-        public short DashBoardPort { get; set; } = 7500;
+        public string Token { get; set; }
+        public ushort Port { get; set; } = 7000;
+        public ushort DashBoardPort { get; set; } = 7500;
         public string DashBoardUsername { get; set; } = "admin";
         public string DashBoardPassword { get; set; } = "admin";
 
@@ -17,6 +18,10 @@ namespace FrpGUI
             str.Append("dashboard_port = ").Append(DashBoardPort).AppendLine();
             str.Append("dashboard_user = ").Append(DashBoardUsername).AppendLine();
             str.Append("dashboard_pwd = ").Append(DashBoardPassword).AppendLine();
+            if (!string.IsNullOrWhiteSpace(Token))
+            {
+                str.Append("token = ").Append(Token).AppendLine();
+            }
             return str.ToString();
         }
     }

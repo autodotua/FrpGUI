@@ -53,6 +53,11 @@ namespace FrpGUI
         protected override Button RestartButton => btnRestart;
         protected override string Type => "c";
         protected override IToIni ConfigItem => Client;
+
+        private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            Client.Rules = Rules.ToList();
+        }
     }
 
     public static class CustomColumnHeadersProperty

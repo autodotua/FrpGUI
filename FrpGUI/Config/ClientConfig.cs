@@ -9,7 +9,8 @@ namespace FrpGUI
     public class ClientConfig : IToIni
     {
         public string ServerAddress { get; set; }
-        public short ServerPort { get; set; } = 7000;
+        public string Token { get; set; }
+        public ushort ServerPort { get; set; } = 7000;
         public List<Rule> Rules { get; set; } = new List<Rule>();
 
         public string ToIni()
@@ -18,6 +19,10 @@ namespace FrpGUI
             str.Append("[common]").AppendLine();
             str.Append("server_addr = ").Append(ServerAddress).AppendLine();
             str.Append("server_port = ").Append(ServerPort).AppendLine();
+            if (!string.IsNullOrWhiteSpace(Token))
+            {
+                str.Append("token = ").Append(Token).AppendLine();
+            }
             foreach (var rule in Rules.Where(p => !string.IsNullOrEmpty(p.Name)))
             {
                 str.Append(rule.ToIni()).AppendLine();
@@ -38,10 +43,10 @@ namespace FrpGUI
         public string LocalAddress { get; set; } = "localhost";
 
         [Display(Name = "本地端口")]
-        public short LocalPort { get; set; }
+        public ushort LocalPort { get; set; }
 
         [Display(Name = "服务器端口")]
-        public short RemotePort { get; set; }
+        public ushort RemotePort { get; set; }
 
         public string ToIni()
         {
@@ -53,5 +58,15 @@ namespace FrpGUI
             str.Append("remote_port = ").Append(RemotePort).AppendLine();
             return str.ToString();
         }
+    }
+
+    public enum NetType
+    {
+        TCP,
+        UDP,
+        HTTP,
+        HTTPS,
+        STCP,
+        XTCP
     }
 }

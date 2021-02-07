@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,11 +37,15 @@ namespace FrpGUI
 
         private void Process_Exited(object sender, EventArgs e)
         {
-            ChangeStatus(ProcessStatus.NotRun);
+            Dispatcher.Invoke(() =>
+            {
+                ChangeStatus(ProcessStatus.NotRun);
+            });
         }
 
         protected virtual void ChangeStatus(ProcessStatus status)
         {
+            Debug.Assert(Dispatcher.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId);
             ProcessStatus = status;
             StartButton.IsEnabled = false;
             StopButton.IsEnabled = false;
@@ -69,7 +74,7 @@ namespace FrpGUI
             await StartAsync();
         }
 
-        public async Task StartAsync()
+        public virtual async Task StartAsync()
         {
             ChangeStatus(ProcessStatus.Busy);
             await process.StartAsync(Type, ConfigItem);
@@ -82,9 +87,15 @@ namespace FrpGUI
             ChangeStatus(ProcessStatus.Busy);
             await process.RestartAsync();
             ChangeStatus(ProcessStatus.Running);
+            Config.Instance.Save();
         }
 
         private async void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            await StopAsync();
+        }
+
+        public virtual async Task StopAsync()
         {
             ChangeStatus(ProcessStatus.Busy);
             await process.StopAsync();

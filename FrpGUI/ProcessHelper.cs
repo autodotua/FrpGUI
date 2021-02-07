@@ -26,9 +26,11 @@ namespace FrpGUI
             this.obj = obj;
             Process[] existProcess = null;
             await Task.Run(() =>
-             {
-                 existProcess = Process.GetProcessesByName($"frp{type}");
-             });
+            {
+                string ini = $"./frp/frp{type}.ini";
+                File.WriteAllText(ini, obj.ToIni());
+                existProcess = Process.GetProcessesByName($"frp{type}");
+            });
             if (existProcess.Length > 0)
             {
                 foreach (var p in existProcess)
@@ -37,8 +39,6 @@ namespace FrpGUI
                 }
                 await Task.Delay(500);
             }
-            string ini = $"./frp/frp{type}.ini";
-            File.WriteAllText(ini, obj.ToIni());
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
@@ -62,6 +62,8 @@ namespace FrpGUI
 
         private void FrpProcess_Exited(object sender, EventArgs e)
         {
+            frpProcess.Dispose();
+            frpProcess = null;
             Exited?.Invoke(sender, e);
         }
 

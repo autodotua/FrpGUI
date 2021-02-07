@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,16 +23,19 @@ namespace FrpGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Regex rLog = new Regex(@"(?<Time>[0-9/: ]{19}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
+
         public MainWindow(bool autoStart = false)
         {
             bool clientOn = Config.Instance.ClientOn;
             bool serverOn = Config.Instance.ServerOn;
             InitializeComponent();
+            DataContext = this;
 
             ProcessHelper.Output += ProcessHelper_Output;
             if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
             {
-                btnStartup.Content = "√开机自启";
+                menuStartup.IsChecked = true;
             }
             if (autoStart)
             {
@@ -44,12 +50,38 @@ namespace FrpGUI
             }
         }
 
+        public ObservableCollection<Log> Logs { get; } = new ObservableCollection<Log>();
+
         private void ProcessHelper_Output(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
-                lbxLogs.Items.Add(e.Data);
-                lbxLogs.ScrollIntoView(lbxLogs.Items[^1]);
+                if (rLog.IsMatch(e.Data))
+                {
+                    var match = rLog.Match(e.Data);
+                    string time = match.Groups["Time"].Value;
+                    string content = match.Groups["Content"].Value;
+                    string type = match.Groups["Type"].Value;
+                    Brush brush = Foreground;
+                    if (type == "W")
+                    {
+                        brush = Brushes.Yellow;
+                    }
+                    else if (type == "E")
+                    {
+                        brush = Brushes.Red;
+                    }
+                    Logs.Add(new Log()
+                    {
+                        Time = time,
+                        Content = content,
+                        TypeBrush = brush
+                    });
+                }
+                else
+                {
+                }
+                lbxLogs.ScrollIntoView(Logs[^1]);
             });
         }
 
@@ -72,24 +104,50 @@ namespace FrpGUI
             await dialog.ShowAsync();
         }
 
-        private void TitleBarButton_Click(object sender, RoutedEventArgs e)
+        private void MenuStartup_Click(object sender, RoutedEventArgs e)
+        {
+            if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
+            {
+                menuStartup.IsChecked = false;
+                (App.Current as App).SetStartup(false);
+            }
+            else
+            {
+                menuStartup.IsChecked = true;
+                (App.Current as App).SetStartup(true);
+            }
+        }
+
+        private void MenuTray_Click(object sender, RoutedEventArgs e)
         {
             (App.Current as App).ShowTray();
             Visibility = Visibility.Collapsed;
         }
 
-        private void TitleBarButton_Click_1(object sender, RoutedEventArgs e)
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
+            var regFile = System.IO.Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "RegistWebBrowse.reg");
+            try
             {
-                btnStartup.Content = "×开机自启";
-                (App.Current as App).SetStartup(false);
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = "cmd",
+                    Arguments = $"/c regedit.exe \"{regFile}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
             }
-            else
+            catch (Exception ex)
             {
-                btnStartup.Content = "√开机自启";
-                (App.Current as App).SetStartup(true);
+                await ShowMessage("运行注册表注册文件失败：" + ex.Message);
             }
         }
+    }
+
+    public class Log
+    {
+        public string Time { get; set; }
+        public string Content { get; set; }
+        public Brush TypeBrush { get; set; }
     }
 }

@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ClientPanel.xaml.cs">
+    <Compile Update="Panel\ClientPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -65,10 +65,13 @@
     <None Update="icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="RegistWebBrowse.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="ClientPanel.xaml">
+    <Page Update="Panel\ClientPanel.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
