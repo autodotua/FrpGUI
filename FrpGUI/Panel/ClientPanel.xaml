@@ -11,7 +11,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"  MinHeight="144" />
+            <RowDefinition Height="*" MinHeight="144" />
             <RowDefinition Height="8" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -46,14 +46,15 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button x:Name="btnStart" Content="启动" />
-                <Button x:Name="btnRestart" Content="重置 " />
+                <Button x:Name="btnRestart" Content="重置" />
                 <Button x:Name="btnStop" Content="停止" />
             </StackPanel>
         </Grid>
-        <DataGrid
-            Grid.Row="2"
-            local:CustomColumnHeadersProperty.ItemType="{x:Type local:Rule}"
-            ItemsSource="{Binding Rules}"
-            RowEditEnding="DataGrid_RowEditEnding" />
+        <GroupBox Grid.Row="2" Header="规则">
+            <DataGrid
+                local:CustomColumnHeadersProperty.ItemType="{x:Type local:Rule}"
+                ItemsSource="{Binding Rules}"
+                RowEditEnding="DataGrid_RowEditEnding" />
+        </GroupBox>
     </Grid>
 </local:PanelBase>

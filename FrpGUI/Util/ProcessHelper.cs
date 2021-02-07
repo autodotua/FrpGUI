@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
 
 namespace FrpGUI
 {
+
     public class ProcessHelper
     {
         public bool IsRunning { get; set; }

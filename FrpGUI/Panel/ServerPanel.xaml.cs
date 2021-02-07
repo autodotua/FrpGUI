@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -30,23 +31,20 @@ namespace FrpGUI
 
         private void Process_Exited(object sender, EventArgs e)
         {
-            web.Navigate("about:blank");
         }
 
         public override Task StopAsync()
         {
-            web.Navigate("about:blank");
             return base.StopAsync();
         }
 
         protected override void ChangeStatus(ProcessStatus status)
         {
             base.ChangeStatus(status);
-            btnOpenDashBoard.IsEnabled = status == ProcessStatus.Running;
+            gbxInfo.IsEnabled = status == ProcessStatus.Running;
             if (status == ProcessStatus.Running)
             {
                 Config.Instance.ServerOn = true;
-                web.Navigate($"http://{Server.DashBoardUsername}:{Server.DashBoardPassword}@localhost:{Server.DashBoardPort}");
             }
             else
             {
@@ -96,19 +94,52 @@ namespace FrpGUI
             }
         }
 
-        private void web_Navigated(object sender, NavigationEventArgs e)
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            HideScriptErrors(sender as WebBrowser, true);
-            (sender as WebBrowser).Navigated -= web_Navigated;
+            gbxInfo.IsEnabled = false;
+            Dictionary<string, object> dictionary = null;
+            await Task.Run(async () =>
+            {
+                var info = await HttpHelper.Instance.GetServerInfoAsync();
+                dictionary = new Dictionary<string, object>();
+                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(info))
+                {
+                    object obj = propertyDescriptor.GetValue(info);
+                    dictionary.Add(propertyDescriptor.Name, obj);
+                }
+            });
+            data.ItemsSource = dictionary;
+            gbxInfo.IsEnabled = true;
         }
 
-        public void HideScriptErrors(WebBrowser wb, bool Hide)
+        private async void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            FieldInfo fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (fiComWebBrowser == null) return;
-            object objComWebBrowser = fiComWebBrowser.GetValue(wb);
-            if (objComWebBrowser == null) return;
-            objComWebBrowser.GetType().InvokeMember("Silent", BindingFlags.SetProperty, null, objComWebBrowser, new object[] { Hide });
+            gbxInfo.IsEnabled = false;
+            List<object> items = null;
+            string type = (sender as ModernWpf.Controls.AppBarButton).Label.ToString().ToLower();
+            await Task.Run(async () =>
+            {
+                items = await HttpHelper.Instance.GetProxiesAsync(type);
+            });
+            data.ItemsSource = items;
+            gbxInfo.IsEnabled = true;
+        }
+
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            e.Column.Header = e.Column.Header switch
+            {
+                "Key" => "属性名",
+                "Value" => "属性值",
+                "name" => "命名",
+                "today_traffic_in" => "进入传入流量",
+                "today_traffic_out" => "进入传出流量",
+                "cur_conns" => "当前连接数",
+                "last_start_time" => "上一次开始",
+                "last_close_time" => "上一次关闭",
+                "status" => "状态",
+                _ => e.Column.Header
+            };
         }
     }
 }

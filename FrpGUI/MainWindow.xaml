@@ -8,8 +8,10 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     x:Name="Window"
     Title="FRP GUI - 端口转发"
-    Width="800"
-    Height="450"
+    Width="900"
+    Height="600"
+
+    WindowStartupLocation="CenterScreen"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
@@ -71,7 +73,6 @@
                                 Header="开机自启"
                                 IsCheckable="True" />
                             <MenuItem Click="MenuTray_Click" Header="最小化到托盘" />
-                            <MenuItem Click="MenuItem_Click" Header="注册浏览器" />
                         </ui:MenuFlyout>
                     </ui:FlyoutService.Flyout>
                 </ui:TitleBarButton>
@@ -90,27 +91,43 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
                 Background="Transparent" />
-            <ListBox
-                x:Name="lbxLogs"
-                Grid.Column="2"
-                Background="Transparent"
-                DockPanel.Dock="Right"
-                ItemsSource="{Binding Logs}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <ui:SimpleStackPanel Orientation="Vertical"  Spacing="4">
-                            <TextBlock
-                                Opacity="0.75"
-                                Text="{Binding Time}"
-                                TextWrapping="NoWrap" />
-                            <TextBlock
-                                Foreground="{Binding TypeBrush}"
-                                Text="{Binding Content}"
-                                TextWrapping="Wrap" />
-                        </ui:SimpleStackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ListBox
+                    x:Name="lbxLogs"
+                    Background="Transparent"
+                    DockPanel.Dock="Right"
+                    ItemsSource="{Binding Logs}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <ui:SimpleStackPanel Orientation="Vertical" Spacing="4">
+                                <TextBlock
+                                    Opacity="0.75"
+                                    Text="{Binding Time}"
+                                    TextWrapping="NoWrap" />
+                                <TextBlock
+                                    Foreground="{Binding TypeBrush}"
+                                    Text="{Binding Content}"
+                                    TextWrapping="Wrap" />
+                            </ui:SimpleStackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock
+                    Grid.Row="2"
+                    Margin="8,0,8,8"
+                    HorizontalAlignment="Right">
+                    <Run>共有</Run>
+                    <Run Text="{Binding Logs.Count, Mode=OneWay}" />
+                    <Run>条日志，</Run>
+                    <Hyperlink Click="Hyperlink_Click">点击清空</Hyperlink>
+                </TextBlock>
+            </Grid>
+
             <TabControl DockPanel.Dock="Left" Style="{StaticResource TabControlPivotStyle}">
                 <TabItem Header="服务端">
                     <local:ServerPanel x:Name="server" />

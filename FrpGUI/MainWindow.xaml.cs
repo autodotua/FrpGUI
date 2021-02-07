@@ -142,6 +142,11 @@ namespace FrpGUI
                 await ShowMessage("运行注册表注册文件失败：" + ex.Message);
             }
         }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Logs.Clear();
+        }
     }
 
     public class Log

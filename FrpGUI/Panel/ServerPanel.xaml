@@ -47,18 +47,44 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button x:Name="btnStart" Content="启动" />
-                <Button x:Name="btnRestart" Content="重置 " />
+                <Button x:Name="btnRestart" Content="重置" />
                 <Button x:Name="btnStop" Content="停止" />
             </StackPanel>
         </Grid>
-        <Button
+        <!--<Button
             x:Name="btnOpenDashBoard"
             Grid.Row="2"
             Padding="8"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Click="Button_Click"
-            Content="在浏览器中打开控制面板" />
-        <WebBrowser x:Name="web" Grid.Row="2" Navigated="web_Navigated" />
+            Content="在浏览器中打开控制面板" />-->
+        <GroupBox
+            x:Name="gbxInfo"
+            Grid.Row="2"
+            Header="服务器信息">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ui:CommandBar
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    Background="{Binding Background}">
+                    <ui:AppBarButton Click="MenuItem_Click" Label="总览" />
+                    <ui:AppBarButton Click="MenuItem_Click_1" Label="TCP" />
+                    <ui:AppBarButton Click="MenuItem_Click_1" Label="UDP" />
+                    <ui:AppBarButton Click="MenuItem_Click_1" Label="STCP" />
+                </ui:CommandBar>
+
+                <DataGrid
+                    x:Name="data"
+                    Grid.Row="0"
+                    AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                    IsReadOnly="True" />
+            </Grid>
+        </GroupBox>
     </Grid>
 </local:PanelBase>
