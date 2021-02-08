@@ -31,6 +31,8 @@
                     </WrapPanel.Resources>
                     <TextBox ui:ControlHelper.Header="端口号" Text="{Binding Server.Port}" />
                     <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding Server.Token}" />
+                    <TextBox ui:ControlHelper.Header="HTTP端口" Text="{Binding Server.HttpPort}" />
+                    <TextBox ui:ControlHelper.Header="HTTPS端口" Text="{Binding Server.HttpsPort}" />
                     <TextBox ui:ControlHelper.Header="控制面板端口号" Text="{Binding Server.DashBoardPort}" />
                     <TextBox ui:ControlHelper.Header="控制面板用户名" Text="{Binding Server.DashBoardUsername}" />
                     <TextBox ui:ControlHelper.Header="控制面板密码" Text="{Binding Server.DashBoardUsername}" />

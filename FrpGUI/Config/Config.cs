@@ -32,5 +32,7 @@ namespace FrpGUI
         public ServerConfig Server { get; set; }
         public bool ClientOn { get; set; }
         public bool ServerOn { get; set; }
+
+        public int LastTab { get; set; }
     }
 }

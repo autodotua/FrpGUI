@@ -80,8 +80,17 @@ namespace FrpGUI
                 }
                 else
                 {
+                    Logs.Add(new Log()
+                    {
+                        Time = DateTime.Now.ToString(),
+                        Content = e.Data,
+                        TypeBrush = e.Data.Contains("error") ? Brushes.Red : Foreground
+                    });
                 }
-                lbxLogs.ScrollIntoView(Logs[^1]);
+                if (Logs.Count > 0)
+                {
+                    lbxLogs.ScrollIntoView(Logs[^1]);
+                }
             });
         }
 

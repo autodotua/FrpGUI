@@ -10,14 +10,13 @@
     Title="FRP GUI - 端口转发"
     Width="900"
     Height="600"
-
-    WindowStartupLocation="CenterScreen"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
     Loaded="Window_Loaded"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
 
@@ -128,7 +127,10 @@
                 </TextBlock>
             </Grid>
 
-            <TabControl DockPanel.Dock="Left" Style="{StaticResource TabControlPivotStyle}">
+            <TabControl
+                DockPanel.Dock="Left"
+                SelectedIndex="{Binding Source={x:Static local:Config.Instance}, Path=LastTab}"
+                Style="{StaticResource TabControlPivotStyle}">
                 <TabItem Header="服务端">
                     <local:ServerPanel x:Name="server" />
                 </TabItem>

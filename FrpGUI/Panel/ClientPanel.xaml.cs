@@ -26,6 +26,7 @@ namespace FrpGUI
         public ClientPanel()
         {
             Rules = new ObservableCollection<Rule>(Client.Rules);
+            Rules.CollectionChanged += (p1, p2) => Client.Rules = Rules.ToList();
             InitializeComponent();
         }
 

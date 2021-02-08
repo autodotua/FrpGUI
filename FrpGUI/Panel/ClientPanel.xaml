@@ -33,6 +33,11 @@
                     <TextBox ui:ControlHelper.Header="服务器地址" Text="{Binding Client.ServerAddress}" />
                     <TextBox ui:ControlHelper.Header="服务器端口" Text="{Binding Client.ServerPort}" />
                     <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding Client.Token}" />
+                    <CheckBox IsChecked="{Binding LoginFailExit}"  Content="如果登陆异常就自动退出" />
+                    <TextBox ui:ControlHelper.Header="管理面板地址" Text="{Binding Client.AdminAddress}" />
+                    <TextBox ui:ControlHelper.Header="管理面板端口" Text="{Binding Client.AdminPort}" />
+                    <TextBox ui:ControlHelper.Header="管理面板用户名" Text="{Binding Client.AdminUsername}" />
+                    <TextBox ui:ControlHelper.Header="管理面板密码" Text="{Binding Client.AdminPassword}" />
                 </WrapPanel>
             </ScrollViewer>
             <StackPanel

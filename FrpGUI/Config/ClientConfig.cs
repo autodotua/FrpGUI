@@ -11,6 +11,11 @@ namespace FrpGUI
         public string ServerAddress { get; set; }
         public string Token { get; set; }
         public ushort ServerPort { get; set; } = 7000;
+        public bool LoginFailExit { get; set; } = false;
+        public string AdminAddress { get; set; } = "localhost";
+        public ushort AdminPort { get; set; } = 7400;
+        public string AdminUsername { get; set; } = "admin";
+        public string AdminPassword { get; set; } = "admin";
         public List<Rule> Rules { get; set; } = new List<Rule>();
 
         public string ToIni()
@@ -19,6 +24,12 @@ namespace FrpGUI
             str.Append("[common]").AppendLine();
             str.Append("server_addr = ").Append(ServerAddress).AppendLine();
             str.Append("server_port = ").Append(ServerPort).AppendLine();
+            str.Append("login_fail_exit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
+            str.Append("admin_addr = ").Append(AdminAddress).AppendLine();
+            str.Append("admin_port = ").Append(AdminPort).AppendLine();
+            str.Append("admin_user = ").Append(AdminUsername).AppendLine();
+            str.Append("admin_pwd = ").Append(AdminPassword).AppendLine();
+            str.AppendLine();
             if (!string.IsNullOrWhiteSpace(Token))
             {
                 str.Append("token = ").Append(Token).AppendLine();
@@ -45,8 +56,11 @@ namespace FrpGUI
         [Display(Name = "本地端口")]
         public ushort LocalPort { get; set; }
 
-        [Display(Name = "服务器端口")]
+        [Display(Name = "远程端口")]
         public ushort RemotePort { get; set; }
+
+        [Display(Name = "域名")]
+        public string Domains { get; set; }
 
         public string ToIni()
         {
@@ -55,7 +69,14 @@ namespace FrpGUI
             str.Append("type = ").Append(Type.ToString().ToLower()).AppendLine();
             str.Append("local_ip = ").Append(LocalAddress).AppendLine();
             str.Append("local_port = ").Append(LocalPort).AppendLine();
-            str.Append("remote_port = ").Append(RemotePort).AppendLine();
+            if (Type != NetType.HTTP && Type != NetType.HTTPS)
+            {
+                str.Append("remote_port = ").Append(RemotePort).AppendLine();
+            }
+            if (Type == NetType.HTTP || Type == NetType.HTTPS)
+            {
+                str.Append("custom_domains = ").Append(Domains).AppendLine();
+            }
             return str.ToString();
         }
     }
@@ -66,7 +87,7 @@ namespace FrpGUI
         UDP,
         HTTP,
         HTTPS,
-        STCP,
-        XTCP
+        //STCP,
+        //XTCP
     }
 }
