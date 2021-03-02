@@ -6,7 +6,6 @@ using Windows.Devices.SerialCommunication;
 
 namespace FrpGUI
 {
-
     public class ProcessHelper
     {
         public bool IsRunning { get; set; }
@@ -19,7 +18,7 @@ namespace FrpGUI
         {
             if (frpProcess != null)
             {
-                throw new Exception("存在仍在运行的Frp实例");
+                //throw new Exception("存在仍在运行的Frp实例");
             }
             this.type = type;
             this.obj = obj;
