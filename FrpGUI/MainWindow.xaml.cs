@@ -126,8 +126,13 @@ namespace FrpGUI
             });
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            for (int i = 0; i < 1e5; i++)
+            {
+                //var b = a.GetType().GetFields();
+                //  ProcessHelper_Output(null, new DataReceivedEventArgs("hello"));
+            }
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
