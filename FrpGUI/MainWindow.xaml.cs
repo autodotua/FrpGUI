@@ -1,6 +1,8 @@
-﻿using System;
+﻿using FzLib.Extension;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -18,19 +20,47 @@ using System.Windows.Shapes;
 
 namespace FrpGUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    public class MainWindowViewModel : INotifyPropertyChanged
+    {
+        public ObservableCollection<Log> Logs { get; } = new ObservableCollection<Log>();
+
+        private int maxLogCount = 10000;
+
+        public MainWindowViewModel()
+        {
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int MaxLogCount
+        {
+            get => maxLogCount;
+            set
+            {
+                if (value > 100000)
+                {
+                    value = 100000;
+                }
+                else if (value < 10)
+                {
+                    value = 10;
+                }
+                this.SetValueAndNotify(ref maxLogCount, value, nameof(MaxLogCount));
+            }
+        }
+    }
+
     public partial class MainWindow : Window
     {
         private Regex rLog = new Regex(@"(?<Time>[0-9/: ]{19}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
+        public MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
 
         public MainWindow(bool autoStart = false)
         {
             bool clientOn = Config.Instance.ClientOn;
             bool serverOn = Config.Instance.ServerOn;
             InitializeComponent();
-            DataContext = this;
+            DataContext = ViewModel;
 
             ProcessHelper.Output += ProcessHelper_Output;
             if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
@@ -49,8 +79,6 @@ namespace FrpGUI
                 }
             }
         }
-
-        public ObservableCollection<Log> Logs { get; } = new ObservableCollection<Log>();
 
         private void ProcessHelper_Output(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
@@ -71,7 +99,7 @@ namespace FrpGUI
                     {
                         brush = Brushes.Red;
                     }
-                    Logs.Add(new Log()
+                    ViewModel.Logs.Add(new Log()
                     {
                         Time = time,
                         Content = content,
@@ -80,22 +108,31 @@ namespace FrpGUI
                 }
                 else
                 {
-                    Logs.Add(new Log()
+                    ViewModel.Logs.Add(new Log()
                     {
                         Time = DateTime.Now.ToString(),
                         Content = e.Data,
                         TypeBrush = e.Data.Contains("error") ? Brushes.Red : Foreground
                     });
                 }
-                if (Logs.Count > 0)
+                if (ViewModel.Logs.Count > 0)
                 {
-                    lbxLogs.ScrollIntoView(Logs[^1]);
+                    lbxLogs.ScrollIntoView(ViewModel.Logs[^1]);
+                    while (ViewModel.Logs.Count > ViewModel.MaxLogCount)
+                    {
+                        ViewModel.Logs.RemoveAt(0);
+                    }
                 }
             });
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            for (int i = 0; i < 1e5; i++)
+            {
+                //var b = a.GetType().GetFields();
+                //  ProcessHelper_Output(null, new DataReceivedEventArgs("hello"));
+            }
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -154,7 +191,7 @@ namespace FrpGUI
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Logs.Clear();
+            ViewModel.Logs.Clear();
         }
     }
 
