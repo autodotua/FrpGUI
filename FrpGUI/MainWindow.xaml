@@ -6,10 +6,8 @@
     xmlns:local="clr-namespace:FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
-    x:Name="Window"
-    Title="FRP GUI - 端口转发"
-    Width="900"
-    Height="600"
+    x:Name="Window" Title="FRP GUI - 端口转发"
+    Width="900" Height="600"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
@@ -51,14 +49,11 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="13"
+                    VerticalAlignment="Center" FontSize="13"
                     Text="{Binding ElementName=Window, Path=Title}" />
                 <ui:TitleBarButton
-                    Grid.Column="4"
-                    Width="NaN"
-                    Padding="16,0"
-                    FontSize="13"
+                    Grid.Column="4" Width="NaN"
+                    Padding="16,0" FontSize="13"
                     Foreground="{DynamicResource SystemControlBackgroundBaseMediumHighBrush}"
                     Style="{StaticResource AppTitleBarButtonStyle}">
                     <ui:TitleBarButton.Content>
@@ -68,8 +63,7 @@
                         <ui:MenuFlyout Placement="Bottom">
                             <MenuItem
                                 x:Name="menuStartup"
-                                Click="MenuStartup_Click"
-                                Header="开机自启"
+                                Click="MenuStartup_Click" Header="开机自启"
                                 IsCheckable="True" />
                             <MenuItem Click="MenuTray_Click" Header="最小化到托盘" />
                         </ui:MenuFlyout>
@@ -85,8 +79,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <GridSplitter
-                Grid.Column="1"
-                Width="8"
+                Grid.Column="1" Width="8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
                 Background="Transparent" />
@@ -116,15 +109,23 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBlock
-                    Grid.Row="2"
-                    Margin="8,0,8,8"
-                    HorizontalAlignment="Right">
-                    <Run>共有</Run>
-                    <Run Text="{Binding Logs.Count, Mode=OneWay}" />
-                    <Run>条日志，</Run>
-                    <Hyperlink Click="Hyperlink_Click">点击清空</Hyperlink>
-                </TextBlock>
+                <ui:SimpleStackPanel
+                    Grid.Row="2" Margin="8"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal" Spacing="12">
+                    <TextBlock VerticalAlignment="Center">最大日志数：</TextBlock>
+                    <ComboBox Text="{Binding MaxLogCount}" IsEditable="True" Width="120">
+                        <ComboBoxItem>1000</ComboBoxItem>
+                        <ComboBoxItem>10000</ComboBoxItem>
+                        <ComboBoxItem>50000</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run>共有</Run>
+                        <Run Text="{Binding Logs.Count, Mode=OneWay}" />
+                        <Run>条日志，</Run>
+                        <Hyperlink Click="Hyperlink_Click">点击清空</Hyperlink>
+                    </TextBlock>
+                </ui:SimpleStackPanel>
             </Grid>
 
             <TabControl
@@ -139,8 +140,7 @@
                 </TabItem>
             </TabControl>
             <ui:ContentDialog
-                x:Name="dialog"
-                Title="注意"
+                x:Name="dialog" Title="注意"
                 Grid.ColumnSpan="999"
                 CloseButtonText="确定">
                 <Grid>
