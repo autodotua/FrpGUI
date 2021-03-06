@@ -8,11 +8,28 @@ namespace FrpGUI
 {
     public class ProcessHelper
     {
+        public static ProcessHelper Server { get; } = new ProcessHelper();
+        public static ProcessHelper Client { get; } = new ProcessHelper();
+
+        private ProcessHelper()
+        {
+        }
+
         public bool IsRunning { get; set; }
 
         private Process frpProcess;
         private string type;
         private IToIni obj;
+
+        public Task StartServerAsync(IToIni obj)
+        {
+            return StartAsync("s", obj);
+        }
+
+        public Task StartClientAsync(IToIni obj)
+        {
+            return StartAsync("c", obj);
+        }
 
         public async Task StartAsync(string type, IToIni obj)
         {
@@ -56,10 +73,13 @@ namespace FrpGUI
             frpProcess.BeginOutputReadLine();
             frpProcess.BeginErrorReadLine();
             frpProcess.Exited += FrpProcess_Exited;
+            IsRunning = true;
+            Started?.Invoke(this, new EventArgs());
         }
 
         private void FrpProcess_Exited(object sender, EventArgs e)
         {
+            IsRunning = false;
             frpProcess.Dispose();
             frpProcess = null;
             Exited?.Invoke(sender, e);
@@ -78,12 +98,15 @@ namespace FrpGUI
         public Task StopAsync()
         {
             var tcs = new TaskCompletionSource<int>();
+            IsRunning = false;
             frpProcess.Exited -= FrpProcess_Exited;
             frpProcess.Exited += (p1, p2) =>
             {
                 tcs.SetResult(frpProcess.ExitCode);
                 frpProcess.Dispose();
                 frpProcess = null;
+
+                Exited?.Invoke(this, new EventArgs());
             };
             frpProcess.Kill(true);
             return tcs.Task;
@@ -102,5 +125,7 @@ namespace FrpGUI
         public static event DataReceivedEventHandler Output;
 
         public event EventHandler Exited;
+
+        public event EventHandler Started;
     }
 }

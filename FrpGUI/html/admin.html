@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta lang="zh-cn">
+    <meta charset="utf-8" name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>FrpGUI</title>
+    <link href="bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <style>
+        div.center-div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .btn-jump {
+            width: 108px;
+            margin: 8px;
+        }
+
+        h1 {
+            margin-left: 1.5rem;
+            margin-top: 0.7rem;
+        }
+    </style>
+    <h1>FrpGUI</h1>
+    <div class="contaniner  center-div">
+        <div>当前状态：{{status}}</div>
+        <button class="btn btn-primary" id="btn">{{button}}</button>
+
+    </div>
+
+        <script>
+            $("#btn").click(function () {
+                $.post({
+                    url:"{{url}}",
+                    data:"{{data}}",
+                    success:()=>{
+                        alert("操作成功")
+                        location.reload()
+                    },
+                    error:(j,t)=>{
+                        alert("操作失败："+t)
+                    }
+                })
+            })
+        </script>
+</body>
+
+</html>

@@ -12,7 +12,7 @@ namespace FrpGUI
 {
     public abstract class PanelBase : UserControl
     {
-        protected ProcessHelper process = new ProcessHelper();
+        protected abstract ProcessHelper Process { get; }
         protected abstract Button StartButton { get; }
         protected abstract Button StopButton { get; }
         protected abstract Button RestartButton { get; }
@@ -23,7 +23,7 @@ namespace FrpGUI
         public PanelBase()
         {
             DataContext = this;
-            process.Exited += Process_Exited;
+            Process.Exited += Process_Exited;
             Initialized += PanelBase_Initialized;
         }
 
@@ -77,7 +77,7 @@ namespace FrpGUI
         public virtual async Task StartAsync()
         {
             ChangeStatus(ProcessStatus.Busy);
-            await process.StartAsync(Type, ConfigItem);
+            await Process.StartAsync(Type, ConfigItem);
             ChangeStatus(ProcessStatus.Running);
             Config.Instance.Save();
         }
@@ -85,7 +85,7 @@ namespace FrpGUI
         private async void btnRestart_Click(object sender, RoutedEventArgs e)
         {
             ChangeStatus(ProcessStatus.Busy);
-            await process.RestartAsync();
+            await Process.RestartAsync();
             ChangeStatus(ProcessStatus.Running);
             Config.Instance.Save();
         }
@@ -98,7 +98,7 @@ namespace FrpGUI
         public virtual async Task StopAsync()
         {
             ChangeStatus(ProcessStatus.Busy);
-            await process.StopAsync();
+            await Process.StopAsync();
             ChangeStatus(ProcessStatus.NotRun);
         }
 
@@ -106,7 +106,7 @@ namespace FrpGUI
         {
             try
             {
-                Process.Start(url);
+                System.Diagnostics.Process.Start(url);
             }
             catch
             {
@@ -114,15 +114,15 @@ namespace FrpGUI
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    System.Diagnostics.Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", url);
+                    System.Diagnostics.Process.Start("xdg-open", url);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", url);
+                    System.Diagnostics.Process.Start("open", url);
                 }
                 else
                 {

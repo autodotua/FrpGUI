@@ -55,6 +55,8 @@ namespace FrpGUI
         protected override string Type => "c";
         protected override IToIni ConfigItem => Client;
 
+        protected override ProcessHelper Process { get; } = ProcessHelper.Client;
+
         private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             Client.Rules = Rules.ToList();

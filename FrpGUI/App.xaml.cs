@@ -1,4 +1,5 @@
-﻿using FzLib.Program;
+﻿using FrpGUI.Util;
+using FzLib.Program;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -36,7 +37,7 @@ namespace FrpGUI
             }
         }
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e)
         {
             UnhandledException.RegistAll();
 
@@ -64,6 +65,8 @@ namespace FrpGUI
                 MainWindow.Activate();
                 MainWindow.Focus();
             };
+
+            await new HttpServerHelper().Start();
         }
 
         private void UnhandledException_UnhandledExceptionCatched(object sender, UnhandledException.UnhandledExceptionEventArgs e)

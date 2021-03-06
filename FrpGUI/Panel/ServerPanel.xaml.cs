@@ -23,14 +23,29 @@ namespace FrpGUI
     /// </summary>
     public partial class ServerPanel : PanelBase
     {
+        protected override ProcessHelper Process { get; } = ProcessHelper.Server;
+
         public ServerPanel()
         {
             InitializeComponent();
-            process.Exited += Process_Exited;
+            Process.Exited += Process_Exited;
+            Process.Started += Process_Started;
+        }
+
+        private void Process_Started(object sender, EventArgs e)
+        {
+            Dispatcher?.Invoke(() =>
+            {
+                ChangeStatus(ProcessStatus.Running);
+            });
         }
 
         private void Process_Exited(object sender, EventArgs e)
         {
+            Dispatcher?.Invoke(() =>
+            {
+                ChangeStatus(ProcessStatus.NotRun);
+            });
         }
 
         public override Task StopAsync()
@@ -69,7 +84,7 @@ namespace FrpGUI
         {
             try
             {
-                Process.Start(url);
+                System.Diagnostics.Process.Start(url);
             }
             catch
             {
@@ -77,15 +92,15 @@ namespace FrpGUI
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    System.Diagnostics.Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", url);
+                    System.Diagnostics.Process.Start("xdg-open", url);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", url);
+                    System.Diagnostics.Process.Start("open", url);
                 }
                 else
                 {
