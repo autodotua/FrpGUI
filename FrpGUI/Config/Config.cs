@@ -32,8 +32,9 @@ namespace FrpGUI
         public ServerConfig Server { get; set; }
         public bool ClientOn { get; set; }
         public bool ServerOn { get; set; }
-        public string ControllerAddress { get; set; } = "localhost";
-        public int ControllerPort { get; set; } = 12345;
+        public string AdminAddress { get; set; } = "127.0.0.1";
+        public int AdminPort { get; set; } = 12345;
+        public string AdminPassword { get; set; } = "";
         public int LastTab { get; set; }
     }
 }

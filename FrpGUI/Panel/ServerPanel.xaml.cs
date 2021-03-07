@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -27,10 +30,20 @@ namespace FrpGUI
 
         public ServerPanel()
         {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    IPs.Add(ip.ToString());
+                }
+            }
             InitializeComponent();
             Process.Exited += Process_Exited;
             Process.Started += Process_Started;
         }
+
+        public ObservableCollection<string> IPs { get; } = new ObservableCollection<string>();
 
         private void Process_Started(object sender, EventArgs e)
         {
@@ -68,6 +81,7 @@ namespace FrpGUI
         }
 
         public ServerConfig Server => Config.Instance.Server;
+        public Config Config => Config.Instance;
 
         protected override Button StartButton => btnStart;
         protected override Button StopButton => btnStop;

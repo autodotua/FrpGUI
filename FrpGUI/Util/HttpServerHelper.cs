@@ -17,6 +17,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace FrpGUI.Util
 {
@@ -26,26 +27,32 @@ namespace FrpGUI.Util
 
         public async Task Start()
         {
-            // var prefixes = new[] { $"http://{Config.Instance.ControllerAddress}:{Config.Instance.ControllerPort}/" };
-            HttpListener listener = new HttpListener();
-            listener.Prefixes.Add($"http://{Config.Instance.ControllerAddress}:{Config.Instance.ControllerPort}/");
-            listener.Start();
-
-            var requests = new HashSet<Task>();
-            for (int i = 0; i < 10; i++)
-                requests.Add(listener.GetContextAsync());
-
-            while (true)
+            try
             {
-                Task t = await Task.WhenAny(requests);
-                requests.Remove(t);
+                HttpListener listener = new HttpListener();
+                listener.Prefixes.Add($"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}/");
+                listener.Start();
 
-                if (t is Task<HttpListenerContext>)
-                {
-                    var context = (t as Task<HttpListenerContext>).Result;
-                    requests.Add(ProcessRequestAsync(context));
+                var requests = new HashSet<Task>();
+                for (int i = 0; i < 10; i++)
                     requests.Add(listener.GetContextAsync());
+
+                while (true)
+                {
+                    Task t = await Task.WhenAny(requests);
+                    requests.Remove(t);
+
+                    if (t is Task<HttpListenerContext>)
+                    {
+                        var context = (t as Task<HttpListenerContext>).Result;
+                        requests.Add(ProcessRequestAsync(context));
+                        requests.Add(listener.GetContextAsync());
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("启动远程管理错误：" + ex.Message, "E");
             }
         }
 
@@ -63,13 +70,29 @@ namespace FrpGUI.Util
                         {
                             using StreamReader reader = new StreamReader(body, request.ContentEncoding);
                             string value = reader.ReadToEnd();
-                            bool b = bool.Parse(value);
+                            JObject json = JObject.Parse(value);
+                            bool b = json["value"].Value<bool>();
+                            string password = json["password"].Value<string>();
+                            if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(Config.Instance.AdminPassword))
+                            {
+                                if (password != Config.Instance.AdminPassword)
+                                {
+                                    (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：密码错误", "W");
+
+                                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                    return;
+                                }
+                            }
                             if (b && !ProcessHelper.Server.IsRunning)
                             {
+                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：启动了服务器", "I");
+
                                 await ProcessHelper.Server.StartServerAsync(Config.Instance.Server);
                             }
                             else if (!b && ProcessHelper.Server.IsRunning)
                             {
+                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：关闭了服务器", "I");
+
                                 await ProcessHelper.Server.StopAsync();
                             }
                         }
@@ -78,15 +101,17 @@ namespace FrpGUI.Util
                     case "GET":
                         if (context.Request.RawUrl == "/")
                         {
-                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{Config.Instance.ControllerAddress}:{Config.Instance.ControllerPort}");
+                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}");
                             if (ProcessHelper.Server.IsRunning)
                             {
-                                responseString = responseString.Replace("{{status}}", "正在运行").Replace("{{button}}", "停止").Replace("{{data}}", "False");
+                                responseString = responseString.Replace("{{status}}", "正在运行").Replace("{{button}}", "停止").Replace("{{data}}", "false");
                             }
                             else
                             {
-                                responseString = responseString.Replace("{{status}}", "没有运行").Replace("{{button}}", "启动").Replace("{{data}}", "True");
+                                responseString = responseString.Replace("{{status}}", "没有运行").Replace("{{button}}", "启动").Replace("{{data}}", "true");
                             }
+
+                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：访问远程管理网页", "I");
                         }
                         else
                         {
@@ -102,7 +127,7 @@ namespace FrpGUI.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理服务器错误：" + ex.Message, "E");
             }
             finally
             {
@@ -112,7 +137,7 @@ namespace FrpGUI.Util
 
         private void AddNewListener()
         {
-            var prefixes = new[] { $"http://{Config.Instance.ControllerAddress}:{Config.Instance.ControllerPort}/" };
+            var prefixes = new[] { $"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}/" };
             if (listener != null)
             {
                 return;

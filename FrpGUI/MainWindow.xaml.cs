@@ -82,55 +82,56 @@ namespace FrpGUI
 
         private void ProcessHelper_Output(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            if (rLog.IsMatch(e.Data))
             {
-                if (rLog.IsMatch(e.Data))
-                {
-                    var match = rLog.Match(e.Data);
-                    string time = match.Groups["Time"].Value;
-                    string content = match.Groups["Content"].Value;
-                    string type = match.Groups["Type"].Value;
-                    Brush brush = Foreground;
-                    if (type == "W")
-                    {
-                        brush = Brushes.Yellow;
-                    }
-                    else if (type == "E")
-                    {
-                        brush = Brushes.Red;
-                    }
-                    ViewModel.Logs.Add(new Log()
-                    {
-                        Time = time,
-                        Content = content,
-                        TypeBrush = brush
-                    });
-                }
-                else
-                {
-                    ViewModel.Logs.Add(new Log()
-                    {
-                        Time = DateTime.Now.ToString(),
-                        Content = e.Data,
-                        TypeBrush = e.Data.Contains("error") ? Brushes.Red : Foreground
-                    });
-                }
-                if (ViewModel.Logs.Count > 0)
-                {
-                    lbxLogs.ScrollIntoView(ViewModel.Logs[^1]);
-                    while (ViewModel.Logs.Count > ViewModel.MaxLogCount)
-                    {
-                        ViewModel.Logs.RemoveAt(0);
-                    }
-                }
+                var match = rLog.Match(e.Data);
+                string content = match.Groups["Content"].Value;
+                string type = match.Groups["Type"].Value;
+                AddLogOnMainThread(content, type);
+            }
+            else
+            {
+                AddLogOnMainThread(e.Data, e.Data.Contains("error") ? "E" : "");
+            }
+        }
+
+        public void AddLogOnMainThread(string message, string type)
+        {
+            Dispatcher.Invoke(() => AddLog(message, type));
+        }
+
+        public void AddLog(string message, string type)
+        {
+            Brush brush = Foreground;
+            if (type == "W")
+            {
+                brush = Brushes.Yellow;
+            }
+            else if (type == "E")
+            {
+                brush = Brushes.Red;
+            }
+            ViewModel.Logs.Add(new Log()
+            {
+                Time = DateTime.Now,
+                Content = message,
+                TypeBrush = brush
             });
+            if (ViewModel.Logs.Count > 0)
+            {
+                lbxLogs.ScrollIntoView(ViewModel.Logs[^1]);
+                while (ViewModel.Logs.Count > ViewModel.MaxLogCount)
+                {
+                    ViewModel.Logs.RemoveAt(0);
+                }
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Window_Closing(object sender, CancelEventArgs e)
         {
             if (server.ProcessStatus != ProcessStatus.NotRun || client.ProcessStatus != ProcessStatus.NotRun)
             {
@@ -188,11 +189,25 @@ namespace FrpGUI
         {
             ViewModel.Logs.Clear();
         }
+
+        private async void MenuRestart_Click(object sender, RoutedEventArgs e)
+        {
+            Config.Instance.Save();
+            if (server.ProcessStatus == ProcessStatus.Running)
+            {
+                await server.StopAsync();
+            }
+            if (client.ProcessStatus == ProcessStatus.Running)
+            {
+                await client.StopAsync();
+            }
+            FzLib.Program.App.Restart(App.Current.Shutdown);
+        }
     }
 
     public class Log
     {
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
         public string Content { get; set; }
         public Brush TypeBrush { get; set; }
     }

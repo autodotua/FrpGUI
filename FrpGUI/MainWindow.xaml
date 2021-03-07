@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     x:Name="Window" Title="FRP GUI - 端口转发"
-    Width="900" Height="600"
+    Width="1000" Height="600"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
@@ -66,6 +66,7 @@
                                 Click="MenuStartup_Click" Header="开机自启"
                                 IsCheckable="True" />
                             <MenuItem Click="MenuTray_Click" Header="最小化到托盘" />
+                            <MenuItem Click="MenuRestart_Click" Header="重新启动应用" />
                         </ui:MenuFlyout>
                     </ui:FlyoutService.Flyout>
                 </ui:TitleBarButton>
@@ -99,7 +100,7 @@
                             <ui:SimpleStackPanel Orientation="Vertical" Spacing="4">
                                 <TextBlock
                                     Opacity="0.75"
-                                    Text="{Binding Time}"
+                                    Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
                                     TextWrapping="NoWrap" />
                                 <TextBlock
                                     Foreground="{Binding TypeBrush}"

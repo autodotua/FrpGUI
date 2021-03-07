@@ -35,22 +35,36 @@
     </style>
     <h1>FrpGUI</h1>
     <div class="contaniner  center-div">
-        <div>当前状态：{{status}}</div>
-        <button class="btn btn-primary" id="btn">{{button}}</button>
+        <p class="text-center">当前状态：{{status}}</p>
+        <p></p>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text">密码</div>
+            </div>
+            <input type="password" class="form-control" id="pswd" placeholder="">
+          </div>
+        <p></p>
+        <button class="btn btn-primary " id="btn">{{button}}</button>
+        
 
     </div>
 
         <script>
             $("#btn").click(function () {
+                let data={
+                    value:{{data}},
+                    password:$("#pswd").val()
+                }
                 $.post({
-                    url:"{{url}}",
-                    data:"{{data}}",
+                    url:window.location.href,
+                    data:JSON.stringify(data),
                     success:()=>{
                         alert("操作成功")
                         location.reload()
                     },
-                    error:(j,t)=>{
-                        alert("操作失败："+t)
+                    error:(j,t,e)=>{
+                        alert("操作失败："+e)
+                        console.log(e)
                     }
                 })
             })
