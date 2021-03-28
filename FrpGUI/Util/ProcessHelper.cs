@@ -21,39 +21,27 @@ namespace FrpGUI
         private string type;
         private IToIni obj;
 
-        public Task StartServerAsync(IToIni obj)
+        public void StartServer(IToIni obj)
         {
-            return StartAsync("s", obj);
+            Start("s", obj);
         }
 
-        public Task StartClientAsync(IToIni obj)
+        public void StartClient(IToIni obj)
         {
-            return StartAsync("c", obj);
+            Start("c", obj);
         }
 
-        public async Task StartAsync(string type, IToIni obj)
+        public void Start(string type, IToIni obj)
         {
             if (frpProcess != null)
             {
+                frpProcess.Kill();
                 //throw new Exception("存在仍在运行的Frp实例");
             }
             this.type = type;
             this.obj = obj;
-            Process[] existProcess = null;
-            await Task.Run(() =>
-            {
-                string ini = $"./frp/frp{type}.ini";
-                File.WriteAllText(ini, obj.ToIni());
-                existProcess = Process.GetProcessesByName($"frp{type}");
-            });
-            if (existProcess.Length > 0)
-            {
-                foreach (var p in existProcess)
-                {
-                    p.Kill(true);
-                }
-                await Task.Delay(500);
-            }
+            string ini = $"./frp/frp{type}.ini";
+            File.WriteAllText(ini, obj.ToIni());
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
@@ -64,7 +52,7 @@ namespace FrpGUI
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
-                RedirectStandardOutput = true
+                RedirectStandardOutput = true,
             };
             frpProcess.EnableRaisingEvents = true;
             frpProcess.OutputDataReceived += P_OutputDataReceived;
@@ -75,6 +63,32 @@ namespace FrpGUI
             frpProcess.Exited += FrpProcess_Exited;
             IsRunning = true;
             Started?.Invoke(this, new EventArgs());
+        }
+
+        public async Task<Process[]> GetExistedProcesses(string type)
+        {
+            Process[] existProcess = null;
+            await Task.Run(() =>
+            {
+                existProcess = Process.GetProcessesByName($"frp{type}");
+            });
+            return existProcess;
+        }
+
+        public async Task KillExistedProcesses(string type)
+        {
+            Process[] existProcess = null;
+            await Task.Run(() =>
+            {
+                existProcess = Process.GetProcessesByName($"frp{type}");
+            });
+            if (existProcess.Length > 0)
+            {
+                foreach (var p in existProcess)
+                {
+                    p.Kill(true);
+                }
+            }
         }
 
         private void FrpProcess_Exited(object sender, EventArgs e)
@@ -92,7 +106,7 @@ namespace FrpGUI
                 throw new Exception();
             }
             await StopAsync();
-            await StartAsync(type, obj);
+            Start(type, obj);
         }
 
         public Task StopAsync()
@@ -102,11 +116,18 @@ namespace FrpGUI
             frpProcess.Exited -= FrpProcess_Exited;
             frpProcess.Exited += (p1, p2) =>
             {
-                tcs.SetResult(frpProcess.ExitCode);
                 frpProcess.Dispose();
+                int code = 0;
+                try
+                {
+                    code = frpProcess.ExitCode;
+                }
+                catch
+                {
+                }
                 frpProcess = null;
-
                 Exited?.Invoke(this, new EventArgs());
+                tcs.SetResult(code);
             };
             frpProcess.Kill(true);
             return tcs.Task;

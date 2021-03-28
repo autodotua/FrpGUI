@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -52,6 +53,7 @@ namespace FrpGUI
         protected override Button StartButton => btnStart;
         protected override Button StopButton => btnStop;
         protected override Button RestartButton => btnRestart;
+        protected override Button CheckButton => btnCheck;
         protected override string Type => "c";
         protected override IToIni ConfigItem => Client;
 
@@ -61,43 +63,34 @@ namespace FrpGUI
         {
             Client.Rules = Rules.ToList();
         }
+
+        private void DataGrid_Selected(object sender, RoutedEventArgs e)
+        {
+            if ((sender as DataGrid).SelectedCells.First().Column.Header.Equals("类型"))
+            {
+                (sender as DataGrid).BeginEdit(e);
+            }
+        }
     }
 
-    public static class CustomColumnHeadersProperty
+    public class CellEnableConverter : IValueConverter
     {
-        public static DependencyProperty ItemTypeProperty = DependencyProperty.RegisterAttached(
-            "ItemType",
-            typeof(Type),
-            typeof(CustomColumnHeadersProperty),
-            new PropertyMetadata(OnItemTypeChanged));
-
-        public static void SetItemType(DependencyObject obj, Type value)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            obj.SetValue(ItemTypeProperty, value);
+            NetType type = (NetType)value;
+            return (parameter as string) switch
+            {
+                nameof(Rule.Domains) => type == NetType.HTTP || type == NetType.HTTPS,
+                nameof(Rule.STCPKey) => type == NetType.STCP || type == NetType.STCP_Visitor,
+                nameof(Rule.STCPServerName) => type == NetType.STCP_Visitor,
+                nameof(Rule.RemotePort) => type != NetType.HTTP && type != NetType.HTTPS,
+                _ => throw new ArgumentException(),
+            };
         }
 
-        public static Type GetItemType(DependencyObject obj)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (Type)obj.GetValue(ItemTypeProperty);
-        }
-
-        private static void OnItemTypeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-        {
-            var dataGrid = sender as DataGrid;
-
-            if (args.NewValue != null)
-                dataGrid.AutoGeneratingColumn += dataGrid_AutoGeneratingColumn;
-            else
-                dataGrid.AutoGeneratingColumn -= dataGrid_AutoGeneratingColumn;
-        }
-
-        private static void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            var type = GetItemType(sender as DataGrid);
-
-            var displayAttribute = type.GetProperty(e.PropertyName).GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault() as DisplayAttribute;
-            if (displayAttribute != null)
-                e.Column.Header = displayAttribute.Name;
+            throw new NotImplementedException();
         }
     }
 }

@@ -86,6 +86,7 @@ namespace FrpGUI
         protected override Button StartButton => btnStart;
         protected override Button StopButton => btnStop;
         protected override Button RestartButton => btnRestart;
+        protected override Button CheckButton => btnCheck;
         protected override string Type => "s";
         protected override IToIni ConfigItem => Server;
 

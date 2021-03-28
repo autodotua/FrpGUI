@@ -16,6 +16,7 @@ namespace FrpGUI
         protected abstract Button StartButton { get; }
         protected abstract Button StopButton { get; }
         protected abstract Button RestartButton { get; }
+        protected abstract Button CheckButton { get; }
         protected abstract string Type { get; }
         protected abstract IToIni ConfigItem { get; }
         public ProcessStatus ProcessStatus { get; private set; }
@@ -30,9 +31,28 @@ namespace FrpGUI
         private void PanelBase_Initialized(object sender, EventArgs e)
         {
             ChangeStatus(ProcessStatus.NotRun);
-            StartButton.Click += btnStart_Click;
-            RestartButton.Click += btnRestart_Click;
-            StopButton.Click += btnStop_Click;
+            StartButton.Click += StartButton_Click;
+            RestartButton.Click += RestartButton_Click;
+            StopButton.Click += StopButton_Click;
+            CheckButton.Click += CheckButton_Click;
+        }
+
+        private async void CheckButton_Click(object sender, RoutedEventArgs e)
+        {
+            (sender as Button).IsEnabled = false;
+            var processes = await Process.GetExistedProcesses(Type);
+            if (processes.Length > 0)
+            {
+                if (await (Window.GetWindow(this) as MainWindow).ShowYesNoMessage($"存在{processes.Length}个frp{Type}进程，是否停止？"))
+                {
+                    await Process.KillExistedProcesses(Type);
+                }
+            }
+            else
+            {
+                await (Window.GetWindow(this) as MainWindow).ShowMessage($"没有正在运行的frp{Type}进程");
+            }
+            (sender as Button).IsEnabled = true;
         }
 
         private void Process_Exited(object sender, EventArgs e)
@@ -46,14 +66,17 @@ namespace FrpGUI
         protected virtual void ChangeStatus(ProcessStatus status)
         {
             Debug.Assert(Dispatcher.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId);
+            Debug.WriteLine("进程状态改变：" + status.ToString());
             ProcessStatus = status;
             StartButton.IsEnabled = false;
             StopButton.IsEnabled = false;
             RestartButton.IsEnabled = false;
+            CheckButton.IsEnabled = false;
             switch (status)
             {
                 case ProcessStatus.NotRun:
                     StartButton.IsEnabled = true;
+                    CheckButton.IsEnabled = true;
                     break;
 
                 case ProcessStatus.Running:
@@ -69,20 +92,20 @@ namespace FrpGUI
             }
         }
 
-        private async void btnStart_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            await StartAsync();
+            Start();
         }
 
-        public virtual async Task StartAsync()
+        public virtual void Start()
         {
             ChangeStatus(ProcessStatus.Busy);
-            await Process.StartAsync(Type, ConfigItem);
+            Process.Start(Type, ConfigItem);
             ChangeStatus(ProcessStatus.Running);
             Config.Instance.Save();
         }
 
-        private async void btnRestart_Click(object sender, RoutedEventArgs e)
+        private async void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             ChangeStatus(ProcessStatus.Busy);
             await Process.RestartAsync();
@@ -90,7 +113,7 @@ namespace FrpGUI
             Config.Instance.Save();
         }
 
-        private async void btnStop_Click(object sender, RoutedEventArgs e)
+        private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
             await StopAsync();
         }

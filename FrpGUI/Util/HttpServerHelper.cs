@@ -1,21 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
-using System;
-using System.Collections.Generic;
-
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-
-using System.Text;
-
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -87,7 +73,7 @@ namespace FrpGUI.Util
                             {
                                 (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：启动了服务器", "I");
 
-                                await ProcessHelper.Server.StartServerAsync(Config.Instance.Server);
+                                ProcessHelper.Server.StartServer(Config.Instance.Server);
                             }
                             else if (!b && ProcessHelper.Server.IsRunning)
                             {

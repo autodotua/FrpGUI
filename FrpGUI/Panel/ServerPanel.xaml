@@ -61,6 +61,7 @@
                 <Button x:Name="btnStart" Content="启动" />
                 <Button x:Name="btnRestart" Content="重置" />
                 <Button x:Name="btnStop" Content="停止" />
+                <Button x:Name="btnCheck" Content="检查" />
             </StackPanel>
         </Grid>
         <!--<Button

@@ -115,7 +115,9 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal" Spacing="12">
                     <TextBlock VerticalAlignment="Center">最大日志数：</TextBlock>
-                    <ComboBox Text="{Binding MaxLogCount}" IsEditable="True" Width="120">
+                    <ComboBox
+                        Width="120" IsEditable="True"
+                        Text="{Binding MaxLogCount}">
                         <ComboBoxItem>1000</ComboBoxItem>
                         <ComboBoxItem>10000</ComboBoxItem>
                         <ComboBoxItem>50000</ComboBoxItem>
@@ -142,8 +144,7 @@
             </TabControl>
             <ui:ContentDialog
                 x:Name="dialog" Title="注意"
-                Grid.ColumnSpan="999"
-                CloseButtonText="确定">
+                Grid.ColumnSpan="999">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

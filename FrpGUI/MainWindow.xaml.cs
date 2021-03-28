@@ -71,11 +71,11 @@ namespace FrpGUI
             {
                 if (clientOn)
                 {
-                    client.StartAsync();
+                    client.Start();
                 }
                 if (serverOn)
                 {
-                    server.StartAsync();
+                    server.Start();
                 }
             }
         }
@@ -142,8 +142,22 @@ namespace FrpGUI
 
         public async Task ShowMessage(string message)
         {
+            dialog.PrimaryButtonText = "确定";
+            dialog.SecondaryButtonText = null;
             tbkDialogMessage.Text = message;
             await dialog.ShowAsync();
+        }
+
+        public async Task<bool> ShowYesNoMessage(string message)
+        {
+            dialog.PrimaryButtonText = "是";
+            dialog.SecondaryButtonText = "否";
+            tbkDialogMessage.Text = message;
+            if (await dialog.ShowAsync() == ModernWpf.Controls.ContentDialogResult.Primary)
+            {
+                return true;
+            }
+            return false;
         }
 
         private void MenuStartup_Click(object sender, RoutedEventArgs e)

@@ -1,7 +1,9 @@
-﻿namespace FrpGUI
+﻿using System.ComponentModel;
+
+namespace FrpGUI
 {
-    public interface IToIni {
+    public interface IToIni : INotifyPropertyChanged
+    {
         public string ToIni();
     }
-
 }
