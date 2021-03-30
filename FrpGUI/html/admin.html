@@ -1,13 +1,12 @@
 ﻿<!DOCTYPE html>
 
-
 <html lang="zh">
 
 <head>
     <meta charset="utf-8">
     <meta lang="zh-cn">
     <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>FrpGUI</title>
     <link href="bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
@@ -32,43 +31,47 @@
             margin-left: 1.5rem;
             margin-top: 0.7rem;
         }
+
+        .label {
+            width: 200px;
+            display: inline-block;
+            text-align: left !important;
+        }
     </style>
     <h1>FrpGUI</h1>
     <div class="contaniner  center-div">
-        <p class="text-center">当前状态：{{status}}</p>
-        <p></p>
+
         <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text">密码</div>
+                <div class="input-group-text">密码</div>
             </div>
             <input type="password" class="form-control" id="pswd" placeholder="">
-          </div>
+        </div>
         <p></p>
-        <button class="btn btn-primary " id="btn">{{button}}</button>
-        
-
+        {{items}}
     </div>
 
-        <script>
-            $("#btn").click(function () {
-                let data={
-                    value:{{data}},
-                    password:$("#pswd").val()
+    <script>
+        $(".btn").click(function (e) {
+            console.log()
+            let data = {
+                password: $("#pswd").val(),
+                action: $(this).data("action"),
+                id: $(this).data("id")
+            }
+            $.post({
+                url: window.location.href,
+                data: JSON.stringify(data),
+                success: () => {
+                    alert("操作成功")
+                    location.reload()
+                },
+                error: (j, t, e) => {
+                    alert("操作失败：" + e)
+                    console.log(e)
                 }
-                $.post({
-                    url:window.location.href,
-                    data:JSON.stringify(data),
-                    success:()=>{
-                        alert("操作成功")
-                        location.reload()
-                    },
-                    error:(j,t,e)=>{
-                        alert("操作失败："+e)
-                        console.log(e)
-                    }
-                })
             })
-        </script>
+        })
+    </script>
 </body>
-
 </html>

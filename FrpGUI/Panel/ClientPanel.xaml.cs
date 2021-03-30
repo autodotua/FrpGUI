@@ -26,42 +26,30 @@ namespace FrpGUI
     {
         public ClientPanel()
         {
-            Rules = new ObservableCollection<Rule>(Client.Rules);
-            Rules.CollectionChanged += (p1, p2) => Client.Rules = Rules.ToList();
             InitializeComponent();
+        }
+
+        public override void SetConfig(FrpConfigBase config)
+        {
+            base.SetConfig(config);
+            Rules.Clear();
+            (FrpConfig as ClientConfig).Rules.ForEach(p => Rules.Add(p));
+            //Rules.CollectionChanged += (p1, p2) => (FrpConfig as ClientConfig).Rules = Rules.ToList();
         }
 
         private void Process_Exited(object sender, EventArgs e)
         {
         }
 
-        protected override void ChangeStatus(ProcessStatus status)
-        {
-            base.ChangeStatus(status);
-            if (status == ProcessStatus.Running)
-            {
-                Config.Instance.ClientOn = true;
-            }
-            else
-            {
-                Config.Instance.ClientOn = false;
-            }
-        }
-
-        public ClientConfig Client => Config.Instance.Client;
-        public ObservableCollection<Rule> Rules { get; }
+        public ObservableCollection<Rule> Rules { get; } = new ObservableCollection<Rule>();
         protected override Button StartButton => btnStart;
         protected override Button StopButton => btnStop;
         protected override Button RestartButton => btnRestart;
         protected override Button CheckButton => btnCheck;
-        protected override string Type => "c";
-        protected override IToIni ConfigItem => Client;
-
-        protected override ProcessHelper Process { get; } = ProcessHelper.Client;
 
         private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            Client.Rules = Rules.ToList();
+            (FrpConfig as ClientConfig).Rules = Rules.ToList();
         }
 
         private void DataGrid_Selected(object sender, RoutedEventArgs e)

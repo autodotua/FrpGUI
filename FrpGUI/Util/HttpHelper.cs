@@ -10,15 +10,15 @@ namespace FrpGUI
     {
         public static HttpHelper Instance { get; } = new HttpHelper();
 
-        public async Task<object> GetServerInfoAsync()
+        public async Task<object> GetServerInfoAsync(ServerConfig server)
         {
-            var response = await GetAsync("serverinfo");
+            var response = await GetAsync(server, "serverinfo");
             return JsonConvert.DeserializeObject(response);
         }
 
-        public async Task<List<object>> GetProxiesAsync(string type)
+        public async Task<List<object>> GetProxiesAsync(ServerConfig server, string type)
         {
-            var response = await GetAsync("proxy/" + type);
+            var response = await GetAsync(server, "proxy/" + type);
             var proxies = JObject.Parse(response)["proxies"] as JArray;
             List<object> result = new List<object>();
             foreach (JObject p in proxies)

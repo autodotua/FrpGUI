@@ -31,14 +31,16 @@
                             <Setter Property="Width" Value="180" />
                         </Style>
                     </WrapPanel.Resources>
-                    <TextBox ui:ControlHelper.Header="服务器地址" Text="{Binding Client.ServerAddress}" />
-                    <TextBox ui:ControlHelper.Header="服务器端口" Text="{Binding Client.ServerPort}" />
-                    <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding Client.Token}" />
-                    <CheckBox Content="如果登陆异常就自动退出" IsChecked="{Binding LoginFailExit}" />
-                    <TextBox ui:ControlHelper.Header="管理面板地址" Text="{Binding Client.AdminAddress}" />
-                    <TextBox ui:ControlHelper.Header="管理面板端口" Text="{Binding Client.AdminPort}" />
-                    <TextBox ui:ControlHelper.Header="管理面板用户名" Text="{Binding Client.AdminUsername}" />
-                    <TextBox ui:ControlHelper.Header="管理面板密码" Text="{Binding Client.AdminPassword}" />
+                    <TextBox ui:ControlHelper.Header="名称" Text="{Binding FrpConfig.Name}" />
+                    <CheckBox Content="打开程序后自动运行" IsChecked="{Binding FrpConfig.AutoStart}" />
+                    <TextBox ui:ControlHelper.Header="服务器地址" Text="{Binding FrpConfig.ServerAddress}" />
+                    <TextBox ui:ControlHelper.Header="服务器端口" Text="{Binding FrpConfig.ServerPort}" />
+                    <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding FrpConfig.Token}" />
+                    <CheckBox Content="如果登陆异常就自动退出" IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                    <TextBox ui:ControlHelper.Header="管理面板地址" Text="{Binding FrpConfig.AdminAddress}" />
+                    <TextBox ui:ControlHelper.Header="管理面板端口" Text="{Binding FrpConfig.AdminPort}" />
+                    <TextBox ui:ControlHelper.Header="管理面板用户名" Text="{Binding FrpConfig.AdminUsername}" />
+                    <TextBox ui:ControlHelper.Header="管理面板密码" Text="{Binding FrpConfig.AdminPassword}" />
                 </WrapPanel>
             </ScrollViewer>
             <StackPanel
@@ -58,10 +60,12 @@
             </StackPanel>
         </Grid>
         <GroupBox Grid.Row="2" Header="规则">
-            <DataGrid DataGridCell.Selected="DataGrid_Selected" SelectionUnit="CellOrRowHeader"
+            <DataGrid
                 AutoGenerateColumns="False"
+                DataGridCell.Selected="DataGrid_Selected"
                 ItemsSource="{Binding Rules}"
-                RowEditEnding="DataGrid_RowEditEnding">
+                RowEditEnding="DataGrid_RowEditEnding"
+                SelectionUnit="CellOrRowHeader">
                 <DataGrid.Resources>
                     <local:CellEnableConverter x:Key="cec" />
                     <c:Object2DescriptionConverter x:Key="o2dc" />
@@ -69,16 +73,20 @@
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Enable}" Header="启用" />
                     <DataGridTextColumn Binding="{Binding Name}" Header="名称" />
-                    <DataGridTemplateColumn Width="120"
-                        Header="类型">
+                    <DataGridTemplateColumn Width="120" Header="类型">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Type, Converter={StaticResource o2dc}}"  VerticalAlignment="Center" Margin="12,0" />
+                                <TextBlock
+                                    Margin="12,0" VerticalAlignment="Center"
+                                    Text="{Binding Path=Type, Converter={StaticResource o2dc}}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <ComboBox Width="120" ItemsSource="{me:EnumValues EnumType=local:NetType}" SelectedItem="{Binding Type}">
+                                <ComboBox
+                                    Width="120"
+                                    ItemsSource="{me:EnumValues EnumType=local:NetType}"
+                                    SelectedItem="{Binding Type}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding ., Converter={StaticResource o2dc}}" />

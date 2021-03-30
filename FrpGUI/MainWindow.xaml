@@ -2,12 +2,13 @@
     x:Class="FrpGUI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:FzLib.WPF.Converters;assembly=FzCoreLib.Windows"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     x:Name="Window" Title="FRP GUI - 端口转发"
-    Width="1000" Height="600"
+    Width="1200" Height="600"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
@@ -28,7 +29,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border Padding="12,0,144,0">
+        <Border Padding="12,0,144,0" Panel.ZIndex="100">
             <Grid x:Name="AppTitleBar" Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
                 <Grid.Style>
                     <Style TargetType="Grid">
@@ -72,9 +73,11 @@
                 </ui:TitleBarButton>
             </Grid>
         </Border>
-        <Grid Grid.Row="99">
+        <Grid Grid.Row="99" Panel.ZIndex="1">
 
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
@@ -84,7 +87,12 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
                 Background="Transparent" />
-            <Grid Grid.Column="2">
+            <GridSplitter
+                Grid.Column="3" Width="8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                Background="Transparent" />
+            <Grid Grid.Column="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="8" />
@@ -131,17 +139,67 @@
                 </ui:SimpleStackPanel>
             </Grid>
 
-            <TabControl
-                DockPanel.Dock="Left"
-                SelectedIndex="{Binding Source={x:Static local:Config.Instance}, Path=LastTab}"
-                Style="{StaticResource TabControlPivotStyle}">
-                <TabItem Header="服务端">
-                    <local:ServerPanel x:Name="server" />
-                </TabItem>
-                <TabItem Header="客户端">
-                    <local:ClientPanel x:Name="client" />
-                </TabItem>
-            </TabControl>
+            <ContentControl Grid.Column="2" Content="{Binding Panel}" />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="48" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <local:ProcessStatus2BrushConverter x:Key="ps2bc" />
+                    <converters:NotNull2BoolConverter x:Key="nn2bc" />
+                </Grid.Resources>
+                <ListBox
+                    Grid.ColumnSpan="99" Margin="0,-36,0,0"
+                    Padding="0,60,0,16"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    ItemsSource="{Binding FrpConfigs}"
+                    SelectedItem="{Binding SelectedFrpConfig}">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                <Ellipse
+                                    Width="10" Height="10"
+                                    VerticalAlignment="Center"
+                                    Fill="{Binding ProcessStatus, Converter={StaticResource ps2bc}}" />
+                                <TextBlock Text="{Binding Name}" />
+                            </ui:SimpleStackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <ui:DropDownButton
+                    Grid.Row="2"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ToolTip="新增服务端或客户端">
+                    <ui:SymbolIcon Symbol="Add" />
+                    <ui:DropDownButton.Flyout>
+                        <ui:MenuFlyout Placement="TopEdgeAlignedLeft">
+                            <MenuItem
+                                Click="MenuItem_Click_1" Header="服务端"
+                                Tag="1" />
+                            <MenuItem
+                                Click="MenuItem_Click_1" Header="客户端"
+                                Tag="2" />
+                        </ui:MenuFlyout>
+                    </ui:DropDownButton.Flyout>
+                </ui:DropDownButton>
+                <Button
+                    Grid.Row="2" Grid.Column="2"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Click="Button_Click_1"
+                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource nn2bc}}"
+                    ToolTip="删除选中的配置">
+                    <ui:SymbolIcon Symbol="Delete" />
+                </Button>
+            </Grid>
+
             <ui:ContentDialog
                 x:Name="dialog" Title="注意"
                 Grid.ColumnSpan="999">

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -52,12 +54,13 @@ namespace FrpGUI.Util
                 switch (request.HttpMethod)
                 {
                     case "POST":
-                        using (Stream body = request.InputStream) // here we have data
+                        using (Stream body = request.InputStream)
                         {
                             using StreamReader reader = new StreamReader(body, request.ContentEncoding);
                             string value = reader.ReadToEnd();
                             JObject json = JObject.Parse(value);
-                            bool b = json["value"].Value<bool>();
+                            bool b = json["action"].Value<bool>();
+                            string id = json["id"].Value<string>();
                             string password = json["password"].Value<string>();
                             if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(Config.Instance.AdminPassword))
                             {
@@ -69,35 +72,46 @@ namespace FrpGUI.Util
                                     return;
                                 }
                             }
-                            if (b && !ProcessHelper.Server.IsRunning)
+
+                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread($"远程管理：POST id={id}, action={b}", "I");
+                            var server = Config.Instance.FrpConfigs.FirstOrDefault(p => p.ID.ToString().Equals(id));
+                            if (server == null)
+                            {
+                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：需要操纵的服务端ID不存在", "W");
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                return;
+                            }
+                            if (b && !server.Process.IsRunning)
                             {
                                 (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：启动了服务器", "I");
 
-                                ProcessHelper.Server.StartServer(Config.Instance.Server);
+                                server.Start();
                             }
-                            else if (!b && ProcessHelper.Server.IsRunning)
+                            else if (!b && server.Process.IsRunning)
                             {
                                 (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：关闭了服务器", "I");
 
-                                await ProcessHelper.Server.StopAsync();
+                                await server.StopAsync();
                             }
                         }
                         break;
 
                     case "GET":
+
+                        (App.Current.MainWindow as MainWindow).AddLogOnMainThread($"远程管理：GET {context.Request.RawUrl}", "I");
                         if (context.Request.RawUrl == "/")
                         {
                             responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}");
-                            if (ProcessHelper.Server.IsRunning)
+                            StringBuilder items = new StringBuilder();
+                            foreach (var server in Config.Instance.FrpConfigs.OfType<ServerConfig>())
                             {
-                                responseString = responseString.Replace("{{status}}", "正在运行").Replace("{{button}}", "停止").Replace("{{data}}", "false");
+                                var notRun = server.ProcessStatus == ProcessStatus.NotRun;
+                                items.Append($"<a class=\"text-center label\">{server.Name}：{(notRun ? "没有运行" : "正在运行")}</a> ")
+                                    .Append($"<button class=\"btn btn-primary \" data-id=\"{server.ID}\" data-action=\"{(notRun ? "true" : "false")}\">{(notRun ? "启动" : "停止")}</button>")
+                                    .Append("<p></p>");
                             }
-                            else
-                            {
-                                responseString = responseString.Replace("{{status}}", "没有运行").Replace("{{button}}", "启动").Replace("{{data}}", "true");
-                            }
-
-                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：访问远程管理网页", "I");
+                            responseString = responseString.Replace("{{items}}", items.ToString());
+                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：访问远程管理网页", "I");
                         }
                         else
                         {

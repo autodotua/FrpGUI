@@ -32,13 +32,15 @@
                             <Setter Property="Width" Value="120" />
                         </Style>
                     </WrapPanel.Resources>
-                    <TextBox ui:ControlHelper.Header="端口号" Text="{Binding Server.Port}" />
-                    <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding Server.Token}" />
-                    <TextBox ui:ControlHelper.Header="HTTP端口" Text="{Binding Server.HttpPort}" />
-                    <TextBox ui:ControlHelper.Header="HTTPS端口" Text="{Binding Server.HttpsPort}" />
-                    <TextBox ui:ControlHelper.Header="控制面板端口号" Text="{Binding Server.DashBoardPort}" />
-                    <TextBox ui:ControlHelper.Header="控制面板用户名" Text="{Binding Server.DashBoardUsername}" />
-                    <TextBox ui:ControlHelper.Header="控制面板密码" Text="{Binding Server.DashBoardUsername}" />
+                    <TextBox ui:ControlHelper.Header="名称" Text="{Binding FrpConfig.Name}" />
+                    <CheckBox Content="打开程序后自动运行" IsChecked="{Binding FrpConfig.AutoStart}" />
+                    <TextBox ui:ControlHelper.Header="端口号" Text="{Binding FrpConfig.Port}" />
+                    <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding FrpConfig.Token}" />
+                    <TextBox ui:ControlHelper.Header="HTTP端口" Text="{Binding FrpConfig.HttpPort}" />
+                    <TextBox ui:ControlHelper.Header="HTTPS端口" Text="{Binding FrpConfig.HttpsPort}" />
+                    <TextBox ui:ControlHelper.Header="控制面板端口号" Text="{Binding FrpConfig.DashBoardPort}" />
+                    <TextBox ui:ControlHelper.Header="控制面板用户名" Text="{Binding FrpConfig.DashBoardUsername}" />
+                    <TextBox ui:ControlHelper.Header="控制面板密码" Text="{Binding FrpConfig.DashBoardUsername}" />
                     <ComboBox
                         ui:ControlHelper.Header="远程管理本地地址"
                         IsEditable="True"
@@ -64,14 +66,6 @@
                 <Button x:Name="btnCheck" Content="检查" />
             </StackPanel>
         </Grid>
-        <!--<Button
-            x:Name="btnOpenDashBoard"
-            Grid.Row="2"
-            Padding="8"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button_Click"
-            Content="在浏览器中打开控制面板" />-->
         <GroupBox
             x:Name="gbxInfo" Grid.Row="2"
             Header="服务器信息">

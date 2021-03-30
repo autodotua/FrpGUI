@@ -1,9 +1,12 @@
-﻿using FzLib.Extension;
+﻿using FzLib.Basic;
+using FzLib.Extension;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration.Internal;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -23,6 +26,42 @@ namespace FrpGUI
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Log> Logs { get; } = new ObservableCollection<Log>();
+        private PanelBase panel;
+
+        public PanelBase Panel
+        {
+            get => panel;
+            set => this.SetValueAndNotify(ref panel, value, nameof(Panel));
+        }
+
+        public ObservableCollection<FrpConfigBase> FrpConfigs { get; } = new ObservableCollection<FrpConfigBase>();
+
+        private FrpConfigBase selectedFrpConfig;
+        private ServerPanel serverPanel = new ServerPanel();
+        private ClientPanel clientPanel = new ClientPanel();
+
+        public FrpConfigBase SelectedFrpConfig
+        {
+            get => selectedFrpConfig;
+            set
+            {
+                this.SetValueAndNotify(ref selectedFrpConfig, value, nameof(SelectedFrpConfig));
+                if (value == null)
+                {
+                    Panel = null;
+                }
+                else if (value is ServerConfig s)
+                {
+                    serverPanel.SetConfig(s);
+                    Panel = serverPanel;
+                }
+                else if (value is ClientConfig c)
+                {
+                    clientPanel.SetConfig(c);
+                    Panel = clientPanel;
+                }
+            }
+        }
 
         private int maxLogCount = 10000;
 
@@ -57,8 +96,6 @@ namespace FrpGUI
 
         public MainWindow(bool autoStart = false)
         {
-            bool clientOn = Config.Instance.ClientOn;
-            bool serverOn = Config.Instance.ServerOn;
             InitializeComponent();
             DataContext = ViewModel;
 
@@ -67,16 +104,13 @@ namespace FrpGUI
             {
                 menuStartup.IsChecked = true;
             }
-            if (autoStart)
+            foreach (var config in Config.Instance.FrpConfigs)
             {
-                if (clientOn)
-                {
-                    client.Start();
-                }
-                if (serverOn)
-                {
-                    server.Start();
-                }
+                ViewModel.FrpConfigs.Add(config);
+            }
+            foreach (var config in from c in Config.Instance.FrpConfigs where c.AutoStart select c)
+            {
+                config.Start();
             }
         }
 
@@ -131,12 +165,28 @@ namespace FrpGUI
         {
         }
 
+        private bool forceClose = false;
+
         private async void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (server.ProcessStatus != ProcessStatus.NotRun || client.ProcessStatus != ProcessStatus.NotRun)
+            if (forceClose)
+            {
+                return;
+            }
+            SaveConfig();
+            if (ViewModel.FrpConfigs.Any(p => p.ProcessStatus != ProcessStatus.NotRun))
             {
                 e.Cancel = true;
-                await ShowMessage("请先关闭所有执行中的程序");
+                if (await ShowYesNoMessage("需要关闭所有执行中的FRP进程才可以关闭本程序，是否关闭？"))
+                {
+                    WindowState = WindowState.Minimized;
+                    foreach (var config in ViewModel.FrpConfigs.Where(p => p.ProcessStatus != ProcessStatus.NotRun))
+                    {
+                        await config.StopAsync();
+                    }
+                    forceClose = true;
+                    Close();
+                }
             }
         }
 
@@ -206,16 +256,66 @@ namespace FrpGUI
 
         private async void MenuRestart_Click(object sender, RoutedEventArgs e)
         {
-            Config.Instance.Save();
-            if (server.ProcessStatus == ProcessStatus.Running)
+            forceClose = true;
+            SaveConfig();
+            List<Task> tasks = new List<Task>();
+            foreach (var config in ViewModel.FrpConfigs.Where(p => p.ProcessStatus != ProcessStatus.NotRun))
             {
-                await server.StopAsync();
+                tasks.Add(config.StopAsync());
             }
-            if (client.ProcessStatus == ProcessStatus.Running)
-            {
-                await client.StopAsync();
-            }
+            await Task.WhenAll(tasks);
             FzLib.Program.App.Restart(App.Current.Shutdown);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedFrpConfig != null)
+            {
+                if (ViewModel.SelectedFrpConfig.ProcessStatus != ProcessStatus.NotRun)
+                {
+                    await ShowMessage("该配置正在运行，请先停止进程");
+                    return;
+                }
+                ViewModel.FrpConfigs.Remove(ViewModel.SelectedFrpConfig);
+                SaveConfig();
+            }
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement).Tag.Equals("1"))
+            {
+                var config = new ServerConfig();
+                int i = 1;
+                while (ViewModel.FrpConfigs.Any(p => p.Name == "服务端" + i))
+                {
+                    i++;
+                }
+                config.Name = "服务端" + i;
+                int serverIndex = ViewModel.FrpConfigs.Any(p => p is ServerConfig) ? ViewModel.FrpConfigs.Where(p => p is ServerConfig).Count() : 0;
+                ViewModel.FrpConfigs.Insert(serverIndex, config);
+                ViewModel.SelectedFrpConfig = config;
+            }
+            else
+            {
+                var config = new ClientConfig();
+                int i = 1;
+                while (ViewModel.FrpConfigs.Any(p => p.Name == "客户端" + i))
+                {
+                    i++;
+                }
+                config.Name = "客户端" + i;
+                ViewModel.FrpConfigs.Add(config);
+                ViewModel.SelectedFrpConfig = config;
+            }
+            SaveConfig();
+        }
+
+        private void SaveConfig()
+        {
+            Config.Instance.FrpConfigs = ViewModel.FrpConfigs.ToList();
+
+            Config.Instance.Save();
         }
     }
 
@@ -224,5 +324,27 @@ namespace FrpGUI
         public DateTime Time { get; set; }
         public string Content { get; set; }
         public Brush TypeBrush { get; set; }
+    }
+
+    public class ProcessStatus2BrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            ProcessStatus status = (ProcessStatus)value;
+            if (status == ProcessStatus.NotRun)
+            {
+                return Brushes.Red;
+            }
+            return Brushes.Green;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

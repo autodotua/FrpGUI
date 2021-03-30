@@ -8,13 +8,6 @@ namespace FrpGUI
 {
     public class ProcessHelper
     {
-        public static ProcessHelper Server { get; } = new ProcessHelper();
-        public static ProcessHelper Client { get; } = new ProcessHelper();
-
-        private ProcessHelper()
-        {
-        }
-
         public bool IsRunning { get; set; }
 
         private Process frpProcess;
@@ -40,13 +33,13 @@ namespace FrpGUI
             }
             this.type = type;
             this.obj = obj;
-            string ini = $"./frp/frp{type}.ini";
+            string ini = Path.GetTempFileName() + ".ini";
             File.WriteAllText(ini, obj.ToIni());
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = $"./frp/frp{type}.exe",
-                Arguments = $"-c frp{type}.ini",
+                Arguments = $"-c \"{ini}\"",
                 WorkingDirectory = "./frp",
                 CreateNoWindow = true,
                 UseShellExecute = false,

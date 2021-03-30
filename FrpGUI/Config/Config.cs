@@ -1,11 +1,19 @@
 ﻿using FzLib.DataStorage.Serialization;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.Json.Serialization;
 
 namespace FrpGUI
 {
     public class Config : JsonSerializationBase
     {
+        public Config() : base()
+        {
+        }
+
         private static Config instance;
 
         public static Config Instance
@@ -14,27 +22,21 @@ namespace FrpGUI
             {
                 if (instance == null)
                 {
-                    instance = OpenOrCreate<Config>();
+                    instance = OpenOrCreate<Config>(settings: new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                    if (instance.FrpConfigs.Count == 0)
+                    {
+                        instance.FrpConfigs.Add(new ServerConfig());
+                        instance.FrpConfigs.Add(new ClientConfig());
+                    }
                 }
-                if (instance.Client == null)
-                {
-                    instance.Client = new ClientConfig();
-                }
-                if (instance.Server == null)
-                {
-                    instance.Server = new ServerConfig();
-                }
+
                 return instance;
             }
         }
 
-        public ClientConfig Client { get; set; }
-        public ServerConfig Server { get; set; }
-        public bool ClientOn { get; set; }
-        public bool ServerOn { get; set; }
+        public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
         public string AdminAddress { get; set; } = "127.0.0.1";
         public int AdminPort { get; set; } = 12345;
         public string AdminPassword { get; set; } = "";
-        public int LastTab { get; set; }
     }
 }
