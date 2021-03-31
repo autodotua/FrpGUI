@@ -123,9 +123,16 @@ namespace FrpGUI
             str.AppendLine();
             return str.ToString();
         }
+
+        public override object Clone()
+        {
+            var newItem = base.Clone() as ClientConfig;
+            newItem.rules = Rules.Select(p => p.Clone() as Rule).ToList();
+            return newItem;
+        }
     }
 
-    public abstract class FrpConfigBase : IToIni
+    public abstract class FrpConfigBase : IToIni, ICloneable
     {
         public Guid ID { get; set; } = Guid.NewGuid();
         private bool autoStart;
@@ -156,7 +163,7 @@ namespace FrpGUI
         }
 
         [JsonIgnore]
-        public ProcessHelper Process { get; } = new ProcessHelper();
+        public ProcessHelper Process { get; protected set; } = new ProcessHelper();
 
         [JsonIgnore]
         public ProcessStatus ProcessStatus
@@ -203,9 +210,17 @@ namespace FrpGUI
         {
             ChangeStatus(ProcessStatus.NotRun);
         }
+
+        public virtual object Clone()
+        {
+            var newItem = MemberwiseClone() as FrpConfigBase;
+            newItem.processStatus = ProcessStatus.NotRun;
+            newItem.Process = new ProcessHelper();
+            return newItem;
+        }
     }
 
-    public class Rule : IToIni
+    public class Rule : IToIni, ICloneable
     {
         private bool compression;
         private string domains;
@@ -317,6 +332,11 @@ namespace FrpGUI
 
             str.AppendLine();
             return str.ToString();
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 

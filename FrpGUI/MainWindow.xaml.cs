@@ -267,7 +267,7 @@ namespace FrpGUI
             FzLib.Program.App.Restart(App.Current.Shutdown);
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel.SelectedFrpConfig != null)
             {
@@ -281,7 +281,7 @@ namespace FrpGUI
             }
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as FrameworkElement).Tag.Equals("1"))
             {
@@ -316,6 +316,19 @@ namespace FrpGUI
             Config.Instance.FrpConfigs = ViewModel.FrpConfigs.ToList();
 
             Config.Instance.Save();
+        }
+
+        private void CloneButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedFrpConfig != null)
+            {
+                var newItem = ViewModel.SelectedFrpConfig.Clone() as FrpConfigBase;
+                newItem.ChangeStatus(ProcessStatus.NotRun);
+                newItem.Name += "（副本）";
+                ViewModel.FrpConfigs.Insert(ViewModel.FrpConfigs.IndexOf(ViewModel.SelectedFrpConfig) + 1, newItem);
+                ViewModel.SelectedFrpConfig = newItem;
+                SaveConfig();
+            }
         }
     }
 
