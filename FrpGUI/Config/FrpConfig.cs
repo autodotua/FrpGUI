@@ -35,6 +35,7 @@ namespace FrpGUI
         private ushort adminPort = 7400;
         private string adminUsername = "admin";
         private bool loginFailExit = false;
+        private short poolCount = 50;
         private List<Rule> rules = new List<Rule>();
         private string serverAddress;
         private ushort serverPort = 7000;
@@ -75,6 +76,12 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref loginFailExit, value, nameof(LoginFailExit));
         }
 
+        public short PoolCount
+        {
+            get => poolCount;
+            set => this.SetValueAndNotify(ref poolCount, value, nameof(PoolCount));
+        }
+
         public List<Rule> Rules
         {
             get => rules;
@@ -101,12 +108,20 @@ namespace FrpGUI
 
         public override string Type { get; } = "c";
 
+        public override object Clone()
+        {
+            var newItem = base.Clone() as ClientConfig;
+            newItem.rules = Rules.Select(p => p.Clone() as Rule).ToList();
+            return newItem;
+        }
+
         public override string ToIni()
         {
             StringBuilder str = new StringBuilder();
             str.Append("[common]").AppendLine();
             str.Append("server_addr = ").Append(ServerAddress).AppendLine();
             str.Append("server_port = ").Append(ServerPort).AppendLine();
+            str.Append("pool_count = ").Append(PoolCount).AppendLine();
             str.Append("login_fail_exit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
             str.Append("admin_addr = ").Append(AdminAddress).AppendLine();
             str.Append("admin_port = ").Append(AdminPort).AppendLine();
@@ -123,22 +138,12 @@ namespace FrpGUI
             str.AppendLine();
             return str.ToString();
         }
-
-        public override object Clone()
-        {
-            var newItem = base.Clone() as ClientConfig;
-            newItem.rules = Rules.Select(p => p.Clone() as Rule).ToList();
-            return newItem;
-        }
     }
 
     public abstract class FrpConfigBase : IToIni, ICloneable
     {
-        public Guid ID { get; set; } = Guid.NewGuid();
         private bool autoStart;
-
         private string name;
-
         private ProcessStatus processStatus = ProcessStatus.NotRun;
 
         public FrpConfigBase()
@@ -155,6 +160,8 @@ namespace FrpGUI
             get => autoStart;
             set => this.SetValueAndNotify(ref autoStart, value, nameof(AutoStart));
         }
+
+        public Guid ID { get; set; } = Guid.NewGuid();
 
         public string Name
         {
@@ -179,6 +186,14 @@ namespace FrpGUI
             Debug.WriteLine("进程状态改变：" + status.ToString());
             ProcessStatus = status;
             StatusChanged?.Invoke(this, new EventArgs());
+        }
+
+        public virtual object Clone()
+        {
+            var newItem = MemberwiseClone() as FrpConfigBase;
+            newItem.processStatus = ProcessStatus.NotRun;
+            newItem.Process = new ProcessHelper();
+            return newItem;
         }
 
         public async Task RestartAsync()
@@ -209,14 +224,6 @@ namespace FrpGUI
         private void Process_Exited(object sender, EventArgs e)
         {
             ChangeStatus(ProcessStatus.NotRun);
-        }
-
-        public virtual object Clone()
-        {
-            var newItem = MemberwiseClone() as FrpConfigBase;
-            newItem.processStatus = ProcessStatus.NotRun;
-            newItem.Process = new ProcessHelper();
-            return newItem;
         }
     }
 
@@ -297,6 +304,11 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref type, value, nameof(Type), nameof(Domains), nameof(STCPKey), nameof(STCPServerName));
         }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
         public string ToIni()
         {
             StringBuilder str = new StringBuilder();
@@ -333,11 +345,6 @@ namespace FrpGUI
             str.AppendLine();
             return str.ToString();
         }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
     }
 
     public class ServerConfig : FrpConfigBase
@@ -347,6 +354,7 @@ namespace FrpGUI
         private string dashBoardUsername = "admin";
         private ushort? httpPort;
         private ushort? httpsPort;
+        private short maxPoolCount = 100;
         private ushort port = 7000;
         private string token;
 
@@ -385,6 +393,12 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref httpsPort, value, nameof(HttpsPort));
         }
 
+        public short MaxPoolCount
+        {
+            get => maxPoolCount;
+            set => this.SetValueAndNotify(ref maxPoolCount, value, nameof(MaxPoolCount));
+        }
+
         public ushort Port
         {
             get => port;
@@ -404,6 +418,7 @@ namespace FrpGUI
             StringBuilder str = new StringBuilder();
             str.Append("[common]").AppendLine();
             str.Append("bind_port = ").Append(Port).AppendLine();
+            str.Append("max_pool_count = ").Append(MaxPoolCount).AppendLine();
             str.Append("dashboard_port = ").Append(DashBoardPort).AppendLine();
             str.Append("dashboard_user = ").Append(DashBoardUsername).AppendLine();
             str.Append("dashboard_pwd = ").Append(DashBoardPassword).AppendLine();

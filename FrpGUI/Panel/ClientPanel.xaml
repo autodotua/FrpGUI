@@ -36,6 +36,7 @@
                     <TextBox ui:ControlHelper.Header="服务器地址" Text="{Binding FrpConfig.ServerAddress}" />
                     <TextBox ui:ControlHelper.Header="服务器端口" Text="{Binding FrpConfig.ServerPort}" />
                     <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding FrpConfig.Token}" />
+                    <TextBox ui:ControlHelper.Header="预连接数量" Text="{Binding FrpConfig.PoolCount}" />
                     <CheckBox Content="如果登陆异常就自动退出" IsChecked="{Binding FrpConfig.LoginFailExit}" />
                     <TextBox ui:ControlHelper.Header="管理面板地址" Text="{Binding FrpConfig.AdminAddress}" />
                     <TextBox ui:ControlHelper.Header="管理面板端口" Text="{Binding FrpConfig.AdminPort}" />

@@ -38,6 +38,7 @@
                     <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding FrpConfig.Token}" />
                     <TextBox ui:ControlHelper.Header="HTTP端口" Text="{Binding FrpConfig.HttpPort}" />
                     <TextBox ui:ControlHelper.Header="HTTPS端口" Text="{Binding FrpConfig.HttpsPort}" />
+                    <TextBox ui:ControlHelper.Header="最大连接池数量" Text="{Binding FrpConfig.MaxPoolCount}" />
                     <TextBox ui:ControlHelper.Header="控制面板端口号" Text="{Binding FrpConfig.DashBoardPort}" />
                     <TextBox ui:ControlHelper.Header="控制面板用户名" Text="{Binding FrpConfig.DashBoardUsername}" />
                     <TextBox ui:ControlHelper.Header="控制面板密码" Text="{Binding FrpConfig.DashBoardUsername}" />
