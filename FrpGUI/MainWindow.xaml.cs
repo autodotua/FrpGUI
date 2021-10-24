@@ -1,5 +1,4 @@
-﻿using FzLib.Basic;
-using FzLib.Extension;
+﻿using FzLib;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -139,7 +138,7 @@ namespace FrpGUI
             Brush brush = Foreground;
             if (type == "W")
             {
-                brush = Brushes.Yellow;
+                brush = Brushes.Orange;
             }
             else if (type == "E")
             {

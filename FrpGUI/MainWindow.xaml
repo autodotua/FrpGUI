@@ -2,13 +2,14 @@
     x:Class="FrpGUI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:FzLib.WPF.Converters;assembly=FzCoreLib.Windows"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
-    x:Name="Window" Title="FRP GUI - 端口转发"
-    Width="1200" Height="600"
+    x:Name="Window"
+    Title="FRP GUI - 端口转发"
+    Width="1200"
+    Height="600"
     ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
     ui:TitleBar.ExtendViewIntoTitleBar="True"
     ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
@@ -19,7 +20,9 @@
     mc:Ignorable="d">
     <Window.Resources>
 
-        <Style x:Key="AppTitleBarButtonStyle" TargetType="ui:TitleBarButton">
+        <Style
+            x:Key="AppTitleBarButtonStyle"
+            TargetType="ui:TitleBarButton">
             <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
         </Style>
     </Window.Resources>
@@ -29,13 +32,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border Padding="12,0,144,0" Panel.ZIndex="100">
-            <Grid x:Name="AppTitleBar" Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
+        <Border
+            Padding="12,0,144,0"
+            Panel.ZIndex="100">
+            <Grid
+                x:Name="AppTitleBar"
+                Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
+                            <DataTrigger
+                                Binding="{Binding IsActive, ElementName=Window}"
+                                Value="False">
                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -50,11 +59,14 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
-                    VerticalAlignment="Center" FontSize="13"
+                    VerticalAlignment="Center"
+                    FontSize="13"
                     Text="{Binding ElementName=Window, Path=Title}" />
                 <ui:TitleBarButton
-                    Grid.Column="4" Width="NaN"
-                    Padding="16,0" FontSize="13"
+                    Grid.Column="4"
+                    Width="NaN"
+                    Padding="16,0"
+                    FontSize="13"
                     Foreground="{DynamicResource SystemControlBackgroundBaseMediumHighBrush}"
                     Style="{StaticResource AppTitleBarButtonStyle}">
                     <ui:TitleBarButton.Content>
@@ -64,16 +76,23 @@
                         <ui:MenuFlyout Placement="Bottom">
                             <MenuItem
                                 x:Name="menuStartup"
-                                Click="MenuStartup_Click" Header="开机自启"
+                                Click="MenuStartup_Click"
+                                Header="开机自启"
                                 IsCheckable="True" />
-                            <MenuItem Click="MenuTray_Click" Header="最小化到托盘" />
-                            <MenuItem Click="MenuRestart_Click" Header="重新启动应用" />
+                            <MenuItem
+                                Click="MenuTray_Click"
+                                Header="最小化到托盘" />
+                            <MenuItem
+                                Click="MenuRestart_Click"
+                                Header="重新启动应用" />
                         </ui:MenuFlyout>
                     </ui:FlyoutService.Flyout>
                 </ui:TitleBarButton>
             </Grid>
         </Border>
-        <Grid Grid.Row="99" Panel.ZIndex="1">
+        <Grid
+            Grid.Row="99"
+            Panel.ZIndex="1">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" />
@@ -83,12 +102,14 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <GridSplitter
-                Grid.Column="1" Width="8"
+                Grid.Column="1"
+                Width="8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
                 Background="Transparent" />
             <GridSplitter
-                Grid.Column="3" Width="8"
+                Grid.Column="3"
+                Width="8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
                 Background="Transparent" />
@@ -105,7 +126,9 @@
                     ItemsSource="{Binding Logs}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <ui:SimpleStackPanel Orientation="Vertical" Spacing="4">
+                            <ui:SimpleStackPanel
+                                Orientation="Vertical"
+                                Spacing="4">
                                 <TextBlock
                                     Opacity="0.75"
                                     Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
@@ -119,12 +142,15 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <ui:SimpleStackPanel
-                    Grid.Row="2" Margin="8"
+                    Grid.Row="2"
+                    Margin="8"
                     HorizontalAlignment="Right"
-                    Orientation="Horizontal" Spacing="12">
+                    Orientation="Horizontal"
+                    Spacing="12">
                     <TextBlock VerticalAlignment="Center">最大日志数：</TextBlock>
                     <ComboBox
-                        Width="120" IsEditable="True"
+                        Width="120"
+                        IsEditable="True"
                         Text="{Binding MaxLogCount}">
                         <ComboBoxItem>1000</ComboBoxItem>
                         <ComboBoxItem>10000</ComboBoxItem>
@@ -139,7 +165,9 @@
                 </ui:SimpleStackPanel>
             </Grid>
 
-            <ContentControl Grid.Column="2" Content="{Binding Panel}" />
+            <ContentControl
+                Grid.Column="2"
+                Content="{Binding Panel}" />
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -152,10 +180,10 @@
                 </Grid.ColumnDefinitions>
                 <Grid.Resources>
                     <local:ProcessStatus2BrushConverter x:Key="ps2bc" />
-                    <converters:NotNull2BoolConverter x:Key="nn2bc" />
                 </Grid.Resources>
                 <ListBox
-                    Grid.ColumnSpan="99" Margin="0,-36,0,0"
+                    Grid.ColumnSpan="99"
+                    Margin="0,-36,0,0"
                     Padding="0,60,0,16"
                     Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
                     ItemsSource="{Binding FrpConfigs}"
@@ -163,9 +191,12 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                            <ui:SimpleStackPanel
+                                Orientation="Horizontal"
+                                Spacing="12">
                                 <Ellipse
-                                    Width="10" Height="10"
+                                    Width="10"
+                                    Height="10"
                                     VerticalAlignment="Center"
                                     Fill="{Binding ProcessStatus, Converter={StaticResource ps2bc}}" />
                                 <TextBlock Text="{Binding Name}" />
@@ -182,36 +213,41 @@
                     <ui:DropDownButton.Flyout>
                         <ui:MenuFlyout Placement="TopEdgeAlignedLeft">
                             <MenuItem
-                                Click="AddMenuItem_Click" Header="服务端"
+                                Click="AddMenuItem_Click"
+                                Header="服务端"
                                 Tag="1" />
                             <MenuItem
-                                Click="AddMenuItem_Click" Header="客户端"
+                                Click="AddMenuItem_Click"
+                                Header="客户端"
                                 Tag="2" />
                         </ui:MenuFlyout>
                     </ui:DropDownButton.Flyout>
                 </ui:DropDownButton>
                 <Button
-                    Grid.Row="2" Grid.Column="1"
+                    Grid.Row="2"
+                    Grid.Column="1"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Click="DeleteButton_Click"
-                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource nn2bc}}"
-                    ToolTip="建立副本">
+                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
+                    ToolTip="删除选中的配置">
                     <ui:SymbolIcon Symbol="Delete" />
                 </Button>
                 <Button
-                    Grid.Row="2" Grid.Column="2"
+                    Grid.Row="2"
+                    Grid.Column="2"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Click="CloneButton_Click"
-                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource nn2bc}}"
-                    ToolTip="删除选中的配置">
+                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
+                    ToolTip="建立副本">
                     <ui:SymbolIcon Symbol="Copy" />
                 </Button>
             </Grid>
 
             <ui:ContentDialog
-                x:Name="dialog" Title="注意"
+                x:Name="dialog"
+                Title="注意"
                 Grid.ColumnSpan="999">
                 <Grid>
                     <Grid.RowDefinitions>

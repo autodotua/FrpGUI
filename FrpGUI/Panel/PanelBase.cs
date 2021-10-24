@@ -1,4 +1,4 @@
-﻿using FzLib.Extension;
+﻿using FzLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
