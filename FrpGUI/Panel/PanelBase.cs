@@ -1,4 +1,5 @@
 ﻿using FzLib;
+using ModernWpf.FzExtension.CommonDialog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -71,14 +72,14 @@ namespace FrpGUI
             var processes = await FrpConfig.Process.GetExistedProcesses(FrpConfig.Type);
             if (processes.Length > 0)
             {
-                if (await (Window.GetWindow(this) as MainWindow).ShowYesNoMessage($"存在{processes.Length}个frp{FrpConfig.Type}进程，是否停止？"))
+                if (await CommonDialog.ShowYesNoDialogAsync("检查正在运行的进程",$"存在{processes.Length}个frp{FrpConfig.Type}进程，是否停止？"))
                 {
                     await FrpConfig.Process.KillExistedProcesses(FrpConfig.Type);
                 }
             }
             else
             {
-                await (Window.GetWindow(this) as MainWindow).ShowMessage($"没有正在运行的frp{FrpConfig.Type}进程");
+                await CommonDialog.ShowOkDialogAsync("检查正在运行的进程",$"没有正在运行的frp{FrpConfig.Type}进程");
             }
             (sender as Button).IsEnabled = true;
         }

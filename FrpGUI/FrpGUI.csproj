@@ -7,6 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SatelliteResourceLanguages>zh-cn</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,9 @@
     </Reference>
     <Reference Include="FzStandardLib">
       <HintPath>..\libs\FzStandardLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ModernWpf.FzExtension">
+      <HintPath>..\libs\ModernWpf.FzExtension.dll</HintPath>
     </Reference>
   </ItemGroup>
 

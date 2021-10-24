@@ -1,4 +1,5 @@
 ﻿using FzLib;
+using ModernWpf.FzExtension.CommonDialog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,6 +32,12 @@ namespace FrpGUI
         {
             get => panel;
             set => this.SetValueAndNotify(ref panel, value, nameof(Panel));
+        }
+
+        public bool Startup
+        {
+            get => FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist;
+            set => (App.Current as App).SetStartup(value);
         }
 
         public ObservableCollection<FrpConfigBase> FrpConfigs { get; } = new ObservableCollection<FrpConfigBase>();
@@ -99,10 +106,6 @@ namespace FrpGUI
             DataContext = ViewModel;
 
             ProcessHelper.Output += ProcessHelper_Output;
-            if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
-            {
-                menuStartup.IsChecked = true;
-            }
             foreach (var config in Config.Instance.FrpConfigs)
             {
                 ViewModel.FrpConfigs.Add(config);
@@ -176,7 +179,7 @@ namespace FrpGUI
             if (ViewModel.FrpConfigs.Any(p => p.ProcessStatus != ProcessStatus.NotRun))
             {
                 e.Cancel = true;
-                if (await ShowYesNoMessage("需要关闭所有执行中的FRP进程才可以关闭本程序，是否关闭？"))
+                if (await CommonDialog.ShowYesNoDialogAsync("关闭", "需要关闭所有执行中的FRP进程才可以关闭本程序，是否关闭？"))
                 {
                     WindowState = WindowState.Minimized;
                     foreach (var config in ViewModel.FrpConfigs.Where(p => p.ProcessStatus != ProcessStatus.NotRun))
@@ -189,63 +192,10 @@ namespace FrpGUI
             }
         }
 
-        public async Task ShowMessage(string message)
-        {
-            dialog.PrimaryButtonText = "确定";
-            dialog.SecondaryButtonText = null;
-            tbkDialogMessage.Text = message;
-            await dialog.ShowAsync();
-        }
-
-        public async Task<bool> ShowYesNoMessage(string message)
-        {
-            dialog.PrimaryButtonText = "是";
-            dialog.SecondaryButtonText = "否";
-            tbkDialogMessage.Text = message;
-            if (await dialog.ShowAsync() == ModernWpf.Controls.ContentDialogResult.Primary)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private void MenuStartup_Click(object sender, RoutedEventArgs e)
-        {
-            if (FzLib.Program.Startup.IsRegistryKeyExist() == FzLib.IO.ShortcutStatus.Exist)
-            {
-                menuStartup.IsChecked = false;
-                (App.Current as App).SetStartup(false);
-            }
-            else
-            {
-                menuStartup.IsChecked = true;
-                (App.Current as App).SetStartup(true);
-            }
-        }
-
-        private void MenuTray_Click(object sender, RoutedEventArgs e)
+        private void TrayButton_Click(object sender, RoutedEventArgs e)
         {
             (App.Current as App).ShowTray();
             Visibility = Visibility.Collapsed;
-        }
-
-        private async void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var regFile = System.IO.Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "RegistWebBrowse.reg");
-            try
-            {
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = "cmd",
-                    Arguments = $"/c regedit.exe \"{regFile}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-            }
-            catch (Exception ex)
-            {
-                await ShowMessage("运行注册表注册文件失败：" + ex.Message);
-            }
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
@@ -253,7 +203,7 @@ namespace FrpGUI
             ViewModel.Logs.Clear();
         }
 
-        private async void MenuRestart_Click(object sender, RoutedEventArgs e)
+        private async void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             forceClose = true;
             SaveConfig();
@@ -272,7 +222,7 @@ namespace FrpGUI
             {
                 if (ViewModel.SelectedFrpConfig.ProcessStatus != ProcessStatus.NotRun)
                 {
-                    await ShowMessage("该配置正在运行，请先停止进程");
+                    await CommonDialog.ShowErrorDialogAsync("该配置正在运行，请先停止进程");
                     return;
                 }
                 ViewModel.FrpConfigs.Remove(ViewModel.SelectedFrpConfig);

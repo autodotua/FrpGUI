@@ -10,140 +10,170 @@
     Title="FRP GUI - 端口转发"
     Width="1200"
     Height="600"
-    ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
-    ui:TitleBar.ExtendViewIntoTitleBar="True"
-    ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
     Loaded="Window_Loaded"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Window.Resources>
+    <Grid
+        Grid.Row="99"
+        Panel.ZIndex="1">
 
-        <Style
-            x:Key="AppTitleBarButtonStyle"
-            TargetType="ui:TitleBarButton">
-            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-        </Style>
-    </Window.Resources>
-
-    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
             <RowDefinition Height="Auto" />
-            <RowDefinition />
         </Grid.RowDefinitions>
-        <Border
-            Padding="12,0,144,0"
-            Panel.ZIndex="100">
-            <Grid
-                x:Name="AppTitleBar"
-                Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsActive, ElementName=Window}"
-                                Value="False">
-                                <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="13"
-                    Text="{Binding ElementName=Window, Path=Title}" />
-                <ui:TitleBarButton
-                    Grid.Column="4"
-                    Width="NaN"
-                    Padding="16,0"
-                    FontSize="13"
-                    Foreground="{DynamicResource SystemControlBackgroundBaseMediumHighBrush}"
-                    Style="{StaticResource AppTitleBarButtonStyle}">
-                    <ui:TitleBarButton.Content>
-                        <ui:SymbolIcon Symbol="Setting" />
-                    </ui:TitleBarButton.Content>
-                    <ui:FlyoutService.Flyout>
-                        <ui:MenuFlyout Placement="Bottom">
-                            <MenuItem
-                                x:Name="menuStartup"
-                                Click="MenuStartup_Click"
-                                Header="开机自启"
-                                IsCheckable="True" />
-                            <MenuItem
-                                Click="MenuTray_Click"
-                                Header="最小化到托盘" />
-                            <MenuItem
-                                Click="MenuRestart_Click"
-                                Header="重新启动应用" />
-                        </ui:MenuFlyout>
-                    </ui:FlyoutService.Flyout>
-                </ui:TitleBarButton>
-            </Grid>
-        </Border>
-        <Grid
-            Grid.Row="99"
-            Panel.ZIndex="1">
-
+        <GridSplitter
+            Grid.Column="1"
+            Width="8"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Background="Transparent" />
+        <GridSplitter
+            Grid.Column="3"
+            Width="8"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Background="Transparent" />
+        <!--  日志  -->
+        <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="8" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListBox
+                x:Name="lbxLogs"
+                Background="Transparent"
+                DockPanel.Dock="Right"
+                ItemsSource="{Binding Logs}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ui:SimpleStackPanel
+                            Orientation="Vertical"
+                            Spacing="4">
+                            <TextBlock
+                                Opacity="0.75"
+                                Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                TextWrapping="NoWrap" />
+                            <TextBlock
+                                Foreground="{Binding TypeBrush}"
+                                Text="{Binding Content}"
+                                TextWrapping="Wrap" />
+                        </ui:SimpleStackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ui:SimpleStackPanel
+                Grid.Row="2"
+                Margin="8"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal"
+                Spacing="12">
+                <TextBlock VerticalAlignment="Center">
+                    <Run>共有</Run>
+                    <Run Text="{Binding Logs.Count, Mode=OneWay}" />
+                    <Run>条日志</Run></TextBlock>
+            </ui:SimpleStackPanel>
+        </Grid>
+        <!--  设置  -->
+        <ContentControl
+            Grid.Column="2"
+            Content="{Binding Panel}" />
+        <!--  左侧  -->
+        <Grid Grid.RowSpan="99">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="48" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.5*" />
-                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <GridSplitter
+            <Grid.Resources>
+                <local:ProcessStatus2BrushConverter x:Key="ps2bc" />
+            </Grid.Resources>
+            <ListBox
+                Grid.ColumnSpan="99"
+                Margin="0,-36,0,0"
+                Padding="0,60,0,16"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                ItemsSource="{Binding FrpConfigs}"
+                SelectedItem="{Binding SelectedFrpConfig}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ui:SimpleStackPanel
+                            Orientation="Horizontal"
+                            Spacing="12">
+                            <Ellipse
+                                Width="10"
+                                Height="10"
+                                VerticalAlignment="Center"
+                                Fill="{Binding ProcessStatus, Converter={StaticResource ps2bc}}" />
+                            <TextBlock Text="{Binding Name}" />
+                        </ui:SimpleStackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ui:DropDownButton
+                Grid.Row="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                ToolTip="新增服务端或客户端">
+                <ui:SymbolIcon Symbol="Add" />
+                <ui:DropDownButton.Flyout>
+                    <ui:MenuFlyout Placement="TopEdgeAlignedLeft">
+                        <MenuItem
+                            Click="AddMenuItem_Click"
+                            Header="服务端"
+                            Tag="1" />
+                        <MenuItem
+                            Click="AddMenuItem_Click"
+                            Header="客户端"
+                            Tag="2" />
+                    </ui:MenuFlyout>
+                </ui:DropDownButton.Flyout>
+            </ui:DropDownButton>
+            <Button
+                Grid.Row="2"
                 Grid.Column="1"
-                Width="8"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                Background="Transparent" />
-            <GridSplitter
-                Grid.Column="3"
-                Width="8"
-                HorizontalAlignment="Center"
+                Click="DeleteButton_Click"
+                IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
+                ToolTip="删除选中的配置">
+                <ui:SymbolIcon Symbol="Delete" />
+            </Button>
+            <Button
+                Grid.Row="2"
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                Background="Transparent" />
-            <Grid Grid.Column="4">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <ListBox
-                    x:Name="lbxLogs"
-                    Background="Transparent"
-                    DockPanel.Dock="Right"
-                    ItemsSource="{Binding Logs}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ui:SimpleStackPanel
-                                Orientation="Vertical"
-                                Spacing="4">
-                                <TextBlock
-                                    Opacity="0.75"
-                                    Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
-                                    TextWrapping="NoWrap" />
-                                <TextBlock
-                                    Foreground="{Binding TypeBrush}"
-                                    Text="{Binding Content}"
-                                    TextWrapping="Wrap" />
-                            </ui:SimpleStackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                Click="CloneButton_Click"
+                IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
+                ToolTip="建立副本">
+                <ui:SymbolIcon Symbol="Copy" />
+            </Button>
+        </Grid>
+        <ui:CommandBar
+            Grid.Row="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="99"
+            Margin="-8,0,2,0"
+            Background="Transparent">
+            <ui:AppBarElementContainer>
                 <ui:SimpleStackPanel
-                    Grid.Row="2"
-                    Margin="8"
+                    Margin="0,4,8,-4"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Spacing="12">
@@ -156,108 +186,36 @@
                         <ComboBoxItem>10000</ComboBoxItem>
                         <ComboBoxItem>50000</ComboBoxItem>
                     </ComboBox>
-                    <TextBlock VerticalAlignment="Center">
-                        <Run>共有</Run>
-                        <Run Text="{Binding Logs.Count, Mode=OneWay}" />
-                        <Run>条日志，</Run>
-                        <Hyperlink Click="Hyperlink_Click">点击清空</Hyperlink>
-                    </TextBlock>
+
                 </ui:SimpleStackPanel>
-            </Grid>
+            </ui:AppBarElementContainer>
+            <ui:AppBarButton
+                Click="Hyperlink_Click"
+                Icon="Clear"
+                Label="清空日志" />
+            <ui:AppBarSeparator />
+            <ui:AppBarToggleButton
+                IsChecked="{Binding Startup}"
+                Label="开机自启">
+                <ui:AppBarToggleButton.Icon>
+                    <ui:FontIcon Glyph="&#xE950;" />
+                </ui:AppBarToggleButton.Icon>
+            </ui:AppBarToggleButton>
+            <ui:AppBarButton
+                Click="RestartButton_Click"
+                Label="重新启动应用">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon Glyph="&#xE1CD;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+            <ui:AppBarButton
+                Click="TrayButton_Click"
+                Label="最小化到托盘">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon Glyph="&#xE741;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+        </ui:CommandBar>
 
-            <ContentControl
-                Grid.Column="2"
-                Content="{Binding Panel}" />
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="48" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <local:ProcessStatus2BrushConverter x:Key="ps2bc" />
-                </Grid.Resources>
-                <ListBox
-                    Grid.ColumnSpan="99"
-                    Margin="0,-36,0,0"
-                    Padding="0,60,0,16"
-                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                    ItemsSource="{Binding FrpConfigs}"
-                    SelectedItem="{Binding SelectedFrpConfig}">
-
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ui:SimpleStackPanel
-                                Orientation="Horizontal"
-                                Spacing="12">
-                                <Ellipse
-                                    Width="10"
-                                    Height="10"
-                                    VerticalAlignment="Center"
-                                    Fill="{Binding ProcessStatus, Converter={StaticResource ps2bc}}" />
-                                <TextBlock Text="{Binding Name}" />
-                            </ui:SimpleStackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <ui:DropDownButton
-                    Grid.Row="2"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    ToolTip="新增服务端或客户端">
-                    <ui:SymbolIcon Symbol="Add" />
-                    <ui:DropDownButton.Flyout>
-                        <ui:MenuFlyout Placement="TopEdgeAlignedLeft">
-                            <MenuItem
-                                Click="AddMenuItem_Click"
-                                Header="服务端"
-                                Tag="1" />
-                            <MenuItem
-                                Click="AddMenuItem_Click"
-                                Header="客户端"
-                                Tag="2" />
-                        </ui:MenuFlyout>
-                    </ui:DropDownButton.Flyout>
-                </ui:DropDownButton>
-                <Button
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Click="DeleteButton_Click"
-                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
-                    ToolTip="删除选中的配置">
-                    <ui:SymbolIcon Symbol="Delete" />
-                </Button>
-                <Button
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Click="CloneButton_Click"
-                    IsEnabled="{Binding SelectedFrpConfig, Converter={StaticResource NotNullConverter}}"
-                    ToolTip="建立副本">
-                    <ui:SymbolIcon Symbol="Copy" />
-                </Button>
-            </Grid>
-
-            <ui:ContentDialog
-                x:Name="dialog"
-                Title="注意"
-                Grid.ColumnSpan="999">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="tbkDialogMessage" />
-                </Grid>
-            </ui:ContentDialog>
-        </Grid>
     </Grid>
 </Window>
