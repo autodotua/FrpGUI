@@ -59,6 +59,32 @@ namespace FrpGUI
                 (sender as DataGrid).BeginEdit(e);
             }
         }
+
+        private void AddRuleButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAddRulePanel();
+
+        }
+
+        private void OpenAddRulePanel(Rule rule=null)
+        {
+            AddRulePanel panel = new AddRulePanel(rule);
+            Grid grd = Content as Grid;
+            panel.RequestClosing += (s, e) =>
+            {
+                if (panel.Save)
+                {
+                }
+                Content = grd;
+
+            };
+            Content = panel;
+        }
+
+        private void ChangeRule_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAddRulePanel((sender as FrameworkElement).DataContext as Rule);
+        }
     }
 
     public class CellEnableConverter : IValueConverter

@@ -71,15 +71,18 @@ namespace FrpGUI
 
         private void UnhandledException_UnhandledExceptionCatched(object sender, UnhandledException.UnhandledExceptionEventArgs e)
         {
-            try
+            Dispatcher.Invoke(() =>
             {
-                System.Windows.MessageBox.Show("发生异常：" + Environment.NewLine + e.Exception.ToString());
-                File.AppendAllText("exceptions.log", Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + e.Exception.ToString() + Environment.NewLine);
-            }
-            finally
-            {
-                Application.Current.Shutdown();
-            }
+                try
+                {
+                    System.Windows.MessageBox.Show("发生异常：" + Environment.NewLine + e.Exception.ToString());
+                    File.AppendAllText("exceptions.log", Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + e.Exception.ToString() + Environment.NewLine);
+                }
+                finally
+                {
+                    Shutdown();
+                }
+            });
         }
 
         public static string Name => "FrpGUI";

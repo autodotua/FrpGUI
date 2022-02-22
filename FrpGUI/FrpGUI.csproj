@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SatelliteResourceLanguages>zh-cn</SatelliteResourceLanguages>
+    <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Panel\AddRulePanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Panel\ClientPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -77,6 +81,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Panel\AddRulePanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Panel\ClientPanel.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

@@ -7,13 +7,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:me="clr-namespace:FzLib.WPF.MarkupExtensions;assembly=FzCoreLib.Windows"
     xmlns:ui="http://schemas.modernwpf.com/2019"
-    d:DesignHeight="450" d:DesignWidth="800"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="144" />
+            <RowDefinition
+                Height="*"
+                MinHeight="144" />
             <RowDefinition Height="8" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -21,26 +26,52 @@
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
 
                 <WrapPanel Margin="8">
                     <WrapPanel.Resources>
-                        <Style BasedOn="{StaticResource DefaultTextBoxStyle}" TargetType="{x:Type TextBox}">
+                        <Style
+                            BasedOn="{StaticResource DefaultTextBoxStyle}"
+                            TargetType="{x:Type TextBox}">
                             <Setter Property="Margin" Value="8,8" />
                             <Setter Property="Width" Value="180" />
                         </Style>
                     </WrapPanel.Resources>
-                    <TextBox ui:ControlHelper.Header="名称" Text="{Binding FrpConfig.Name}" />
-                    <CheckBox Content="打开程序后自动运行" IsChecked="{Binding FrpConfig.AutoStart}" />
-                    <TextBox ui:ControlHelper.Header="服务器地址" Text="{Binding FrpConfig.ServerAddress}" />
-                    <TextBox ui:ControlHelper.Header="服务器端口" Text="{Binding FrpConfig.ServerPort}" />
-                    <TextBox ui:ControlHelper.Header="连接密钥" Text="{Binding FrpConfig.Token}" />
-                    <TextBox ui:ControlHelper.Header="预连接数量" Text="{Binding FrpConfig.PoolCount}" />
-                    <CheckBox Content="如果登陆异常就自动退出" IsChecked="{Binding FrpConfig.LoginFailExit}" />
-                    <TextBox ui:ControlHelper.Header="管理面板地址" Text="{Binding FrpConfig.AdminAddress}" />
-                    <TextBox ui:ControlHelper.Header="管理面板端口" Text="{Binding FrpConfig.AdminPort}" />
-                    <TextBox ui:ControlHelper.Header="管理面板用户名" Text="{Binding FrpConfig.AdminUsername}" />
-                    <TextBox ui:ControlHelper.Header="管理面板密码" Text="{Binding FrpConfig.AdminPassword}" />
+                    <TextBox
+                        ui:ControlHelper.Header="名称"
+                        Text="{Binding FrpConfig.Name}" />
+                    <CheckBox
+                        Content="打开程序后自动运行"
+                        IsChecked="{Binding FrpConfig.AutoStart}" />
+                    <TextBox
+                        ui:ControlHelper.Header="服务器地址"
+                        Text="{Binding FrpConfig.ServerAddress}" />
+                    <TextBox
+                        ui:ControlHelper.Header="服务器端口"
+                        Text="{Binding FrpConfig.ServerPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="连接密钥"
+                        Text="{Binding FrpConfig.Token}" />
+                    <TextBox
+                        ui:ControlHelper.Header="预连接数量"
+                        Text="{Binding FrpConfig.PoolCount}" />
+                    <CheckBox
+                        Content="如果登陆异常就自动退出"
+                        IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板地址"
+                        Text="{Binding FrpConfig.AdminAddress}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板端口"
+                        Text="{Binding FrpConfig.AdminPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板用户名"
+                        Text="{Binding FrpConfig.AdminUsername}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板密码"
+                        Text="{Binding FrpConfig.AdminPassword}" />
                 </WrapPanel>
             </ScrollViewer>
             <StackPanel
@@ -48,87 +79,120 @@
                 VerticalAlignment="Center"
                 Orientation="Vertical">
                 <StackPanel.Resources>
-                    <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="{x:Type Button}">
+                    <Style
+                        BasedOn="{StaticResource DefaultButtonStyle}"
+                        TargetType="{x:Type Button}">
                         <Setter Property="Margin" Value="8,8" />
                         <Setter Property="Width" Value="120" />
                     </Style>
                 </StackPanel.Resources>
-                <Button x:Name="btnStart" Content="启动" />
-                <Button x:Name="btnRestart" Content="重置" />
-                <Button x:Name="btnStop" Content="停止" />
-                <Button x:Name="btnCheck" Content="检查" />
+                <Button
+                    x:Name="btnStart"
+                    Content="启动" />
+                <Button
+                    x:Name="btnRestart"
+                    Content="重置" />
+                <Button
+                    x:Name="btnStop"
+                    Content="停止" />
+                <Button
+                    x:Name="btnCheck"
+                    Content="检查" />
             </StackPanel>
         </Grid>
-        <GroupBox Grid.Row="2" Header="规则">
-            <DataGrid
-                AutoGenerateColumns="False"
-                DataGridCell.Selected="DataGrid_Selected"
-                ItemsSource="{Binding Rules}"
-                RowEditEnding="DataGrid_RowEditEnding"
-                SelectionUnit="CellOrRowHeader">
-                <DataGrid.Resources>
-                    <local:CellEnableConverter x:Key="CellEnableConverter" />
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding Enable}" Header="启用" />
-                    <DataGridTextColumn Binding="{Binding Name}" Header="名称" />
-                    <DataGridTemplateColumn Width="120" Header="类型">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Margin="12,0" VerticalAlignment="Center"
-                                    Text="{Binding Path=Type, Converter={StaticResource DescriptionConverter}}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <ComboBox
-                                    Width="120"
-                                    ItemsSource="{me:EnumValues EnumType=local:NetType}"
-                                    SelectedItem="{Binding Type}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ., Converter={StaticResource DescriptionConverter}}" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding LocalAddress}" Header="本地IP" />
-                    <DataGridTextColumn Binding="{Binding LocalPort}" Header="本地端口" />
-                    <DataGridTextColumn Binding="{Binding RemotePort}" Header="远程端口">
-                        <DataGridTextColumn.CellStyle>
-                            <Style BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="UIElement.IsEnabled" Value="{Binding Path=Type, Converter={StaticResource CellEnableConverter}, ConverterParameter=RemotePort}" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridCheckBoxColumn Binding="{Binding Encryption}" Header="加密" />
-                    <DataGridCheckBoxColumn Binding="{Binding Compression}" Header="压缩" />
-                    <DataGridTextColumn Binding="{Binding Domains}" Header="域名">
-                        <DataGridTextColumn.CellStyle>
-                            <Style BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="UIElement.IsEnabled" Value="{Binding Path=Type, Converter={StaticResource CellEnableConverter}, ConverterParameter=Domains}" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding STCPKey}" Header="STCP密钥">
-                        <DataGridTextColumn.CellStyle>
-                            <Style BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="UIElement.IsEnabled" Value="{Binding Path=Type, Converter={StaticResource CellEnableConverter}, ConverterParameter=STCPKey}" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding STCPServerName}" Header="STCP服务名">
-                        <DataGridTextColumn.CellStyle>
-                            <Style BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="UIElement.IsEnabled" Value="{Binding Path=Type, Converter={StaticResource CellEnableConverter}, ConverterParameter=STCPServerName}" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+
+        <GroupBox
+            Grid.Row="2"
+            Header="规则">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding Rules}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="2,8"
+                                Padding="8"
+                                Background="{StaticResource SystemControlBackgroundBaseLowBrush}"
+                                CornerRadius="4">
+                                <Border.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                    </Style>
+                                </Border.Resources>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="18" />
+                                        <RowDefinition Height="0" />
+                                        <RowDefinition Height="18" />
+                                    </Grid.RowDefinitions>
+                                    <Button
+                                        Grid.RowSpan="99"
+                                        Grid.Column="4"
+                                        Background="Transparent">
+                                        <ui:SymbolIcon Symbol="More" />
+                                        <ui:FlyoutService.Flyout>
+                                            <ui:MenuFlyout>
+                                                <MenuItem Header="修改" Click="ChangeRule_Click" />
+                                                <MenuItem Header="删除" />
+                                            </ui:MenuFlyout>
+                                        </ui:FlyoutService.Flyout>
+                                    </Button>
+                                    <TextBlock
+                                        Grid.RowSpan="99"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Bold"
+                                        Text="{Binding Name}" />
+                                    <ui:SimpleStackPanel
+                                        Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+
+                                        <TextBlock>
+                                            <Run FontWeight="Bold">本地地址：</Run>
+                                            <Run Text="{Binding LocalAddress}" />
+                                            <Run>:</Run>
+                                            <Run Text="{Binding LocalPort}" />
+                                        </TextBlock>
+                                        <TextBlock>
+                                            <Run FontWeight="Bold">远程端口：</Run>
+                                            <Run Text="{Binding RemotePort}" />
+                                        </TextBlock>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <TextBlock>
+                                            <Run FontWeight="Bold">类型：</Run>
+                                            <Run Text="{Binding Type}" />
+                                        </TextBlock>
+                                        <TextBlock
+                                            Foreground="Green"
+                                            Text="加密"
+                                            Visibility="{Binding Encryption, Converter={StaticResource Bool2VisibilityConverter}}" />
+                                        <TextBlock
+                                            Foreground="Green"
+                                            Text="压缩"
+                                            Visibility="{Binding Compression, Converter={StaticResource Bool2VisibilityConverter}}" />
+                                    </ui:SimpleStackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </GroupBox>
+        <Button
+            Grid.Row="4"
+            HorizontalAlignment="Right"
+            Click="AddRuleButton_Click"
+            Content="新增" />
     </Grid>
 </local:PanelBase>
