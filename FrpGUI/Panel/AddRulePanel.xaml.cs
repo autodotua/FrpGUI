@@ -26,7 +26,7 @@ namespace FrpGUI
     {
         public AddRulePanel(Rule rule=null)
         {
-            Rule = rule ?? new Rule();
+            Rule = (rule?.Clone() as Rule) ?? new Rule();
             InitializeComponent();
             DataContext = this;
         }

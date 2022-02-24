@@ -139,7 +139,7 @@
                                         <ui:FlyoutService.Flyout>
                                             <ui:MenuFlyout>
                                                 <MenuItem Header="修改" Click="ChangeRule_Click" />
-                                                <MenuItem Header="删除" />
+                                                <MenuItem Header="删除" Click="DeleteRule_Click" />
                                             </ui:MenuFlyout>
                                         </ui:FlyoutService.Flyout>
                                     </Button>

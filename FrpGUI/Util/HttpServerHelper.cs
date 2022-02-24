@@ -131,7 +131,13 @@ namespace FrpGUI.Util
             }
             finally
             {
-                context.Response.OutputStream.Close();
+                try
+                {
+                    context.Response.OutputStream.Close();
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
 

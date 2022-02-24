@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mapster;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -74,6 +75,14 @@ namespace FrpGUI
             {
                 if (panel.Save)
                 {
+                    if(rule==null)
+                    {
+                        Rules.Add(panel.Rule);
+                    }
+                    else
+                    {
+                        panel.Rule.Adapt(rule);
+                    }
                 }
                 Content = grd;
 
@@ -84,6 +93,11 @@ namespace FrpGUI
         private void ChangeRule_Click(object sender, RoutedEventArgs e)
         {
             OpenAddRulePanel((sender as FrameworkElement).DataContext as Rule);
+        }
+
+        private void DeleteRule_Click(object sender, RoutedEventArgs e)
+        {
+            Rules.Remove((sender as FrameworkElement).DataContext as Rule);
         }
     }
 
