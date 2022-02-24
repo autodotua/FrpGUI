@@ -26,10 +26,11 @@ namespace FrpGUI
 
         public void Start(string type, IToIni obj)
         {
-            if (frpProcess != null)
+            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动"+type, "I");
+
+              if (frpProcess != null)
             {
                 frpProcess.Kill();
-                //throw new Exception("存在仍在运行的Frp实例");
             }
             this.type = type;
             this.obj = obj;

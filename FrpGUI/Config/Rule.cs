@@ -9,11 +9,12 @@ namespace FrpGUI
     {
         private bool compression;
         private string domains;
+        private bool enable = true;
         private bool encryption;
         private string localAddress = "localhost";
-        private ushort localPort;
-        private string name;
-        private ushort remotePort;
+        private string localPort = "";
+        private string name = "";
+        private string remotePort="";
         private string stcpKey;
         private string stcpServerName;
         private NetType type = NetType.TCP;
@@ -32,7 +33,12 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref domains, value, nameof(Domains));
         }
 
-        public bool Enable { get; set; } = true;
+        public bool Enable
+        {
+            get => enable;
+            set => this.SetValueAndNotify(ref enable, value, nameof(Enable));
+        }
+
 
         public bool Encryption
         {
@@ -46,7 +52,7 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref localAddress, value, nameof(LocalAddress));
         }
 
-        public ushort LocalPort
+        public string LocalPort
         {
             get => localPort;
             set => this.SetValueAndNotify(ref localPort, value, nameof(LocalPort));
@@ -58,7 +64,7 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref name, value, nameof(Name));
         }
 
-        public ushort RemotePort
+        public string RemotePort
         {
             get => remotePort;
             set => this.SetValueAndNotify(ref remotePort, value, nameof(RemotePort));
@@ -90,7 +96,11 @@ namespace FrpGUI
         public string ToIni()
         {
             StringBuilder str = new StringBuilder();
-            str.Append("[").Append(Name).Append("]").AppendLine();
+            str.Append('[')
+                .Append(localPort.Contains(',')||localPort.Contains('-')?"range:":"")
+                .Append(Name)
+                .Append(']')
+                .AppendLine();
             str.Append("type = ").Append(Type.ToString().Split('_')[0].ToLower()).AppendLine();
             str.Append("use_encryption = ").Append(Encryption.ToString().ToLower()).AppendLine();
             str.Append("use_compression = ").Append(Compression.ToString().ToLower()).AppendLine();

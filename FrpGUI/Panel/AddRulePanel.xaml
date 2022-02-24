@@ -10,6 +10,9 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:RuleParameterEnableConverter x:Key="enableConverter" />
+    </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <ui:SimpleStackPanel
             HorizontalAlignment="Right"
@@ -54,15 +57,19 @@
                 Text="{Binding Rule.LocalPort}" />
             <TextBox
                 ui:ControlHelper.Header="远程端口"
+                IsEnabled="{Binding Rule.Type, ConverterParameter=RemotePort, Converter={StaticResource enableConverter}}"
                 Text="{Binding Rule.RemotePort}" />
             <TextBox
                 ui:ControlHelper.Header="域名"
+                IsEnabled="{Binding Rule.Type, ConverterParameter=Domains, Converter={StaticResource enableConverter}}"
                 Text="{Binding Rule.Domains}" />
             <TextBox
                 ui:ControlHelper.Header="STCP密钥"
+                IsEnabled="{Binding Rule.Type, ConverterParameter=STCPKey, Converter={StaticResource enableConverter}}"
                 Text="{Binding Rule.STCPKey}" />
             <TextBox
                 ui:ControlHelper.Header="STCP服务名"
+                IsEnabled="{Binding Rule.Type, ConverterParameter=STCPServerName, Converter={StaticResource enableConverter}}"
                 Text="{Binding Rule.STCPServerName}" />
             <CheckBox
                 Content="压缩"

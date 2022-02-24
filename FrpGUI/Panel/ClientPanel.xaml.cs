@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -48,19 +46,6 @@ namespace FrpGUI
         protected override Button RestartButton => btnRestart;
         protected override Button CheckButton => btnCheck;
 
-        private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-        {
-            (FrpConfig as ClientConfig).Rules = Rules.ToList();
-        }
-
-        private void DataGrid_Selected(object sender, RoutedEventArgs e)
-        {
-            if ((sender as DataGrid).SelectedCells.First().Column.Header.Equals("类型"))
-            {
-                (sender as DataGrid).BeginEdit(e);
-            }
-        }
-
         private void AddRuleButton_Click(object sender, RoutedEventArgs e)
         {
             OpenAddRulePanel();
@@ -69,13 +54,13 @@ namespace FrpGUI
 
         private void OpenAddRulePanel(Rule rule=null)
         {
-            AddRulePanel panel = new AddRulePanel(rule);
+            AddRulePanel panel = new AddRulePanel(Rules ,rule);
             Grid grd = Content as Grid;
             panel.RequestClosing += (s, e) =>
             {
                 if (panel.Save)
                 {
-                    if(rule==null)
+                    if (rule == null)
                     {
                         Rules.Add(panel.Rule);
                     }
@@ -83,11 +68,17 @@ namespace FrpGUI
                     {
                         panel.Rule.Adapt(rule);
                     }
+                    SaveRules();
                 }
                 Content = grd;
 
             };
             Content = panel;
+        }
+
+        private void SaveRules()
+        {
+            (FrpConfig as ClientConfig).Rules = Rules.ToList();
         }
 
         private void ChangeRule_Click(object sender, RoutedEventArgs e)
@@ -98,27 +89,12 @@ namespace FrpGUI
         private void DeleteRule_Click(object sender, RoutedEventArgs e)
         {
             Rules.Remove((sender as FrameworkElement).DataContext as Rule);
-        }
-    }
-
-    public class CellEnableConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            NetType type = (NetType)value;
-            return (parameter as string) switch
-            {
-                nameof(Rule.Domains) => type == NetType.HTTP || type == NetType.HTTPS,
-                nameof(Rule.STCPKey) => type == NetType.STCP || type == NetType.STCP_Visitor,
-                nameof(Rule.STCPServerName) => type == NetType.STCP_Visitor,
-                nameof(Rule.RemotePort) => type != NetType.HTTP && type != NetType.HTTPS,
-                _ => throw new ArgumentException(),
-            };
+            SaveRules();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        private void EnableRule_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SaveRules();
         }
     }
 }

@@ -121,6 +121,8 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="16" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="16" />
@@ -131,42 +133,54 @@
                                         <RowDefinition Height="0" />
                                         <RowDefinition Height="18" />
                                     </Grid.RowDefinitions>
+                                    <Border
+                                        Grid.RowSpan="99"
+                                        Width="8"
+                                        Height="8"
+                                        Background="Green"
+                                        CornerRadius="4"
+                                        Visibility="{Binding Enable, Converter={StaticResource Bool2VisibilityConverter}, ConverterParameter=h}" />
                                     <Button
                                         Grid.RowSpan="99"
-                                        Grid.Column="4"
+                                        Grid.Column="99"
                                         Background="Transparent">
                                         <ui:SymbolIcon Symbol="More" />
                                         <ui:FlyoutService.Flyout>
                                             <ui:MenuFlyout>
-                                                <MenuItem Header="修改" Click="ChangeRule_Click" />
-                                                <MenuItem Header="删除" Click="DeleteRule_Click" />
+                                                <MenuItem
+                                                    Click="EnableRule_Click"
+                                                    Header="启用"
+                                                    IsCheckable="True"
+                                                    IsChecked="{Binding Enable}" />
+                                                <MenuItem
+                                                    Click="ChangeRule_Click"
+                                                    Header="修改" />
+                                                <MenuItem
+                                                    Click="DeleteRule_Click"
+                                                    Header="删除" />
                                             </ui:MenuFlyout>
                                         </ui:FlyoutService.Flyout>
                                     </Button>
                                     <TextBlock
                                         Grid.RowSpan="99"
+                                        Grid.Column="2"
                                         VerticalAlignment="Center"
                                         FontWeight="Bold"
                                         Text="{Binding Name}" />
-                                    <ui:SimpleStackPanel
-                                        Grid.Column="2"
-                                        Orientation="Horizontal"
-                                        Spacing="8">
 
-                                        <TextBlock>
-                                            <Run FontWeight="Bold">本地地址：</Run>
-                                            <Run Text="{Binding LocalAddress}" />
-                                            <Run>:</Run>
-                                            <Run Text="{Binding LocalPort}" />
-                                        </TextBlock>
-                                        <TextBlock>
-                                            <Run FontWeight="Bold">远程端口：</Run>
-                                            <Run Text="{Binding RemotePort}" />
-                                        </TextBlock>
-                                    </ui:SimpleStackPanel>
+
+                                    <TextBlock
+                                        Grid.Column="4"
+                                        TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding LocalAddress}" />
+                                        <Run>:</Run>
+                                        <Run Text="{Binding LocalPort}" />
+                                        <Run Text="→" />
+                                        <Run Text="{Binding RemotePort}" />
+                                    </TextBlock>
                                     <ui:SimpleStackPanel
                                         Grid.Row="2"
-                                        Grid.Column="2"
+                                        Grid.Column="4"
                                         Orientation="Horizontal"
                                         Spacing="8">
                                         <TextBlock>
