@@ -26,15 +26,20 @@ namespace FrpGUI
 
         public void Start(string type, IToIni obj)
         {
-            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动"+type, "I");
+            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动" + type, "I");
 
-              if (frpProcess != null)
+            if (frpProcess != null)
             {
                 frpProcess.Kill();
             }
             this.type = type;
             this.obj = obj;
-            string ini = Path.GetTempFileName() + ".ini";
+            string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+            string ini = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
             File.WriteAllText(ini, obj.ToIni());
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
