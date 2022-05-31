@@ -113,14 +113,15 @@ namespace FrpGUI
                 if (Rule.Name.Length == 0) T("名称为空");
                 if (Rule.Name.Length > 10) T("名称长度不可超过10");
                 if (Rule.LocalPort.Length == 0) T("本地端口为空");
-                if (Rule.RemotePort.Length == 0) T("远程端口为空");
                 if (Rule.LocalAddress.Length == 0) T("本地地址为空");
+
                 ushort[] localPort=null;
                 ushort[] remotePort=null;
                 switch (Rule.Type)
                 {
                     case NetType.TCP:
                     case NetType.UDP:
+                        if (Rule.RemotePort.Length == 0) T("远程端口为空");
                         try
                         {
                             localPort = GetPorts(Rule.LocalPort);
@@ -146,7 +147,6 @@ namespace FrpGUI
                     case NetType.HTTPS:
                     case NetType.STCP:
                     case NetType.STCP_Visitor:
-                        if(!ushort.TryParse(Rule.LocalAddress, out _)) T("本地端口有误");                 
                         break;
                 }
                 if (Rule.Type is NetType.STCP or NetType.STCP_Visitor && string.IsNullOrWhiteSpace(Rule.STCPKey)) T("STCP密钥为空");
