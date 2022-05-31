@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using FzLib.WPF;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,6 +46,7 @@ namespace FrpGUI
         protected override Button StopButton => btnStop;
         protected override Button RestartButton => btnRestart;
         protected override Button CheckButton => btnCheck;
+        protected override Control ConfigView => scrConfig;
 
         private void AddRuleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -95,6 +97,15 @@ namespace FrpGUI
         private void EnableRule_Click(object sender, RoutedEventArgs e)
         {
             SaveRules();
+        }
+
+        private void PanelBase_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Resources["RuleWidth"] = lstRules.ActualWidth switch
+            {
+                < 840 => lstRules.ActualWidth-0 ,
+                _ => 420d
+            };
         }
     }
 }

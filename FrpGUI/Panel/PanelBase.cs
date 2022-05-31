@@ -1,9 +1,11 @@
 ﻿using FzLib;
+using FzLib.WPF;
 using ModernWpf.FzExtension.CommonDialog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -19,6 +21,7 @@ namespace FrpGUI
         protected abstract Button StopButton { get; }
         protected abstract Button RestartButton { get; }
         protected abstract Button CheckButton { get; }
+        protected abstract Control ConfigView { get; }
         private FrpConfigBase frpConfig;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,6 +53,7 @@ namespace FrpGUI
         public PanelBase()
         {
             DataContext = this;
+            Resources.Add("ConfigWidth", double.NaN);
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -59,6 +63,19 @@ namespace FrpGUI
             RestartButton.Click += RestartButton_Click;
             StopButton.Click += StopButton_Click;
             CheckButton.Click += CheckButton_Click;
+            SizeChanged += PanelBase_SizeChanged;
+        }
+
+        private void PanelBase_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (Resources.Contains("ConfigWidth"))
+            {
+                Resources["ConfigWidth"] = ConfigView.ActualWidth switch
+                {
+                    < 500 => ConfigView.ActualWidth-24,
+                    _ => 240d
+                };
+            }
         }
 
         private void FrpConfig_StatusChanged(object sender, EventArgs e)

@@ -6,10 +6,15 @@
     xmlns:local="clr-namespace:FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:me="clr-namespace:FzLib.WPF.MarkupExtensions;assembly=FzCoreLib.Windows"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    SizeChanged="PanelBase_SizeChanged"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <system:Double x:Key="RuleWidth">180</system:Double>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition
@@ -27,16 +32,19 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ScrollViewer
+                x:Name="scrConfig"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
 
-                <WrapPanel Margin="8">
+                <WrapPanel
+                    Margin="8"
+                    ItemWidth="{DynamicResource ConfigWidth}">
                     <WrapPanel.Resources>
                         <Style
                             BasedOn="{StaticResource DefaultTextBoxStyle}"
                             TargetType="{x:Type TextBox}">
                             <Setter Property="Margin" Value="8,8" />
-                            <Setter Property="Width" Value="180" />
+                            <!--<Setter Property="Width" Value="{DynamicResource RuleWidth}" />-->
                         </Style>
                     </WrapPanel.Resources>
                     <TextBox
@@ -105,11 +113,20 @@
             Grid.Row="2"
             Header="规则">
             <ScrollViewer>
-                <ItemsControl ItemsSource="{Binding Rules}">
+                <ItemsControl
+                    x:Name="lstRules"
+                    ItemsSource="{Binding Rules}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                ItemWidth="{DynamicResource RuleWidth}"
+                                Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border
-                                Margin="2,8"
+                                Margin="2,8,24,8"
                                 Padding="8"
                                 Background="{StaticResource SystemControlBackgroundBaseLowBrush}"
                                 CornerRadius="4">
@@ -122,7 +139,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="8" />
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="64" />
                                         <ColumnDefinition Width="16" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="16" />
@@ -166,7 +183,8 @@
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         FontWeight="Bold"
-                                        Text="{Binding Name}" />
+                                        Text="{Binding Name}"
+                                        TextTrimming="CharacterEllipsis" />
 
 
                                     <TextBlock

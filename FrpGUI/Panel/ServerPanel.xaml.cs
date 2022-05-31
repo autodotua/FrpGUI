@@ -52,10 +52,9 @@ namespace FrpGUI
         public ObservableCollection<string> IPs { get; } = new ObservableCollection<string>();
         protected override Button CheckButton => btnCheck;
         protected override Button RestartButton => btnRestart;
-
         protected override Button StartButton => btnStart;
-
         protected override Button StopButton => btnStop;
+        protected override Control ConfigView => scrConfig;
 
         public override Task StopAsync()
         {
