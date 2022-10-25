@@ -12,6 +12,7 @@ namespace FrpGUI
         private ushort? httpsPort;
         private short maxPoolCount = 100;
         private ushort port = 7000;
+        private bool tlsOnly;
         private string token;
 
         public ServerConfig()
@@ -36,7 +37,6 @@ namespace FrpGUI
             get => dashBoardUsername;
             set => this.SetValueAndNotify(ref dashBoardUsername, value, nameof(DashBoardUsername));
         }
-
         public ushort? HttpPort
         {
             get => httpPort;
@@ -61,6 +61,11 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref port, value, nameof(Port));
         }
 
+        public bool TlsOnly
+        {
+            get => tlsOnly;
+            set => this.SetValueAndNotify(ref tlsOnly, value, nameof(TlsOnly));
+        }
         public string Token
         {
             get => token;
@@ -89,6 +94,10 @@ namespace FrpGUI
             if (!string.IsNullOrWhiteSpace(Token))
             {
                 str.Append("token = ").Append(Token).AppendLine();
+            }
+            if(TlsOnly)
+            {
+                str.Append("tls_only = true").AppendLine();
             }
             return str.ToString();
         }

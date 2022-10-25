@@ -68,6 +68,9 @@
                     <CheckBox
                         Content="如果登陆异常就自动退出"
                         IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                    <CheckBox
+                        Content="启用TLS传输层安全性协议"
+                        IsChecked="{Binding FrpConfig.EnableTls}" />
                     <TextBox
                         ui:ControlHelper.Header="管理面板地址"
                         Text="{Binding FrpConfig.AdminAddress}" />

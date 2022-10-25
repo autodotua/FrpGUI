@@ -147,6 +147,18 @@ namespace FrpGUI
             {
                 brush = Brushes.Red;
             }
+
+            if (ViewModel.Logs.Count >= 2)
+            {
+                for (int i = 1; i < 2; i++)
+                {
+                    if (ViewModel.Logs[^i].Content == message)
+                    {
+                        ViewModel.Logs[^i].Time = DateTime.Now;
+                        return;
+                    }
+                }
+            }
             ViewModel.Logs.Add(new Log()
             {
                 Time = DateTime.Now,
@@ -281,11 +293,29 @@ namespace FrpGUI
         }
     }
 
-    public class Log
+    public class Log : INotifyPropertyChanged
     {
-        public DateTime Time { get; set; }
-        public string Content { get; set; }
-        public Brush TypeBrush { get; set; }
+        private DateTime time;
+        public DateTime Time
+        {
+            get => time;
+            set => this.SetValueAndNotify(ref time, value, nameof(Time));
+        }
+        private string content;
+        public string Content
+        {
+            get => content;
+            set => this.SetValueAndNotify(ref content, value, nameof(Content));
+        }
+        private Brush typeBrush;
+        public Brush TypeBrush
+        {
+            get => typeBrush;
+            set => this.SetValueAndNotify(ref typeBrush, value, nameof(TypeBrush));
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class ProcessStatus2BrushConverter : IValueConverter

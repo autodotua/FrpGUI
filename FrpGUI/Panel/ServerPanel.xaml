@@ -64,6 +64,10 @@
                     <TextBox
                         ui:ControlHelper.Header="最大连接池数量"
                         Text="{Binding FrpConfig.MaxPoolCount}" />
+
+                    <CheckBox
+                        Content="仅允许TLS传输层安全性协议"
+                        IsChecked="{Binding FrpConfig.TlsOnly}" />
                     <TextBox
                         ui:ControlHelper.Header="控制面板端口号"
                         Text="{Binding FrpConfig.DashBoardPort}" />
@@ -73,7 +77,7 @@
                     <TextBox
                         ui:ControlHelper.Header="控制面板密码"
                         Text="{Binding FrpConfig.DashBoardUsername}" />
-                    <ComboBox
+                    <ComboBox HorizontalAlignment="Stretch"
                         ui:ControlHelper.Header="远程管理本地地址"
                         IsEditable="True"
                         ItemsSource="{Binding IPs}"

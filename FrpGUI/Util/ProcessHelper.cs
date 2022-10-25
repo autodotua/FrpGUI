@@ -26,7 +26,12 @@ namespace FrpGUI
 
         public void Start(string type, IToIni obj)
         {
-            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动" + type, "I");
+            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动" + type switch
+            {
+                "c" => "客户端",
+                "s" => "服务端",
+                _ => throw new Exception("不支持c和s以外的类型")
+            }, "I"); 
 
             if (frpProcess != null)
             {

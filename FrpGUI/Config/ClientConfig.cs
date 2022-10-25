@@ -11,6 +11,7 @@ namespace FrpGUI
         private string adminPassword = "admin";
         private ushort adminPort = 7400;
         private string adminUsername = "admin";
+        private bool enableTls;
         private bool loginFailExit = false;
         private short poolCount = 50;
         private List<Rule> rules = new List<Rule>();
@@ -28,7 +29,6 @@ namespace FrpGUI
             get => adminAddress;
             set => this.SetValueAndNotify(ref adminAddress, value, nameof(AdminAddress));
         }
-
         public string AdminPassword
         {
             get => adminPassword;
@@ -47,6 +47,11 @@ namespace FrpGUI
             set => this.SetValueAndNotify(ref adminUsername, value, nameof(AdminUsername));
         }
 
+        public bool EnableTls
+        {
+            get => enableTls;
+            set => this.SetValueAndNotify(ref enableTls, value, nameof(EnableTls));
+        }
         public bool LoginFailExit
         {
             get => loginFailExit;
@@ -107,6 +112,10 @@ namespace FrpGUI
             if (!string.IsNullOrWhiteSpace(Token))
             {
                 str.Append("token = ").Append(Token).AppendLine();
+            }
+            if(EnableTls)
+            {
+                str.Append("tls_enable = true").AppendLine();
             }
             foreach (var rule in Rules.Where(p => p.Enable && !string.IsNullOrEmpty(p.Name)))
             {
