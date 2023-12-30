@@ -71,9 +71,9 @@ namespace FrpGUI.Util
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                StandardErrorEncoding = System.Text.Encoding.UTF8,
-                StandardInputEncoding = System.Text.Encoding.UTF8,
-                StandardOutputEncoding = System.Text.Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8,
+                StandardInputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
             };
             frpProcess.EnableRaisingEvents = true;
             frpProcess.OutputDataReceived += P_OutputDataReceived;

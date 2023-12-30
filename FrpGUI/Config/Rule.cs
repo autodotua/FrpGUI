@@ -108,13 +108,14 @@ namespace FrpGUI.Config
             {
                 str.AppendLine("transport.useCompression = true");
             }
-            if (Type == NetType.HTTP || Type == NetType.HTTPS)
+            switch (Type)
             {
-                str.Append("customDomains  = [").Append('"').Append(Domains).Append('"').Append(']').AppendLine();
-            }
-            else
-            {
-                str.Append("remotePort = ").Append(RemotePort).AppendLine();
+                case NetType.HTTP or NetType.HTTPS:
+                    str.Append("customDomains  = [").Append('"').Append(Domains).Append('"').Append(']').AppendLine();
+                    break;
+                case NetType.TCP or NetType.UDP:
+                    str.Append("remotePort = ").Append(RemotePort).AppendLine();
+                    break;
             }
 
 

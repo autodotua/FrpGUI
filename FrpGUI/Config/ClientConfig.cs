@@ -116,9 +116,10 @@ namespace FrpGUI.Config
 
             str.Append("transport.tls.force = ").Append(EnableTls.ToString().ToLower()).AppendLine();
 
+            str.AppendLine();
             foreach (var rule in Rules.Where(p => p.Enable && !string.IsNullOrEmpty(p.Name)))
             {
-                str.Append(rule.ToIni()).AppendLine();
+                str.Append(rule.ToToml()).AppendLine();
             }
             str.AppendLine();
             return str.ToString();
