@@ -1,0 +1,155 @@
+﻿<local:PanelBase
+    x:Class="FrpGUI.WPF.ServerPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FrpGUI.WPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="*"
+                MinHeight="144" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer x:Name="scrConfig"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <WrapPanel
+                    Margin="8"
+                    ItemWidth="{DynamicResource ConfigWidth}">
+                    <WrapPanel.Resources>
+                        <Style
+                            BasedOn="{StaticResource DefaultTextBoxStyle}"
+                            TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="8,8" />
+                            <!--<Setter Property="Width" Value="120" />-->
+                        </Style>
+                        <Style
+                            BasedOn="{StaticResource DefaultComboBoxStyle}"
+                            TargetType="{x:Type ComboBox}">
+                            <Setter Property="Margin" Value="8,8" />
+                            <!--<Setter Property="Width" Value="120" />-->
+                        </Style>
+                    </WrapPanel.Resources>
+                    <TextBox
+                        ui:ControlHelper.Header="名称"
+                        Text="{Binding FrpConfig.Name}" />
+                    <CheckBox
+                        Content="打开程序后自动运行"
+                        IsChecked="{Binding FrpConfig.AutoStart}" />
+                    <TextBox
+                        ui:ControlHelper.Header="端口号"
+                        Text="{Binding FrpConfig.Port}" />
+                    <TextBox
+                        ui:ControlHelper.Header="连接密钥"
+                        Text="{Binding FrpConfig.Token}" />
+                    <TextBox
+                        ui:ControlHelper.Header="HTTP端口"
+                        Text="{Binding FrpConfig.HttpPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="HTTPS端口"
+                        Text="{Binding FrpConfig.HttpsPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="最大连接池数量"
+                        Text="{Binding FrpConfig.MaxPoolCount}" />
+
+                    <CheckBox
+                        Content="仅允许TLS传输层安全性协议"
+                        IsChecked="{Binding FrpConfig.TlsOnly}" />
+                    <TextBox
+                        ui:ControlHelper.Header="控制面板端口号"
+                        Text="{Binding FrpConfig.DashBoardPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="控制面板用户名"
+                        Text="{Binding FrpConfig.DashBoardUsername}" />
+                    <TextBox
+                        ui:ControlHelper.Header="控制面板密码"
+                        Text="{Binding FrpConfig.DashBoardUsername}" />
+                    <ComboBox HorizontalAlignment="Stretch"
+                        ui:ControlHelper.Header="远程管理本地地址"
+                        IsEditable="True"
+                        ItemsSource="{Binding IPs}"
+                        Text="{Binding Config.AdminAddress, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox
+                        ui:ControlHelper.Header="远程管理本地端口"
+                        Text="{Binding Config.AdminPort, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox
+                        ui:ControlHelper.Header="远程管理密码"
+                        Text="{Binding Config.AdminPassword, UpdateSourceTrigger=PropertyChanged}" />
+                </WrapPanel>
+            </ScrollViewer>
+            <StackPanel
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style
+                        BasedOn="{StaticResource DefaultButtonStyle}"
+                        TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="8,8" />
+                        <Setter Property="Width" Value="120" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button
+                    x:Name="btnStart"
+                    Content="启动" />
+                <Button
+                    x:Name="btnRestart"
+                    Content="重置" />
+                <Button
+                    x:Name="btnStop"
+                    Content="停止" />
+                <Button
+                    x:Name="btnCheck"
+                    Content="检查" />
+            </StackPanel>
+        </Grid>
+        <GroupBox
+            x:Name="gbxInfo"
+            Grid.Row="2"
+            Header="服务器信息">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ui:CommandBar
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    Background="{Binding Background}">
+                    <ui:AppBarButton
+                        Click="MenuItem_Click"
+                        Label="总览" />
+                    <ui:AppBarButton
+                        Click="MenuItem_Click_1"
+                        Label="TCP" />
+                    <ui:AppBarButton
+                        Click="MenuItem_Click_1"
+                        Label="UDP" />
+                    <ui:AppBarButton
+                        Click="MenuItem_Click_1"
+                        Label="STCP" />
+                </ui:CommandBar>
+
+                <DataGrid
+                    x:Name="data"
+                    Grid.Row="0"
+                    AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                    IsReadOnly="True" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</local:PanelBase>

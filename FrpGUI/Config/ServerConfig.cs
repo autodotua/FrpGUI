@@ -1,7 +1,7 @@
 ﻿using FzLib;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
     public class ServerConfig : FrpConfigBase
     {

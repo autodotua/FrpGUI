@@ -1,13 +1,14 @@
-﻿using FzLib;
+﻿using FrpGUI.Util;
+using FzLib;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
-    public abstract class FrpConfigBase : IToIni, ICloneable
+    public abstract class FrpConfigBase : IToFrpConfig, ICloneable
     {
         private bool autoStart;
         private string name;
@@ -68,7 +69,7 @@ namespace FrpGUI
             ChangeStatus(ProcessStatus.Busy);
             await Process.RestartAsync();
             ChangeStatus(ProcessStatus.Running);
-            Config.Instance.Save();
+            AppConfig.Instance.Save();
         }
 
         public void Start()
@@ -76,7 +77,7 @@ namespace FrpGUI
             ChangeStatus(ProcessStatus.Busy);
             Process.Start(Type, this);
             ChangeStatus(ProcessStatus.Running);
-            Config.Instance.Save();
+            AppConfig.Instance.Save();
         }
 
         public async Task StopAsync()

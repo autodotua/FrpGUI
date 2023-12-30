@@ -3,9 +3,9 @@ using System;
 using System.ComponentModel;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
-    public class Rule : IToIni, ICloneable
+    public class Rule : IToFrpConfig, ICloneable
     {
         private bool compression;
         private string domains;

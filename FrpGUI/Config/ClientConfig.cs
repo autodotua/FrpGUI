@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
     public class ClientConfig : FrpConfigBase
     {

@@ -2,9 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading;
-using System.Windows.Threading;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
     public enum NetType
     {

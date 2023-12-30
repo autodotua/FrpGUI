@@ -1,10 +1,10 @@
-﻿using System;
+﻿using FrpGUI.Config;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Windows.Devices.SerialCommunication;
 
-namespace FrpGUI
+namespace FrpGUI.Util
 {
     public class ProcessHelper
     {
@@ -12,26 +12,27 @@ namespace FrpGUI
 
         private Process frpProcess;
         private string type;
-        private IToIni obj;
+        private IToFrpConfig obj;
 
-        public void StartServer(IToIni obj)
+        public void StartServer(IToFrpConfig obj)
         {
             Start("s", obj);
         }
 
-        public void StartClient(IToIni obj)
+        public void StartClient(IToFrpConfig obj)
         {
             Start("c", obj);
         }
 
-        public void Start(string type, IToIni obj)
+        public void Start(string type, IToFrpConfig obj)
         {
-            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动" + type switch
+            string typeText = type switch
             {
                 "c" => "客户端",
                 "s" => "服务端",
                 _ => throw new Exception("不支持c和s以外的类型")
-            }, "I"); 
+            };
+            Logger.Info($"正在启动{typeText}");
 
             if (frpProcess != null)
             {
@@ -57,6 +58,9 @@ namespace FrpGUI
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
+                StandardErrorEncoding = System.Text.Encoding.UTF8,
+                StandardInputEncoding = System.Text.Encoding.UTF8,
+                StandardOutputEncoding = System.Text.Encoding.UTF8,
             };
             frpProcess.EnableRaisingEvents = true;
             frpProcess.OutputDataReceived += P_OutputDataReceived;
@@ -144,10 +148,8 @@ namespace FrpGUI
                 return;
             }
             Debug.WriteLine(e.Data);
-            Output?.Invoke(sender, e);
+            Logger.Ouput(e.Data);
         }
-
-        public static event DataReceivedEventHandler Output;
 
         public event EventHandler Exited;
 
