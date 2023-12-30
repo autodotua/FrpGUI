@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using FrpGUI.Config;
 using Newtonsoft.Json.Linq;
 
 namespace FrpGUI.Util
@@ -18,7 +19,7 @@ namespace FrpGUI.Util
             try
             {
                 HttpListener listener = new HttpListener();
-                listener.Prefixes.Add($"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}/");
+                listener.Prefixes.Add($"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}/");
                 listener.Start();
 
                 var requests = new HashSet<Task>();
@@ -40,7 +41,7 @@ namespace FrpGUI.Util
             }
             catch (Exception ex)
             {
-                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("启动远程管理错误：" + ex.Message, "E");
+                Logger.Error("启动远程管理错误：" + ex.Message);
             }
         }
 
@@ -62,34 +63,34 @@ namespace FrpGUI.Util
                             bool b = json["action"].Value<bool>();
                             string id = json["id"].Value<string>();
                             string password = json["password"].Value<string>();
-                            if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(Config.Instance.AdminPassword))
+                            if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(AppConfig.Instance.AdminPassword))
                             {
-                                if (password != Config.Instance.AdminPassword)
+                                if (password != AppConfig.Instance.AdminPassword)
                                 {
-                                    (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：密码错误", "W");
+                                    Logger.Error(request.RemoteEndPoint.Address.ToString() + "：密码错误");
 
                                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                                     return;
                                 }
                             }
 
-                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread($"远程管理：POST id={id}, action={b}", "I");
-                            var server = Config.Instance.FrpConfigs.FirstOrDefault(p => p.ID.ToString().Equals(id));
+                            Logger.Info($"远程管理：POST id={id}, action={b}");
+                            var server = AppConfig.Instance.FrpConfigs.FirstOrDefault(p => p.ID.ToString().Equals(id));
                             if (server == null)
                             {
-                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：需要操纵的服务端ID不存在", "W");
+                                Logger.Warn("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：需要操纵的服务端ID不存在");
                                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                                 return;
                             }
                             if (b && !server.Process.IsRunning)
                             {
-                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：启动了服务器", "I");
+                                Logger.Info(request.RemoteEndPoint.Address.ToString() + "：启动了服务器");
 
                                 server.Start();
                             }
                             else if (!b && server.Process.IsRunning)
                             {
-                                (App.Current.MainWindow as MainWindow).AddLogOnMainThread(request.RemoteEndPoint.Address.ToString() + "：关闭了服务器", "I");
+                                Logger.Info(request.RemoteEndPoint.Address.ToString() + "：关闭了服务器");
 
                                 await server.StopAsync();
                             }
@@ -98,12 +99,12 @@ namespace FrpGUI.Util
 
                     case "GET":
 
-                        (App.Current.MainWindow as MainWindow).AddLogOnMainThread($"远程管理：GET {context.Request.RawUrl}", "I");
+                        Logger.Info($"远程管理：GET {context.Request.RawUrl}");
                         if (context.Request.RawUrl == "/")
                         {
-                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}");
+                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}");
                             StringBuilder items = new StringBuilder();
-                            foreach (var server in Config.Instance.FrpConfigs.OfType<ServerConfig>())
+                            foreach (var server in AppConfig.Instance.FrpConfigs.OfType<ServerConfig>())
                             {
                                 var notRun = server.ProcessStatus == ProcessStatus.NotRun;
                                 items.Append($"<a class=\"text-center label\">{server.Name}：{(notRun ? "没有运行" : "正在运行")}</a> ")
@@ -111,7 +112,7 @@ namespace FrpGUI.Util
                                     .Append("<p></p>");
                             }
                             responseString = responseString.Replace("{{items}}", items.ToString());
-                            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：访问远程管理网页", "I");
+                            Logger.Info("远程管理：" + request.RemoteEndPoint.Address.ToString() + "：访问远程管理网页");
                         }
                         else
                         {
@@ -127,7 +128,7 @@ namespace FrpGUI.Util
             }
             catch (Exception ex)
             {
-                (App.Current.MainWindow as MainWindow).AddLogOnMainThread("远程管理服务器错误：" + ex.Message, "E");
+                Logger.Error("远程管理服务器错误：" + ex.Message);
             }
             finally
             {
@@ -143,7 +144,7 @@ namespace FrpGUI.Util
 
         private void AddNewListener()
         {
-            var prefixes = new[] { $"http://{Config.Instance.AdminAddress}:{Config.Instance.AdminPort}/" };
+            var prefixes = new[] { $"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}/" };
             if (listener != null)
             {
                 return;

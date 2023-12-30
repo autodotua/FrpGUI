@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
     public class ClientConfig : FrpConfigBase
     {
@@ -97,6 +97,34 @@ namespace FrpGUI
             return newItem;
         }
 
+        public override string ToToml()
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("serverAddr = ").Append('"').Append(ServerAddress).Append('"').AppendLine();
+            str.Append("serverPort = ").Append(ServerPort).AppendLine();
+            str.Append("poolCount = ").Append(PoolCount).AppendLine();
+            str.Append("loginFailExit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
+
+            str.Append("webServer.addr = ").Append('"').Append(AdminAddress).Append('"').AppendLine();
+            str.Append("webServer.port = ").Append(adminPort).AppendLine();
+            str.Append("webServer.user = ").Append('"').Append(adminUsername).Append('"').AppendLine();
+            str.Append("webServer.password  = ").Append('"').Append(AdminPassword).Append('"').AppendLine();
+            if (!string.IsNullOrWhiteSpace(Token))
+            {
+                str.Append("auth.token = ").Append('"').Append(Token).Append('"').AppendLine();
+            }
+
+            str.Append("transport.tls.force = ").Append(EnableTls.ToString().ToLower()).AppendLine();
+
+            str.AppendLine();
+            foreach (var rule in Rules.Where(p => p.Enable && !string.IsNullOrEmpty(p.Name)))
+            {
+                str.Append(rule.ToToml()).AppendLine();
+            }
+            str.AppendLine();
+            return str.ToString();
+        }
+
         public override string ToIni()
         {
             StringBuilder str = new StringBuilder();
@@ -113,7 +141,7 @@ namespace FrpGUI
             {
                 str.Append("token = ").Append(Token).AppendLine();
             }
-            if(EnableTls)
+            if (EnableTls)
             {
                 str.Append("tls_enable = true").AppendLine();
             }

@@ -1,13 +1,14 @@
-﻿using FzLib;
+﻿using FrpGUI.Util;
+using FzLib;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
-    public abstract class FrpConfigBase : IToIni, ICloneable
+    public abstract class FrpConfigBase : IToFrpConfig, ICloneable
     {
         private bool autoStart;
         private string name;
@@ -15,6 +16,7 @@ namespace FrpGUI
 
         public FrpConfigBase()
         {
+            Process = new ProcessHelper(this);
             Process.Exited += Process_Exited;
         }
 
@@ -37,7 +39,7 @@ namespace FrpGUI
         }
 
         [JsonIgnore]
-        public ProcessHelper Process { get; protected set; } = new ProcessHelper();
+        public ProcessHelper Process { get; protected set; }
 
         [JsonIgnore]
         public ProcessStatus ProcessStatus
@@ -50,7 +52,7 @@ namespace FrpGUI
 
         public void ChangeStatus(ProcessStatus status)
         {
-            Debug.WriteLine("进程状态改变：" + status.ToString());
+            Logger.Info("进程状态改变：" + status.ToString(), Name);
             ProcessStatus = status;
             StatusChanged?.Invoke(this, new EventArgs());
         }
@@ -59,7 +61,7 @@ namespace FrpGUI
         {
             var newItem = MemberwiseClone() as FrpConfigBase;
             newItem.processStatus = ProcessStatus.NotRun;
-            newItem.Process = new ProcessHelper();
+            newItem.Process = new ProcessHelper(this);
             return newItem;
         }
 
@@ -68,7 +70,7 @@ namespace FrpGUI
             ChangeStatus(ProcessStatus.Busy);
             await Process.RestartAsync();
             ChangeStatus(ProcessStatus.Running);
-            Config.Instance.Save();
+            AppConfig.Instance.Save();
         }
 
         public void Start()
@@ -76,7 +78,7 @@ namespace FrpGUI
             ChangeStatus(ProcessStatus.Busy);
             Process.Start(Type, this);
             ChangeStatus(ProcessStatus.Running);
-            Config.Instance.Save();
+            AppConfig.Instance.Save();
         }
 
         public async Task StopAsync()
@@ -87,6 +89,8 @@ namespace FrpGUI
         }
 
         public abstract string ToIni();
+
+        public abstract string ToToml();
 
         private void Process_Exited(object sender, EventArgs e)
         {

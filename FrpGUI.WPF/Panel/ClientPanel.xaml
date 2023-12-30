@@ -1,0 +1,238 @@
+﻿<local:PanelBase
+    x:Class="FrpGUI.WPF.ClientPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FrpGUI.WPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:me="clr-namespace:FzLib.WPF.MarkupExtensions;assembly=FzCoreLib.Windows"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    SizeChanged="PanelBase_SizeChanged"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <system:Double x:Key="RuleWidth">180</system:Double>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="*"
+                MinHeight="144" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer
+                x:Name="scrConfig"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+
+                <WrapPanel
+                    Margin="8"
+                    ItemWidth="{DynamicResource ConfigWidth}">
+                    <WrapPanel.Resources>
+                        <Style
+                            BasedOn="{StaticResource DefaultTextBoxStyle}"
+                            TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="8,8" />
+                            <!--<Setter Property="Width" Value="{DynamicResource RuleWidth}" />-->
+                        </Style>
+                    </WrapPanel.Resources>
+                    <TextBox
+                        ui:ControlHelper.Header="名称"
+                        Text="{Binding FrpConfig.Name}" />
+                    <CheckBox
+                        Content="打开程序后自动运行"
+                        IsChecked="{Binding FrpConfig.AutoStart}" />
+                    <TextBox
+                        ui:ControlHelper.Header="服务器地址"
+                        Text="{Binding FrpConfig.ServerAddress}" />
+                    <TextBox
+                        ui:ControlHelper.Header="服务器端口"
+                        Text="{Binding FrpConfig.ServerPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="连接密钥"
+                        Text="{Binding FrpConfig.Token}" />
+                    <TextBox
+                        ui:ControlHelper.Header="预连接数量"
+                        Text="{Binding FrpConfig.PoolCount}" />
+                    <CheckBox
+                        Content="如果登陆异常就自动退出"
+                        IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                    <CheckBox
+                        Content="启用TLS传输层安全性协议"
+                        IsChecked="{Binding FrpConfig.EnableTls}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板地址"
+                        Text="{Binding FrpConfig.AdminAddress}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板端口"
+                        Text="{Binding FrpConfig.AdminPort}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板用户名"
+                        Text="{Binding FrpConfig.AdminUsername}" />
+                    <TextBox
+                        ui:ControlHelper.Header="管理面板密码"
+                        Text="{Binding FrpConfig.AdminPassword}" />
+                </WrapPanel>
+            </ScrollViewer>
+            <StackPanel
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style
+                        BasedOn="{StaticResource DefaultButtonStyle}"
+                        TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="8,8" />
+                        <Setter Property="Width" Value="120" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button
+                    x:Name="btnStart"
+                    Content="启动" />
+                <Button
+                    x:Name="btnRestart"
+                    Content="重启" />
+                <Button
+                    x:Name="btnStop"
+                    Content="停止" />
+                <Button
+                    x:Name="btnCheck"
+                    Content="检查" />
+                <Button
+                    x:Name="btnExport"
+                    Content="导出" />
+            </StackPanel>
+        </Grid>
+
+        <GroupBox
+            Grid.Row="2"
+            Header="规则">
+            <ScrollViewer>
+                <ItemsControl
+                    x:Name="lstRules"
+                    ItemsSource="{Binding Rules}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                ItemWidth="{DynamicResource RuleWidth}"
+                                Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="2,8,24,8"
+                                Padding="8"
+                                Background="{StaticResource SystemControlBackgroundBaseLowBrush}"
+                                CornerRadius="4">
+                                <Border.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                    </Style>
+                                </Border.Resources>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="64" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="18" />
+                                        <RowDefinition Height="0" />
+                                        <RowDefinition Height="18" />
+                                    </Grid.RowDefinitions>
+                                    <Border
+                                        Grid.RowSpan="99"
+                                        Width="8"
+                                        Height="8"
+                                        Background="Green"
+                                        CornerRadius="4"
+                                        Visibility="{Binding Enable, Converter={StaticResource Bool2VisibilityConverter}, ConverterParameter=h}" />
+                                    <Button
+                                        Grid.RowSpan="99"
+                                        Grid.Column="99"
+                                        Background="Transparent">
+                                        <ui:SymbolIcon Symbol="More" />
+                                        <ui:FlyoutService.Flyout>
+                                            <ui:MenuFlyout>
+                                                <MenuItem
+                                                    Click="EnableRule_Click"
+                                                    Header="启用"
+                                                    IsCheckable="True"
+                                                    IsChecked="{Binding Enable}" />
+                                                <MenuItem
+                                                    Click="ChangeRule_Click"
+                                                    Header="修改" />
+                                                <MenuItem
+                                                    Click="DeleteRule_Click"
+                                                    Header="删除" />
+                                            </ui:MenuFlyout>
+                                        </ui:FlyoutService.Flyout>
+                                    </Button>
+                                    <TextBlock
+                                        Grid.RowSpan="99"
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Bold"
+                                        Text="{Binding Name}"
+                                        TextTrimming="CharacterEllipsis" />
+
+
+                                    <TextBlock
+                                        Grid.Column="4"
+                                        TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding LocalAddress}" />
+                                        <Run>:</Run>
+                                        <Run Text="{Binding LocalPort}" />
+                                        <Run Text="→" />
+                                        <Run Text="{Binding RemotePort}" />
+                                    </TextBlock>
+                                    <ui:SimpleStackPanel
+                                        Grid.Row="2"
+                                        Grid.Column="4"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <TextBlock>
+                                            <Run FontWeight="Bold">类型：</Run>
+                                            <Run Text="{Binding Type}" />
+                                        </TextBlock>
+                                        <TextBlock
+                                            Foreground="Green"
+                                            Text="加密"
+                                            Visibility="{Binding Encryption, Converter={StaticResource Bool2VisibilityConverter}}" />
+                                        <TextBlock
+                                            Foreground="Green"
+                                            Text="压缩"
+                                            Visibility="{Binding Compression, Converter={StaticResource Bool2VisibilityConverter}}" />
+                                    </ui:SimpleStackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
+        <Button
+            Grid.Row="4"
+            Width="120"
+            Margin="8"
+            HorizontalAlignment="Right"
+            Click="AddRuleButton_Click"
+            Content="新增" />
+    </Grid>
+</local:PanelBase>

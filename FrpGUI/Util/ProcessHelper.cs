@@ -1,37 +1,38 @@
-﻿using System;
+﻿using FrpGUI.Config;
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Devices.SerialCommunication;
 
-namespace FrpGUI
+namespace FrpGUI.Util
 {
-    public class ProcessHelper
+    public class ProcessHelper(FrpConfigBase frpConfig)
     {
         public bool IsRunning { get; set; }
 
-        private Process frpProcess;
-        private string type;
-        private IToIni obj;
+        public FrpConfigBase FrpConfig { get; } = frpConfig;
 
-        public void StartServer(IToIni obj)
+        private Process frpProcess;
+
+        private string type;
+
+        private IToFrpConfig obj;
+
+        public void StartServer(IToFrpConfig obj)
         {
             Start("s", obj);
         }
 
-        public void StartClient(IToIni obj)
+        public void StartClient(IToFrpConfig obj)
         {
             Start("c", obj);
         }
 
-        public void Start(string type, IToIni obj)
+        public void Start(string type, IToFrpConfig obj)
         {
-            (App.Current.MainWindow as MainWindow).AddLogOnMainThread("正在启动" + type switch
-            {
-                "c" => "客户端",
-                "s" => "服务端",
-                _ => throw new Exception("不支持c和s以外的类型")
-            }, "I"); 
+            Logger.Info($"正在启动", FrpConfig.Name);
 
             if (frpProcess != null)
             {
@@ -44,19 +45,35 @@ namespace FrpGUI
             {
                 Directory.CreateDirectory(tempDir);
             }
-            string ini = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
-            File.WriteAllText(ini, obj.ToIni());
+            string configFile = null;
+            switch (AppConfig.Instance.FrpConfigType)
+            {
+                case "INI":
+                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
+                    File.WriteAllText(configFile, obj.ToIni());
+                    break;
+                case "TOML":
+                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
+                    File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
+                    break;
+                default:
+                    throw new Exception("未知FRP配置文件类型");
+            }
+            Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = $"./frp/frp{type}.exe",
-                Arguments = $"-c \"{ini}\"",
+                Arguments = $"-c \"{configFile}\"",
                 WorkingDirectory = "./frp",
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
+                StandardErrorEncoding = Encoding.UTF8,
+                StandardInputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
             };
             frpProcess.EnableRaisingEvents = true;
             frpProcess.OutputDataReceived += P_OutputDataReceived;
@@ -115,6 +132,10 @@ namespace FrpGUI
 
         public Task StopAsync()
         {
+            if (frpProcess == null)
+            {
+                return Task.CompletedTask;
+            }
             var tcs = new TaskCompletionSource<int>();
             IsRunning = false;
             frpProcess.Exited -= FrpProcess_Exited;
@@ -143,11 +164,8 @@ namespace FrpGUI
             {
                 return;
             }
-            Debug.WriteLine(e.Data);
-            Output?.Invoke(sender, e);
+            Logger.Ouput(e.Data, FrpConfig.Name);
         }
-
-        public static event DataReceivedEventHandler Output;
 
         public event EventHandler Exited;
 

@@ -1,7 +1,7 @@
 ﻿using FzLib;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
     public class ServerConfig : FrpConfigBase
     {
@@ -17,7 +17,7 @@ namespace FrpGUI
 
         public ServerConfig()
         {
-            Name = "服务端1";
+            Name = "服务端";
         }
 
         public string DashBoardPassword
@@ -74,6 +74,33 @@ namespace FrpGUI
 
         public override string Type { get; } = "s";
 
+        public override string ToToml()
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("bindPort = ").Append(Port).AppendLine();
+            str.Append("transport.maxPoolCount = ").Append(MaxPoolCount).AppendLine();
+            str.Append("webServer.port = ").Append(DashBoardPort).AppendLine();
+            str.Append("webServer.user = ").Append('"').Append(DashBoardUsername).Append('"').AppendLine();
+            str.Append("webServer.password  = ").Append('"').Append(DashBoardPassword).Append('"').AppendLine();
+
+            if (HttpPort.HasValue && HttpPort.Value > 0)
+            {
+                str.Append("vhostHTTPPort = ").Append(HttpPort.Value).AppendLine();
+            }
+            if (HttpsPort.HasValue && HttpsPort.Value > 0)
+            {
+                str.Append("vhostHTTPSPort = ").Append(HttpsPort.Value).AppendLine();
+            }
+            if (!string.IsNullOrWhiteSpace(Token))
+            {
+                str.Append("auth.token = ").Append('"').Append(Token).Append('"').AppendLine();
+            }
+
+            str.Append("transport.tls.enable = ").Append(TlsOnly.ToString().ToLower()).AppendLine();
+
+            return str.ToString();
+        }
+
         public override string ToIni()
         {
             StringBuilder str = new StringBuilder();
@@ -95,7 +122,7 @@ namespace FrpGUI
             {
                 str.Append("token = ").Append(Token).AppendLine();
             }
-            if(TlsOnly)
+            if (TlsOnly)
             {
                 str.Append("tls_only = true").AppendLine();
             }

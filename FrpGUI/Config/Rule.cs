@@ -3,9 +3,9 @@ using System;
 using System.ComponentModel;
 using System.Text;
 
-namespace FrpGUI
+namespace FrpGUI.Config
 {
-    public class Rule : IToIni, ICloneable
+    public class Rule : IToFrpConfig, ICloneable
     {
         private bool compression;
         private string domains;
@@ -14,7 +14,7 @@ namespace FrpGUI
         private string localAddress = "localhost";
         private string localPort = "";
         private string name = "";
-        private string remotePort="";
+        private string remotePort = "";
         private string stcpKey;
         private string stcpServerName;
         private NetType type = NetType.TCP;
@@ -93,11 +93,65 @@ namespace FrpGUI
             return MemberwiseClone();
         }
 
+        public string ToToml()
+        {
+            StringBuilder str = new StringBuilder();
+
+            str.AppendLine(Type == NetType.STCP_Visitor ? "[[visitors]]" : "[[proxies]]");
+            str.Append("name = ").Append('"').Append(Name).Append('"').AppendLine();
+            if (Type is NetType.STCP_Visitor)
+            {
+                str.Append("type = \"stcp\"").AppendLine();
+            }
+            else
+            {
+                str.Append("type = ").Append('"').Append(Type.ToString().ToLower()).Append('"').AppendLine();
+            }
+            if (Encryption)
+            {
+                str.AppendLine("transport.useEncryption = true");
+            }
+            if (Compression)
+            {
+                str.AppendLine("transport.useCompression = true");
+            }
+            switch (Type)
+            {
+                case NetType.HTTP or NetType.HTTPS:
+                    str.Append("customDomains  = [").Append('"').Append(Domains).Append('"').Append(']').AppendLine();
+                    break;
+                case NetType.TCP or NetType.UDP:
+                    str.Append("remotePort = ").Append(RemotePort).AppendLine();
+                    break;
+            }
+
+
+            if (Type == NetType.STCP || Type == NetType.STCP_Visitor)
+            {
+                str.Append("secretKey = ").Append('"').Append(STCPKey).Append('"').AppendLine();
+            }
+
+            if (Type == NetType.STCP_Visitor)
+            {
+                str.Append("serverName = ").Append('"').Append(STCPServerName).Append('"').AppendLine();
+                str.Append("bindAddr  = ").Append('"').Append(LocalAddress).Append('"').AppendLine();
+                str.Append("bindPort = ").Append(LocalPort).AppendLine();
+            }
+            else
+            {
+                str.Append("localIP = ").Append('"').Append(LocalAddress).Append('"').AppendLine();
+                str.Append("localPort = ").Append(LocalPort).AppendLine();
+            }
+
+
+            return str.ToString();
+        }
+
         public string ToIni()
         {
             StringBuilder str = new StringBuilder();
             str.Append('[')
-                .Append(localPort.Contains(',')||localPort.Contains('-')?"range:":"")
+                .Append(localPort.Contains(',') || localPort.Contains('-') ? "range:" : "")
                 .Append(Name)
                 .Append(']')
                 .AppendLine();
