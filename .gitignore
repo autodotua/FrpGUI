@@ -341,3 +341,4 @@ healthchecksdb
 
 *.exe
 ./frp/*
+./bin/*

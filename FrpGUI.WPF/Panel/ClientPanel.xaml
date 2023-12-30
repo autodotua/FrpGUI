@@ -229,6 +229,8 @@
         </GroupBox>
         <Button
             Grid.Row="4"
+            Width="120"
+            Margin="8"
             HorizontalAlignment="Right"
             Click="AddRuleButton_Click"
             Content="新增" />
