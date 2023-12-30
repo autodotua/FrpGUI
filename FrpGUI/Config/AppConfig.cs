@@ -52,6 +52,7 @@ namespace FrpGUI.Config
         public string AdminAddress { get; set; } = "127.0.0.1";
         public string AdminPassword { get; set; } = "";
         public int AdminPort { get; set; } = 12345;
+        public string FrpConfigType { get; set; } = "TOML"; //TOML、INI
         public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
     }
 }

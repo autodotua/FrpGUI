@@ -102,13 +102,16 @@
                     Content="启动" />
                 <Button
                     x:Name="btnRestart"
-                    Content="重置" />
+                    Content="重启" />
                 <Button
                     x:Name="btnStop"
                     Content="停止" />
                 <Button
                     x:Name="btnCheck"
                     Content="检查" />
+                <Button
+                    x:Name="btnExport"
+                    Content="导出" />
             </StackPanel>
         </Grid>
 

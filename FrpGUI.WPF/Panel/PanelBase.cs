@@ -1,11 +1,13 @@
 ﻿using FrpGUI.Config;
 using FzLib;
 using FzLib.WPF;
+using Microsoft.Win32;
 using ModernWpf.FzExtension.CommonDialog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using CommonDialog = ModernWpf.FzExtension.CommonDialog.CommonDialog;
 
 namespace FrpGUI.WPF
 {
@@ -22,6 +25,7 @@ namespace FrpGUI.WPF
         protected abstract Button StopButton { get; }
         protected abstract Button RestartButton { get; }
         protected abstract Button CheckButton { get; }
+        protected abstract Button ExportButton { get; }
         protected abstract Control ConfigView { get; }
         private FrpConfigBase frpConfig;
 
@@ -64,7 +68,38 @@ namespace FrpGUI.WPF
             RestartButton.Click += RestartButton_Click;
             StopButton.Click += StopButton_Click;
             CheckButton.Click += CheckButton_Click;
+            ExportButton.Click += ExportButton_Click;
             SizeChanged += PanelBase_SizeChanged;
+        }
+
+        private async void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            string config;
+            string filter;
+            switch (AppConfig.Instance.FrpConfigType)
+            {
+                case "INI":
+                    config = FrpConfig.ToIni();
+                    filter = "INI配置文件|*.ini";
+                    break;
+                case "TOML":
+                    config = FrpConfig.ToToml();
+                    filter = "TOML配置文件|*.toml";
+                    break;
+                default:
+                    throw new Exception("未知FRP配置文件类型");
+            }
+            if (await CommonDialog.ShowYesNoDialogAsync("配置文件", "是否导出配置文件", config))
+            {
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = filter;
+                dialog.FileName = FrpConfig.Name;
+                dialog.AddExtension = true;
+                if (dialog.ShowDialog() == true)
+                {
+                    File.WriteAllText(dialog.FileName, config, new UTF8Encoding(false));
+                }
+            }
         }
 
         private void PanelBase_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -73,7 +108,7 @@ namespace FrpGUI.WPF
             {
                 Resources["ConfigWidth"] = ConfigView.ActualWidth switch
                 {
-                    < 500 => ConfigView.ActualWidth-24,
+                    < 500 => ConfigView.ActualWidth - 24,
                     _ => 240d
                 };
             }
@@ -90,14 +125,14 @@ namespace FrpGUI.WPF
             var processes = await FrpConfig.Process.GetExistedProcesses(FrpConfig.Type);
             if (processes.Length > 0)
             {
-                if (await CommonDialog.ShowYesNoDialogAsync("检查正在运行的进程",$"存在{processes.Length}个frp{FrpConfig.Type}进程，是否停止？"))
+                if (await CommonDialog.ShowYesNoDialogAsync("检查正在运行的进程", $"存在{processes.Length}个frp{FrpConfig.Type}进程，是否停止？"))
                 {
                     await FrpConfig.Process.KillExistedProcesses(FrpConfig.Type);
                 }
             }
             else
             {
-                await CommonDialog.ShowOkDialogAsync("检查正在运行的进程",$"没有正在运行的frp{FrpConfig.Type}进程");
+                await CommonDialog.ShowOkDialogAsync("检查正在运行的进程", $"没有正在运行的frp{FrpConfig.Type}进程");
             }
             (sender as Button).IsEnabled = true;
         }

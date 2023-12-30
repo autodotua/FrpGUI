@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Util
@@ -45,13 +46,25 @@ namespace FrpGUI.Util
             {
                 Directory.CreateDirectory(tempDir);
             }
-            string ini = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
-            File.WriteAllText(ini, obj.ToIni());
+            string configFile = null;
+            switch (AppConfig.Instance.FrpConfigType)
+            {
+                case "INI":
+                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
+                    File.WriteAllText(configFile, obj.ToIni());
+                    break;
+                case "TOML":
+                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
+                    File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
+                    break;
+                default:
+                    throw new Exception("未知FRP配置文件类型");
+            }
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = $"./frp/frp{type}.exe",
-                Arguments = $"-c \"{ini}\"",
+                Arguments = $"-c \"{configFile}\"",
                 WorkingDirectory = "./frp",
                 CreateNoWindow = true,
                 UseShellExecute = false,

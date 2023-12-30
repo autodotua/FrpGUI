@@ -55,6 +55,7 @@ namespace FrpGUI.WPF
         protected override Button RestartButton => btnRestart;
         protected override Button StartButton => btnStart;
         protected override Button StopButton => btnStop;
+        protected override Button ExportButton => btnExport;
         protected override Control ConfigView => scrConfig;
 
         public override Task StopAsync()

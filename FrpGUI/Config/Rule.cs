@@ -14,7 +14,7 @@ namespace FrpGUI.Config
         private string localAddress = "localhost";
         private string localPort = "";
         private string name = "";
-        private string remotePort="";
+        private string remotePort = "";
         private string stcpKey;
         private string stcpServerName;
         private NetType type = NetType.TCP;
@@ -93,11 +93,57 @@ namespace FrpGUI.Config
             return MemberwiseClone();
         }
 
+        public string ToToml()
+        {
+            StringBuilder str = new StringBuilder();
+
+            str.AppendLine(Type == NetType.STCP_Visitor ? "[[visitors]]" : "[[proxies]]");
+            str.Append("name = ").Append('"').Append(Name).Append('"').AppendLine();
+            str.Append("type = ").Append('"').Append(Type.ToString().ToLower()).Append('"').AppendLine();
+            if (Encryption)
+            {
+                str.AppendLine("transport.useEncryption = true");
+            }
+            if (Compression)
+            {
+                str.AppendLine("transport.useCompression = true");
+            }
+            if (Type == NetType.HTTP || Type == NetType.HTTPS)
+            {
+                str.Append("customDomains  = [").Append('"').Append(Domains).Append('"').Append(']').AppendLine();
+            }
+            else
+            {
+                str.Append("remotePort = ").Append(RemotePort).AppendLine();
+            }
+
+
+            if (Type == NetType.STCP || Type == NetType.STCP_Visitor)
+            {
+                str.Append("secretKey = ").Append('"').Append(STCPKey).Append('"').AppendLine();
+            }
+
+            if (Type == NetType.STCP_Visitor)
+            {
+                str.Append("serverName = ").Append('"').Append(STCPServerName).Append('"').AppendLine();
+                str.Append("bindAddr  = ").Append('"').Append(LocalAddress).Append('"').AppendLine();
+                str.Append("bindPort = ").Append(LocalPort).AppendLine();
+            }
+            else
+            {
+                str.Append("localIP = ").Append('"').Append(LocalAddress).Append('"').AppendLine();
+                str.Append("localPort = ").Append(LocalPort).AppendLine();
+            }
+
+
+            return str.ToString();
+        }
+
         public string ToIni()
         {
             StringBuilder str = new StringBuilder();
             str.Append('[')
-                .Append(localPort.Contains(',')||localPort.Contains('-')?"range:":"")
+                .Append(localPort.Contains(',') || localPort.Contains('-') ? "range:" : "")
                 .Append(Name)
                 .Append(']')
                 .AppendLine();

@@ -89,6 +89,8 @@ namespace FrpGUI.Config
 
         public abstract string ToIni();
 
+        public abstract string ToToml();
+
         private void Process_Exited(object sender, EventArgs e)
         {
             ChangeStatus(ProcessStatus.NotRun);

@@ -85,6 +85,7 @@ namespace FrpGUI.WPF
                 {
                     type = message.Contains("error") ? 'E' : 'I';
                 }
+                message = "(frp) " + message;
             }
 
             Brush brush = Foreground;

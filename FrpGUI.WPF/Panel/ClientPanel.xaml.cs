@@ -47,6 +47,7 @@ namespace FrpGUI.WPF
         protected override Button StopButton => btnStop;
         protected override Button RestartButton => btnRestart;
         protected override Button CheckButton => btnCheck;
+        protected override Button ExportButton => btnExport;
         protected override Control ConfigView => scrConfig;
 
         private void AddRuleButton_Click(object sender, RoutedEventArgs e)
