@@ -3,16 +3,21 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Util
 {
-    public class ProcessHelper
+    public class ProcessHelper(FrpConfigBase frpConfig)
     {
         public bool IsRunning { get; set; }
 
+        public FrpConfigBase FrpConfig { get; } = frpConfig;
+
         private Process frpProcess;
+
         private string type;
+
         private IToFrpConfig obj;
 
         public void StartServer(IToFrpConfig obj)
@@ -27,13 +32,7 @@ namespace FrpGUI.Util
 
         public void Start(string type, IToFrpConfig obj)
         {
-            string typeText = type switch
-            {
-                "c" => "客户端",
-                "s" => "服务端",
-                _ => throw new Exception("不支持c和s以外的类型")
-            };
-            Logger.Info($"正在启动{typeText}");
+            Logger.Info($"正在启动", FrpConfig.Name);
 
             if (frpProcess != null)
             {
@@ -60,6 +59,7 @@ namespace FrpGUI.Util
                 default:
                     throw new Exception("未知FRP配置文件类型");
             }
+            Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
             frpProcess = new Process();
             frpProcess.StartInfo = new ProcessStartInfo()
             {
@@ -132,6 +132,10 @@ namespace FrpGUI.Util
 
         public Task StopAsync()
         {
+            if (frpProcess == null)
+            {
+                return Task.CompletedTask;
+            }
             var tcs = new TaskCompletionSource<int>();
             IsRunning = false;
             frpProcess.Exited -= FrpProcess_Exited;
@@ -160,8 +164,7 @@ namespace FrpGUI.Util
             {
                 return;
             }
-            Debug.WriteLine(e.Data);
-            Logger.Ouput(e.Data);
+            Logger.Ouput(e.Data, FrpConfig.Name);
         }
 
         public event EventHandler Exited;

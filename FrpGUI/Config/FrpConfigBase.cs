@@ -16,6 +16,7 @@ namespace FrpGUI.Config
 
         public FrpConfigBase()
         {
+            Process = new ProcessHelper(this);
             Process.Exited += Process_Exited;
         }
 
@@ -38,7 +39,7 @@ namespace FrpGUI.Config
         }
 
         [JsonIgnore]
-        public ProcessHelper Process { get; protected set; } = new ProcessHelper();
+        public ProcessHelper Process { get; protected set; }
 
         [JsonIgnore]
         public ProcessStatus ProcessStatus
@@ -51,7 +52,7 @@ namespace FrpGUI.Config
 
         public void ChangeStatus(ProcessStatus status)
         {
-            Debug.WriteLine("进程状态改变：" + status.ToString());
+            Logger.Info("进程状态改变：" + status.ToString(), Name);
             ProcessStatus = status;
             StatusChanged?.Invoke(this, new EventArgs());
         }
@@ -60,7 +61,7 @@ namespace FrpGUI.Config
         {
             var newItem = MemberwiseClone() as FrpConfigBase;
             newItem.processStatus = ProcessStatus.NotRun;
-            newItem.Process = new ProcessHelper();
+            newItem.Process = new ProcessHelper(this);
             return newItem;
         }
 

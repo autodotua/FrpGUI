@@ -99,7 +99,14 @@ namespace FrpGUI.Config
 
             str.AppendLine(Type == NetType.STCP_Visitor ? "[[visitors]]" : "[[proxies]]");
             str.Append("name = ").Append('"').Append(Name).Append('"').AppendLine();
-            str.Append("type = ").Append('"').Append(Type.ToString().ToLower()).Append('"').AppendLine();
+            if (Type is NetType.STCP_Visitor)
+            {
+                str.Append("type = \"stcp\"").AppendLine();
+            }
+            else
+            {
+                str.Append("type = ").Append('"').Append(Type.ToString().ToLower()).Append('"').AppendLine();
+            }
             if (Encryption)
             {
                 str.AppendLine("transport.useEncryption = true");

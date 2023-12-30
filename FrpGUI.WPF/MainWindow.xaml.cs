@@ -24,7 +24,7 @@ using System.Windows.Shapes;
 
 namespace FrpGUI.WPF
 {
-    public class Log : INotifyPropertyChanged
+    public class UILog : INotifyPropertyChanged
     {
         private string content;
         private DateTime time;
@@ -53,11 +53,10 @@ namespace FrpGUI.WPF
     public partial class MainWindow : Window
     {
         private bool forceClose = false;
-        private Regex rFrpLog = new Regex(@"(?<Time>[0-9/: ]{19}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
         public MainWindow(bool autoStart = false)
         {
             InitializeComponent();
-            Logger.NewLog += (s, e) => AddLogOnMainThread(e.Message, e.Type);
+            Logger.NewLog += (s, e) => Dispatcher.BeginInvoke(() => AddLog(e));
             DataContext = ViewModel;
 
             foreach (var config in AppConfig.Instance.FrpConfigs)
@@ -71,29 +70,27 @@ namespace FrpGUI.WPF
         }
 
         public MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
-        public void AddLog(string message, char type)
+        public void AddLog(LogEventArgs e)
         {
-            if (type == 'O')
+            string message = e.Message;
+            if (e.FromFrp)
             {
-                if (rFrpLog.IsMatch(message))
+                message = $"(frp-{e.InstanceName}) {message}";
+            }
+            else
+            {
+                if (e.InstanceName != null)
                 {
-                    var match = rFrpLog.Match(message);
-                    message = match.Groups["Content"].Value;
-                    type = match.Groups["Type"].Value[0];
+                    message = $"({e.InstanceName}) {message}";
                 }
-                else
-                {
-                    type = message.Contains("error") ? 'E' : 'I';
-                }
-                message = "(frp) " + message;
             }
 
             Brush brush = Foreground;
-            if (type == 'W')
+            if (e.Type == 'W')
             {
                 brush = Brushes.Orange;
             }
-            else if (type == 'E')
+            else if (e.Type == 'E')
             {
                 brush = Brushes.Red;
             }
@@ -109,9 +106,9 @@ namespace FrpGUI.WPF
                     }
                 }
             }
-            ViewModel.Logs.Add(new Log()
+            ViewModel.Logs.Add(new UILog()
             {
-                Time = DateTime.Now,
+                Time = e.Time,
                 Content = message,
                 TypeBrush = brush
             });
@@ -125,10 +122,6 @@ namespace FrpGUI.WPF
             }
         }
 
-        public void AddLogOnMainThread(string message, char type)
-        {
-            Dispatcher.Invoke(() => AddLog(message, type));
-        }
         private void AddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as FrameworkElement).Tag.Equals("1"))
@@ -259,7 +252,7 @@ namespace FrpGUI.WPF
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<FrpConfigBase> FrpConfigs { get; } = new ObservableCollection<FrpConfigBase>();
-        public ObservableCollection<Log> Logs { get; } = new ObservableCollection<Log>();
+        public ObservableCollection<UILog> Logs { get; } = new ObservableCollection<UILog>();
         public int MaxLogCount
         {
             get => maxLogCount;
