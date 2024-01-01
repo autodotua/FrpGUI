@@ -16,77 +16,95 @@ namespace FrpGUI.Util
 
         private Process frpProcess;
 
-        private string type;
+        private char type;
 
         private IToFrpConfig obj;
 
-        public void StartServer(IToFrpConfig obj)
+        public void Start(char type, IToFrpConfig obj)
         {
-            Start("s", obj);
-        }
-
-        public void StartClient(IToFrpConfig obj)
-        {
-            Start("c", obj);
-        }
-
-        public void Start(string type, IToFrpConfig obj)
-        {
+            if (type is not ('c' or 's'))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
             Logger.Info($"正在启动", FrpConfig.Name);
 
-            if (frpProcess != null)
+            bool processHasStarted = false;
+            try
             {
-                frpProcess.Kill();
+                frpProcess?.Kill();
+                this.type = type;
+                this.obj = obj;
+                string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
+                if (!Directory.Exists(tempDir))
+                {
+                    Directory.CreateDirectory(tempDir);
+                }
+                string configFile = null;
+                switch (AppConfig.Instance.FrpConfigType)
+                {
+                    case "INI":
+                        configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
+                        File.WriteAllText(configFile, obj.ToIni());
+                        break;
+                    case "TOML":
+                        configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
+                        File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
+                        break;
+                    default:
+                        throw new Exception("未知FRP配置文件类型");
+                }
+                Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
+                string frpExe = $"./frp/frp{type}";
+                if (!File.Exists(frpExe) && !File.Exists(frpExe + ".exe"))
+                {
+                    throw new FileNotFoundException("没有找到frp程序，请将可知性文件放置在./frp/中");
+                }
+                frpProcess = new Process();
+                frpProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = frpExe,
+                    Arguments = $"-c \"{configFile}\"",
+                    WorkingDirectory = "./frp",
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    StandardErrorEncoding = Encoding.UTF8,
+                    StandardInputEncoding = Encoding.UTF8,
+                    StandardOutputEncoding = Encoding.UTF8,
+                };
+                frpProcess.EnableRaisingEvents = true;
+                frpProcess.OutputDataReceived += P_OutputDataReceived;
+                frpProcess.ErrorDataReceived += P_OutputDataReceived;
+                processHasStarted = true;
+                frpProcess.Start();
+                frpProcess.BeginOutputReadLine();
+                frpProcess.BeginErrorReadLine();
+                frpProcess.Exited += FrpProcess_Exited;
+                IsRunning = true;
+                Started?.Invoke(this, new EventArgs());
             }
-            this.type = type;
-            this.obj = obj;
-            string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
-            if (!Directory.Exists(tempDir))
+            catch (Exception ex)
             {
-                Directory.CreateDirectory(tempDir);
+                Logger.Error("启动失败：" + ex.Message, FrpConfig.Name);
+                if (processHasStarted)
+                {
+                    try
+                    {
+                        frpProcess.Kill();
+                        frpProcess.Dispose();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                throw;
             }
-            string configFile = null;
-            switch (AppConfig.Instance.FrpConfigType)
-            {
-                case "INI":
-                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
-                    File.WriteAllText(configFile, obj.ToIni());
-                    break;
-                case "TOML":
-                    configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
-                    File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
-                    break;
-                default:
-                    throw new Exception("未知FRP配置文件类型");
-            }
-            Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
-            frpProcess = new Process();
-            frpProcess.StartInfo = new ProcessStartInfo()
-            {
-                FileName = $"./frp/frp{type}.exe",
-                Arguments = $"-c \"{configFile}\"",
-                WorkingDirectory = "./frp",
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                StandardErrorEncoding = Encoding.UTF8,
-                StandardInputEncoding = Encoding.UTF8,
-                StandardOutputEncoding = Encoding.UTF8,
-            };
-            frpProcess.EnableRaisingEvents = true;
-            frpProcess.OutputDataReceived += P_OutputDataReceived;
-            frpProcess.ErrorDataReceived += P_OutputDataReceived;
-            frpProcess.Start();
-            frpProcess.BeginOutputReadLine();
-            frpProcess.BeginErrorReadLine();
-            frpProcess.Exited += FrpProcess_Exited;
-            IsRunning = true;
-            Started?.Invoke(this, new EventArgs());
         }
 
-        public async Task<Process[]> GetExistedProcesses(string type)
+        public async Task<Process[]> GetExistedProcesses(char type)
         {
             Process[] existProcess = null;
             await Task.Run(() =>
@@ -96,7 +114,7 @@ namespace FrpGUI.Util
             return existProcess;
         }
 
-        public async Task KillExistedProcesses(string type)
+        public async Task KillExistedProcesses(char type)
         {
             Process[] existProcess = null;
             await Task.Run(() =>

@@ -48,7 +48,7 @@ namespace FrpGUI.Config
             private set => this.SetValueAndNotify(ref processStatus, value, nameof(ProcessStatus));
         }
 
-        public abstract string Type { get; }
+        public abstract char Type { get; }
 
         public void ChangeStatus(ProcessStatus status)
         {
@@ -67,8 +67,16 @@ namespace FrpGUI.Config
 
         public async Task RestartAsync()
         {
-            ChangeStatus(ProcessStatus.Busy);
-            await Process.RestartAsync();
+            ChangeStatus(ProcessStatus.Busy); 
+            try
+            {
+                await Process.RestartAsync();
+            }
+            catch (Exception ex)
+            {
+                ChangeStatus(ProcessStatus.NotRun);
+                throw;
+            }
             ChangeStatus(ProcessStatus.Running);
             AppConfig.Instance.Save();
         }
@@ -76,8 +84,16 @@ namespace FrpGUI.Config
         public void Start()
         {
             ChangeStatus(ProcessStatus.Busy);
-            Process.Start(Type, this);
-            ChangeStatus(ProcessStatus.Running);
+            try
+            {
+                Process.Start(Type, this);
+                ChangeStatus(ProcessStatus.Running);
+            }
+            catch (Exception ex)
+            {
+                ChangeStatus(ProcessStatus.NotRun);
+                throw;
+            }
             AppConfig.Instance.Save();
         }
 

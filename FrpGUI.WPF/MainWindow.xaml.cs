@@ -63,10 +63,6 @@ namespace FrpGUI.WPF
             {
                 ViewModel.FrpConfigs.Add(config);
             }
-            foreach (var config in from c in AppConfig.Instance.FrpConfigs where c.AutoStart select c)
-            {
-                config.Start();
-            }
         }
 
         public MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
@@ -235,6 +231,17 @@ namespace FrpGUI.WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                foreach (var config in from c in AppConfig.Instance.FrpConfigs where c.AutoStart select c)
+                {
+                    config.Start();
+                }
+            }
+            catch(Exception ex)
+            {
+                CommonDialog.ShowErrorDialogAsync(ex, "frp启动失败");
+            }
         }
     }
 

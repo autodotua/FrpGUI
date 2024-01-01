@@ -72,7 +72,7 @@ namespace FrpGUI.Config
             set => this.SetValueAndNotify(ref token, value, nameof(Token));
         }
 
-        public override string Type { get; } = "s";
+        public override char Type { get; } = 's';
 
         public override string ToToml()
         {

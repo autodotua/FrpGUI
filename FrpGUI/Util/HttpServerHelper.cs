@@ -86,7 +86,14 @@ namespace FrpGUI.Util
                             {
                                 Logger.Info(request.RemoteEndPoint.Address.ToString() + "：启动了服务器");
 
-                                server.Start();
+                                try
+                                {
+                                    server.Start();
+                                }
+                                catch(Exception ex)
+                                {
+
+                                }
                             }
                             else if (!b && server.Process.IsRunning)
                             {

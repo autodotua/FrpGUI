@@ -173,7 +173,14 @@ namespace FrpGUI.WPF
 
         public virtual void Start()
         {
-            FrpConfig.Start();
+            try
+            {
+                FrpConfig.Start();
+            }
+            catch (Exception ex)
+            {
+                CommonDialog.ShowErrorDialogAsync(ex, "frp启动失败");
+            }
         }
 
         public virtual Task StopAsync()

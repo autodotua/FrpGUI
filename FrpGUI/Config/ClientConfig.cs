@@ -88,7 +88,7 @@ namespace FrpGUI.Config
             set => this.SetValueAndNotify(ref token, value, nameof(Token));
         }
 
-        public override string Type { get; } = "c";
+        public override char Type { get; } = 'c';
 
         public override object Clone()
         {
