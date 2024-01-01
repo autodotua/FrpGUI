@@ -59,18 +59,67 @@
                 ItemsSource="{Binding Logs}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ui:SimpleStackPanel
-                            Orientation="Vertical"
-                            Spacing="4">
-                            <TextBlock
+                        <Grid Width="220">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem
+                                        Click="CopyMenu_Click"
+                                        Header="复制" />
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <ui:SimpleStackPanel
+                                VerticalAlignment="Center"
                                 Opacity="0.75"
-                                Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
-                                TextWrapping="NoWrap" />
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <TextBlock
+                                    Text="{Binding ChangeableTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                    TextWrapping="NoWrap" />
+                                <TextBlock
+                                    Text="{Binding UpdateTimes, StringFormat='×{0}'}"
+                                    TextWrapping="NoWrap"
+                                    Visibility="{Binding HasUpdated, Converter={StaticResource Bool2VisibilityConverter}}" />
+                            </ui:SimpleStackPanel>
                             <TextBlock
+                                Grid.Row="1"
+                                Margin="0,0,4,0"
+                                VerticalAlignment="Center"
+                                Opacity="0.75"
+                                Text="{Binding InstanceName}"
+                                TextWrapping="NoWrap"
+                                Visibility="{Binding InstanceName, Converter={StaticResource NotNullConverter}}" />
+
+
+                            <Border
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                Padding="4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Gray"
+                                BorderThickness="0"
+                                CornerRadius="4"
+                                Visibility="{Binding FromFrp, Converter={StaticResource Bool2VisibilityConverter}, ConverterParameter='h'}">
+                                <TextBlock Text="frp" />
+                            </Border>
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.ColumnSpan="9"
+                                Margin="0,0,4,0"
                                 Foreground="{Binding TypeBrush}"
-                                Text="{Binding Content}"
+                                Text="{Binding Message}"
                                 TextWrapping="Wrap" />
-                        </ui:SimpleStackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -24,32 +24,6 @@ using System.Windows.Shapes;
 
 namespace FrpGUI.WPF
 {
-    public class UILog : INotifyPropertyChanged
-    {
-        private string content;
-        private DateTime time;
-        private Brush typeBrush;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Content
-        {
-            get => content;
-            set => this.SetValueAndNotify(ref content, value, nameof(Content));
-        }
-
-        public DateTime Time
-        {
-            get => time;
-            set => this.SetValueAndNotify(ref time, value, nameof(Time));
-        }
-        public Brush TypeBrush
-        {
-            get => typeBrush;
-            set => this.SetValueAndNotify(ref typeBrush, value, nameof(TypeBrush));
-        }
-    }
-
     public partial class MainWindow : Window
     {
         private bool forceClose = false;
@@ -66,21 +40,9 @@ namespace FrpGUI.WPF
         }
 
         public MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
+
         public void AddLog(LogEventArgs e)
         {
-            string message = e.Message;
-            if (e.FromFrp)
-            {
-                message = $"(frp-{e.InstanceName}) {message}";
-            }
-            else
-            {
-                if (e.InstanceName != null)
-                {
-                    message = $"({e.InstanceName}) {message}";
-                }
-            }
-
             Brush brush = Foreground;
             if (e.Type == 'W')
             {
@@ -93,20 +55,18 @@ namespace FrpGUI.WPF
 
             if (ViewModel.Logs.Count >= 2)
             {
-                for (int i = 1; i < 2; i++)
+                for (int i = 1; i <= 2; i++)
                 {
-                    if (ViewModel.Logs[^i].Content == message)
+                    if (ViewModel.Logs[^i].Message == e.Message)
                     {
-                        ViewModel.Logs[^i].Time = DateTime.Now;
+                        ViewModel.Logs[^i].UpdateTime();
                         return;
                     }
                 }
             }
-            ViewModel.Logs.Add(new UILog()
+            ViewModel.Logs.Add(new UILog(e)
             {
-                Time = e.Time,
-                Content = message,
-                TypeBrush = brush
+                TypeBrush = brush,
             });
             if (ViewModel.Logs.Count > 0)
             {
@@ -238,10 +198,16 @@ namespace FrpGUI.WPF
                     config.Start();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonDialog.ShowErrorDialogAsync(ex, "frp启动失败");
             }
+        }
+
+        private void CopyMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var log = lbxLogs.SelectedItem as UILog;
+            Clipboard.SetText(log.Message);
         }
     }
 
@@ -312,6 +278,7 @@ namespace FrpGUI.WPF
             set => (App.Current as App).SetStartup(value);
         }
     }
+
     public class ProcessStatus2BrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -331,6 +298,36 @@ namespace FrpGUI.WPF
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [DebuggerDisplay("{Message}")]
+    public class UILog(LogEventArgs e) : LogEventArgs(e.Message, e.InstanceName, e.Type, e.FromFrp), INotifyPropertyChanged
+    {
+        private DateTime time = e.Time;
+        private Brush typeBrush;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public DateTime ChangeableTime
+        {
+            get => time;
+            private set => this.SetValueAndNotify(ref time, value, nameof(ChangeableTime));
+        }
+
+        public bool HasUpdated => UpdateTimes > 0;
+
+        public Brush TypeBrush
+        {
+            get => typeBrush;
+            set => this.SetValueAndNotify(ref typeBrush, value, nameof(TypeBrush));
+        }
+
+        public int UpdateTimes { get; set; }
+
+        public void UpdateTime()
+        {
+            UpdateTimes++;
+            this.Notify(nameof(UpdateTimes), nameof(HasUpdated));
         }
     }
 }
