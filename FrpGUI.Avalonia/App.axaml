@@ -1,13 +1,15 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="FrpGUI.Avalonia.App"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+<Application
+    x:Class="FrpGUI.Avalonia.App"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
+    RequestedThemeVariant="Default">
 
     <Application.Styles>
         <FluentTheme />
-      <!--<Style Selector="TextBlock">
-        <Setter Property="FontFamily" Value="微软雅黑"/>
-      </Style>-->
     </Application.Styles>
+    <Application.Resources>
+        <c:NotNullConverter x:Key="NotNullConverter" />
+        <c:EqualConverter x:Key="EqualConverter" />
+    </Application.Resources>
 </Application>
