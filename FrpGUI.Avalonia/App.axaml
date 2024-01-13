@@ -6,8 +6,8 @@
 
     <Application.Styles>
         <FluentTheme />
-      <Style Selector="TextBlock">
+      <!--<Style Selector="TextBlock">
         <Setter Property="FontFamily" Value="微软雅黑"/>
-      </Style>
+      </Style>-->
     </Application.Styles>
 </Application>

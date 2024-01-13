@@ -5,6 +5,7 @@
     xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="clr-namespace:FrpGUI.Avalonia.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -22,7 +23,9 @@
         <Grid.Resources>
             <c:ProcessStatus2BrushConverter x:Key="ProcessStatus2BrushConverter" />
         </Grid.Resources>
-        <ListBox ItemsSource="{Binding FrpConfigs}">
+        <ListBox
+            ItemsSource="{Binding FrpConfigs}"
+            SelectedItem="{Binding CurrentFrpConfig}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel
@@ -38,6 +41,16 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Grid
+            Grid.Column="2"
+            RowDefinitions="Auto,*">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Control Bar6</TextBlock>
+            </StackPanel>
+            <ContentControl
+                Grid.Row="1"
+                Content="{Binding CurrentPanel}" />
+        </Grid>
         <ListBox Grid.Column="4">
             <ListBox.ItemTemplate>
                 <DataTemplate>
