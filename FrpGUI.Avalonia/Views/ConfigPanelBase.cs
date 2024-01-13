@@ -13,7 +13,12 @@ namespace FrpGUI.Avalonia.Views
     {
         public void LoadConfig(FrpConfigBase frpConfig)
         {
-            (DataContext as FrpConfigPanelViewModel).FrpConfig= frpConfig;
+            var vm = DataContext as FrpConfigPanelViewModel;
+            vm.FrpConfig = frpConfig;
+            if (frpConfig is ClientConfig cc)
+            {
+                vm.Rules = new System.Collections.ObjectModel.ObservableCollection<Rule>(cc.Rules);
+            }
         }
     }
 }

@@ -14,6 +14,8 @@ public partial class MainViewModel : ViewModelBase
     {
         FrpConfigs.Add(new ServerConfig());
         FrpConfigs.Add(new ClientConfig());
+        (FrpConfigs[^1] as ClientConfig).Rules.Add(new Rule()); 
+        (FrpConfigs[^1] as ClientConfig).Rules.Add(new Rule()); 
     }
     private ServerPanel serverPanel = new ServerPanel();
     private ClientPanel clientPanel = new ClientPanel();

@@ -7,9 +7,14 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+      <Style Selector="MenuItem">
+        <Setter Property="FontFamily" Value="微软雅黑"/>
+      </Style>
     </Application.Styles>
     <Application.Resources>
         <c:NotNullConverter x:Key="NotNullConverter" />
+        <c:InverseBoolConverter x:Key="InverseBoolConverter" />
         <c:EqualConverter x:Key="EqualConverter" />
     </Application.Resources>
 </Application>

@@ -17,7 +17,9 @@ namespace FrpGUI.Avalonia.Converters
                 throw new ArgumentNullException();
             }
             bool result = false;
-            if (parameter.Equals(value) || value != null && value.ToString().Equals(ConverterHelper.RemoveEndFlags(parameter.ToString())))
+            if (value is Type && value.GetType().Equals(value)
+                || parameter.Equals(value) 
+                || value != null && value.ToString().Equals(ConverterHelper.RemoveEndFlags(parameter.ToString())))
             {
                 result = true;
             }
