@@ -57,7 +57,7 @@ namespace FrpGUI.Util
                 string frpExe = $"./frp/frp{type}";
                 if (!File.Exists(frpExe) && !File.Exists(frpExe + ".exe"))
                 {
-                    throw new FileNotFoundException("没有找到frp程序，请将可知性文件放置在./frp/中");
+                    throw new FileNotFoundException("没有找到frp程序，请将可执行文件放置在./frp/中");
                 }
                 frpProcess = new Process();
                 frpProcess.StartInfo = new ProcessStartInfo()

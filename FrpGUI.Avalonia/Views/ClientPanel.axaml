@@ -1,5 +1,5 @@
 <v:ConfigPanelBase
-    x:Class="FrpGUI.Avalonia.ClientPanel"
+    x:Class="FrpGUI.Avalonia.Views.ClientPanel"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -149,14 +149,20 @@
                                     <Button.Flyout>
                                         <MenuFlyout>
                                             <MenuItem
+                                                Click="EnableRuleMenu_Click"
                                                 Header="启用"
                                                 IsVisible="{Binding Enable}" />
                                             <MenuItem
+                                                Click="DisableRuleMenu_Click"
                                                 Header="禁用"
                                                 IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
                                             <MenuItem Header="-" />
-                                            <MenuItem Header="修改" />
-                                            <MenuItem Header="删除" />
+                                            <MenuItem
+                                                Click="ModifyRuleMenu_Click"
+                                                Header="修改" />
+                                            <MenuItem
+                                                Click="RemoveRuleMenu_Click"
+                                                Header="删除" />
                                         </MenuFlyout>
                                     </Button.Flyout>
                                     <PathIcon Data="{StaticResource IconMore}" />

@@ -15,9 +15,4 @@ public partial class MainView : UserControl
         InitializeComponent();
     }
 
-    private async void AddRuleButton_Click(object sender, RoutedEventArgs e)
-    {
-        Debug.Assert(mainPanel.Content is ClientPanel );
-        (mainPanel.Content as ClientPanel).AddRule();
-    }
 }
