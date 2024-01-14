@@ -22,4 +22,17 @@
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Views\RuleWindow.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\RuleWindow.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>RuleWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -130,6 +130,7 @@
 
                 <Button
                     Width="88"
+                    Click="AddRuleButton_Click"
                     IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type cf:ClientConfig}}">
                     <StackPanel
                         Orientation="Horizontal"
@@ -142,6 +143,7 @@
 
             </StackPanel>
             <ContentControl
+                x:Name="mainPanel"
                 Grid.Row="1"
                 Content="{Binding CurrentPanel}" />
         </Grid>

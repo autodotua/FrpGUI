@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FrpGUI.Avalonia.Views;
 using FrpGUI.Config;
 using System;
 using System.Collections.ObjectModel;
@@ -12,10 +13,7 @@ public partial class MainViewModel : ViewModelBase
 {
     public MainViewModel()
     {
-        FrpConfigs.Add(new ServerConfig());
-        FrpConfigs.Add(new ClientConfig());
-        (FrpConfigs[^1] as ClientConfig).Rules.Add(new Rule()); 
-        (FrpConfigs[^1] as ClientConfig).Rules.Add(new Rule()); 
+        FrpConfigs = new ObservableCollection<FrpConfigBase>(AppConfig.Instance.FrpConfigs);
     }
     private ServerPanel serverPanel = new ServerPanel();
     private ClientPanel clientPanel = new ClientPanel();

@@ -9,17 +9,19 @@ using System.Text.Json.Serialization;
 
 namespace FrpGUI.Config
 {
-    public class AppConfig : IJsonSerializable
+    public class AppConfig
     {
-        private static readonly string path = "config.json";
-
-        private static AppConfig instance;
-
-        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
             TypeNameHandling = TypeNameHandling.Objects,
         };
+
+        private static readonly string path = "config.json";
+
+        private static readonly object lockObj = new object();
+
+        private static AppConfig instance;
 
         public AppConfig() : base()
         {
@@ -31,28 +33,47 @@ namespace FrpGUI.Config
         {
             get
             {
-                if (instance == null)
+                lock (lockObj)
                 {
-                    instance = new AppConfig();
-                    if (File.Exists(path))
+                    if (instance == null)
                     {
-                        try
+                        instance = new AppConfig();
+                        if (File.Exists(path))
                         {
-                            ConvertOldConfigJson();
-                            instance.TryLoadFromJsonFile(path, jsonSettings);
+                            try
+                            {
+                                ConvertOldConfigJson();
+                                instance = JsonConvert.DeserializeObject<AppConfig>(File.ReadAllText(path), jsonSettings);
+                            }
+                            catch (Exception ex)
+                            {
+                                instance = new AppConfig();
+                            }
                         }
-                        catch (Exception ex)
+                        if (instance.FrpConfigs.Count == 0)
                         {
+                            instance.FrpConfigs.Add(new ServerConfig());
+                            instance.FrpConfigs.Add(new ClientConfig());
                         }
-                    }
-                    if (instance.FrpConfigs.Count == 0)
-                    {
-                        instance.FrpConfigs.Add(new ServerConfig());
-                        instance.FrpConfigs.Add(new ClientConfig());
                     }
                 }
                 return instance;
             }
+        }
+
+        public string AdminAddress { get; set; } = "127.0.0.1";
+
+        public string AdminPassword { get; set; } = "";
+
+        public int AdminPort { get; set; } = 12345;
+
+        public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
+
+        public string FrpConfigType { get; set; } = "TOML";
+
+        public void Save()
+        {
+            File.WriteAllText(path, JsonConvert.SerializeObject(this, jsonSettings));
         }
 
         private static void ConvertOldConfigJson()
@@ -76,16 +97,6 @@ namespace FrpGUI.Config
             }
             File.WriteAllText(path, json.ToString(Formatting.Indented));
         }
-
-        public void Save()
-        {
-            this.Save(path, jsonSettings);
-        }
-
-        public string AdminAddress { get; set; } = "127.0.0.1";
-        public string AdminPassword { get; set; } = "";
-        public int AdminPort { get; set; } = 12345;
-        public string FrpConfigType { get; set; } = "TOML"; //TOML、INI
-        public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
+        //TOML、INI
     }
 }
