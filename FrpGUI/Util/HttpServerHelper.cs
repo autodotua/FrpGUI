@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using FrpGUI.Config;
-using Newtonsoft.Json.Linq;
 
 namespace FrpGUI.Util
 {
@@ -59,10 +59,10 @@ namespace FrpGUI.Util
                         {
                             using StreamReader reader = new StreamReader(body, request.ContentEncoding);
                             string value = reader.ReadToEnd();
-                            JObject json = JObject.Parse(value);
-                            bool b = json["action"].Value<bool>();
-                            string id = json["id"].Value<string>();
-                            string password = json["password"].Value<string>();
+                            JsonObject json = JsonNode.Parse(value) as JsonObject;
+                            bool b = json["action"].AsValue().GetValue<bool>();
+                            string id = json["id"].AsValue().GetValue<string>();
+                            string password = json["password"].AsValue().GetValue<string>();
                             if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(AppConfig.Instance.AdminPassword))
                             {
                                 if (password != AppConfig.Instance.AdminPassword)

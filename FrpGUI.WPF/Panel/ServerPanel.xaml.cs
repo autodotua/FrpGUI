@@ -92,25 +92,14 @@ namespace FrpGUI.WPF
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             gbxInfo.IsEnabled = false;
-            Dictionary<string, object> dictionary = null;
-            await Task.Run(async () =>
-            {
-                var info = await HttpHelper.Instance.GetServerInfoAsync(FrpConfig as ServerConfig);
-                dictionary = new Dictionary<string, object>();
-                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(info))
-                {
-                    object obj = propertyDescriptor.GetValue(info);
-                    dictionary.Add(propertyDescriptor.Name, obj);
-                }
-            });
-            data.ItemsSource = dictionary;
+            data.ItemsSource = await HttpHelper.Instance.GetServerInfoAsync(FrpConfig as ServerConfig);
             gbxInfo.IsEnabled = true;
         }
 
         private async void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
             gbxInfo.IsEnabled = false;
-            List<object> items = null;
+            List<ProxyStatusInfo> items = null;
             string type = (sender as ModernWpf.Controls.AppBarButton).Label.ToString().ToLower();
             await Task.Run(async () =>
             {

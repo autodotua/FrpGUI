@@ -1,13 +1,15 @@
 ﻿using FrpGUI.Util;
 using FzLib;
-using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Config
 {
+    [JsonDerivedType(typeof(ClientConfig))]
+    [JsonDerivedType(typeof(ServerConfig))]
     public abstract class FrpConfigBase : IToFrpConfig, ICloneable
     {
         private bool autoStart;

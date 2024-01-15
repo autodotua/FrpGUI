@@ -1,5 +1,4 @@
 ﻿using FrpGUI.Config;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FrpGUI
@@ -51,7 +51,7 @@ namespace FrpGUI
 
         protected async Task<string> PostAsync(ServerConfig server, string url, object body, Dictionary<string, string> query = null)
         {
-            string json = JsonConvert.SerializeObject(body);
+            string json = JsonSerializer.Serialize(body);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = await GetOrPostAndReturnJsonAsync(server, url, query, (c, u) => c.PostAsync(u, httpContent));
             return result;
