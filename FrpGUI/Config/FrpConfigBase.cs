@@ -63,7 +63,7 @@ namespace FrpGUI.Config
         {
             var newItem = MemberwiseClone() as FrpConfigBase;
             newItem.processStatus = ProcessStatus.NotRun;
-            newItem.Process = new ProcessHelper(this);
+            newItem.Process = new ProcessHelper(newItem);
             return newItem;
         }
 
