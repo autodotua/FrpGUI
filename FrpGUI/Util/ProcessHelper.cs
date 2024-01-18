@@ -182,7 +182,7 @@ namespace FrpGUI.Util
             {
                 return;
             }
-            Logger.Ouput(e.Data, FrpConfig.Name);
+            Logger.Output(e.Data, FrpConfig.Name);
         }
 
         public event EventHandler Exited;

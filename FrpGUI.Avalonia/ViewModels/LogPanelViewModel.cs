@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using FrpGUI.Avalonia.Views;
 using FzLib;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -18,9 +19,12 @@ public partial class LogPanelViewModel : ViewModelBase
 
     public ObservableCollection<UILog> Logs { get; } = new ObservableCollection<UILog>();
 
+    [ObservableProperty]
+    private UILog selectedLog;
+
     public void AddLog(LogEventArgs e)
     {
-        IBrush brush = Brushes.Green;
+        IBrush brush = Brushes.Transparent;
         if (e.Type == 'W')
         {
             brush = Brushes.Orange;
@@ -43,18 +47,17 @@ public partial class LogPanelViewModel : ViewModelBase
         }
         Dispatcher.UIThread.Invoke(() =>
         {
-            Logs.Add(new UILog(e)
+            bool needScroll = Logs.Count == 0 || SelectedLog == Logs[^1] || SelectedLog == null;
+            var log = new UILog(e)
             {
                 TypeBrush = brush,
-            });
+            };
+            Logs.Add(log);
+            if (needScroll)
+            {
+                SelectedLog = log;
+            }
         });
-        //if (Logs.Count > 0)
-        //{
-        //    while (Logs.Count > MaxLogCount)
-        //    {
-        //        Logs.RemoveAt(0);
-        //    }
-        //}
     }
 
 }

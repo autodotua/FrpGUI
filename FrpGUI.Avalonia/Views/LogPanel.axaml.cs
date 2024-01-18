@@ -18,21 +18,6 @@ public partial class LogPanel : UserControl
     {
         DataContext = new LogPanelViewModel();
         InitializeComponent();
-        (DataContext as LogPanelViewModel).Logs.CollectionChanged += Logs_CollectionChanged;
-    }
-
-    private void Logs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        var list = sender as ObservableCollection<UILog>;
-        Debug.Assert(list != null);
-        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-        {
-            if (lbx.SelectedItem == null || lbx.SelectedItem == list[^2])
-            {
-                lbx.SelectedItem = list[^1];
-                lbx.ScrollIntoView(lbx.SelectedItem);
-            }
-        }
     }
 
     private async void CopyMenuItem_Click(object sender, RoutedEventArgs e)

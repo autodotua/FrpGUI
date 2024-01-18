@@ -63,7 +63,7 @@
                 ColumnDefinitions="*,8,*">
                 <Button
                     Margin="0,8,0,0"
-                    Padding="4"
+                    Padding="8"
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
                     Click="AddServerButton_Click">
@@ -78,7 +78,7 @@
                 <Button
                     Grid.Column="2"
                     Margin="0,8,0,0"
-                    Padding="4"
+                    Padding="8"
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
                     Click="AddClientButton_Click">
