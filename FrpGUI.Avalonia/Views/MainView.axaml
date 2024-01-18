@@ -21,7 +21,7 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="200,8,*,8,200">
+    <Grid ColumnDefinitions="180,8,*,8,260">
         <Grid RowDefinitions="*,Auto">
             <ListBox
                 ItemsSource="{Binding FrpConfigs}"
@@ -103,68 +103,7 @@
                 Grid.Row="1"
                 Content="{Binding CurrentPanel}" />
         </Grid>
-        <ListBox Grid.Column="4">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Width="220">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="8" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="复制" />
-                            </ContextMenu>
-                        </Grid.ContextMenu>
-                        <StackPanel
-                            VerticalAlignment="Center"
-                            Opacity="0.75"
-                            Orientation="Horizontal"
-                            Spacing="4">
-                            <TextBlock
-                                Text="{Binding ChangeableTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
-                                TextWrapping="NoWrap" />
-                            <TextBlock
-                                IsVisible="{Binding HasUpdated}"
-                                Text="{Binding UpdateTimes, StringFormat='×{0}'}"
-                                TextWrapping="NoWrap" />
-                        </StackPanel>
-                        <TextBlock
-                            Grid.Row="1"
-                            Margin="0,0,4,0"
-                            VerticalAlignment="Center"
-                            IsVisible="{Binding InstanceName, Converter={StaticResource NotNullConverter}}"
-                            Opacity="0.75"
-                            Text="{Binding InstanceName}"
-                            TextWrapping="NoWrap" />
-                        <Border
-                            Grid.RowSpan="2"
-                            Grid.Column="2"
-                            Padding="4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Background="Gray"
-                            BorderThickness="0"
-                            CornerRadius="4"
-                            IsVisible="{Binding FromFrp}">
-                            <TextBlock Text="frp" />
-                        </Border>
-                        <TextBlock
-                            Grid.Row="2"
-                            Grid.ColumnSpan="9"
-                            Margin="0,0,4,0"
-                            Foreground="{Binding TypeBrush}"
-                            Text="{Binding Message}"
-                            TextWrapping="Wrap" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+
+        <v:LogPanel Grid.Column="4" />
     </Grid>
 </UserControl>

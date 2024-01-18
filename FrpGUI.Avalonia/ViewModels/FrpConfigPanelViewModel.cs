@@ -3,7 +3,6 @@ using FrpGUI.Config;
 using System.Collections.ObjectModel;
 
 namespace FrpGUI.Avalonia.ViewModels;
-
 public partial class FrpConfigPanelViewModel : ViewModelBase
 {
     [ObservableProperty]

@@ -27,12 +27,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="FzStandardLib">
+      <HintPath>..\libs\FzStandardLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <AvaloniaXaml Update="Views\RuleWindow.axaml">
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\LogPanel.axaml.cs">
+      <DependentUpon>LogPanel.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ControlBar.axaml.cs">
       <DependentUpon>ControlBar.axaml</DependentUpon>
     </Compile>
