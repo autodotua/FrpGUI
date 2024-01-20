@@ -7,13 +7,11 @@
 
     <Application.Styles>
         <FluentTheme />
-      <Style Selector="MenuItem">
-        <Setter Property="FontFamily" Value="微软雅黑"/>
-      </Style>
     </Application.Styles>
     <Application.Resources>
         <c:NotNullConverter x:Key="NotNullConverter" />
         <c:InverseBoolConverter x:Key="InverseBoolConverter" />
         <c:EqualConverter x:Key="EqualConverter" />
+      <FontFamily x:Key="ContentControlThemeFontFamily">微软雅黑</FontFamily>
     </Application.Resources>
 </Application>

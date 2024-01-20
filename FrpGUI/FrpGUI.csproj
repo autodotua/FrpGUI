@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="FzStandardLib">
-      <HintPath>..\libs\FzStandardLib.dll</HintPath>
+    <Reference Include="FzLib">
+      <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 

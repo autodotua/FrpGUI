@@ -3,8 +3,8 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Config;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Models;
+using FzLib.Avalonia;
+using FzLib.Avalonia.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,7 +45,7 @@ public partial class MainView : UserControl
     private async void DeleteConfigMenuItem_Click(object sender, RoutedEventArgs e)
     {
         var config = (sender as MenuItem).DataContext as FrpConfigBase;
-        if (await ShowYesNoAsync("删除配置", $"是否删除配置“{config.Name}”？"))
+        if (await this.GetWindow().ShowYesNoDialogAsync("删除配置", $"是否删除配置“{config.Name}”？")==true)
         {
             if (config.ProcessStatus == ProcessStatus.Running)
             {
@@ -53,21 +53,5 @@ public partial class MainView : UserControl
             }
             (DataContext as MainViewModel).FrpConfigs.Remove(config);
         }
-    }
-    private async Task<bool> ShowYesNoAsync(string title, string message)
-    {
-        //暂时先用一下这些不好用的MessageBox
-        return await MessageBoxManager.GetMessageBoxCustom(new MsBox.Avalonia.Dto.MessageBoxCustomParams()
-        {
-            ContentTitle = title,
-            ContentMessage = message,
-            FontFamily = this.FontFamily,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            ButtonDefinitions = new List<ButtonDefinition>
-                {
-                    new ButtonDefinition { Name = "是", IsDefault=true},
-                    new ButtonDefinition { Name = "否", IsCancel=true},
-                },
-        }).ShowAsync() == "是";
     }
 }

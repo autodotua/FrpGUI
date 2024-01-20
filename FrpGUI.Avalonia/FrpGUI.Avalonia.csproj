@@ -13,13 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.6" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
+    <PackageReference Include="Avalonia" Version="11.0.7" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
-    <PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FzStandardLib">
-      <HintPath>..\libs\FzStandardLib.dll</HintPath>
+    <Reference Include="FzLib">
+      <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.dll</HintPath>
+    </Reference>
+    <Reference Include="FzLib.Avalonia">
+      <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.Avalonia.dll</HintPath>
     </Reference>
   </ItemGroup>
 

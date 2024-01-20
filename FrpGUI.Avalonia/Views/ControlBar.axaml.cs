@@ -6,8 +6,8 @@ using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Config;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Models;
+using FzLib.Avalonia;
+using FzLib.Avalonia.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,7 +44,7 @@ public partial class ControlBar : UserControl
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync("÷ÿ∆Ù ß∞‹", ex.Message);
+            await this.GetWindow().ShowErrorDialogAsync("÷ÿ∆Ù ß∞‹", ex);
         }
     }
 
@@ -57,7 +57,7 @@ public partial class ControlBar : UserControl
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync("∆Ù∂Ø ß∞‹", ex.Message);
+            await this.GetWindow().ShowErrorDialogAsync("∆Ù∂Ø ß∞‹", ex);
         }
     }
 
@@ -70,22 +70,8 @@ public partial class ControlBar : UserControl
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync("Õ£÷π ß∞‹", ex.Message);
+            await this.GetWindow().ShowErrorDialogAsync("Õ£÷π ß∞‹", ex);
         }
     }
 
-    private async Task ShowErrorAsync(string title, string message)
-    {
-        await MessageBoxManager.GetMessageBoxCustom(new MsBox.Avalonia.Dto.MessageBoxCustomParams()
-        {
-            ContentTitle = title,
-            ContentMessage = message,
-            FontFamily = this.FontFamily,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            ButtonDefinitions = new List<ButtonDefinition>
-                {
-                    new ButtonDefinition { Name = "»∑∂®", },
-                },
-        }).ShowAsync();
-    }
 }

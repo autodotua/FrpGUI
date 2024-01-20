@@ -12,10 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Avalonia\FrpGUI.Avalonia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FzLib">
+      <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.dll</HintPath>
+    </Reference>
+    <Reference Include="FzLib.Avalonia">
+      <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.Avalonia.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
