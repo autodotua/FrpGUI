@@ -47,6 +47,9 @@
     <Compile Update="Views\ControlBar.axaml.cs">
       <DependentUpon>ControlBar.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SettingsWindow.axaml.cs">
+      <DependentUpon>SettingsWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RuleWindow.axaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>RuleWindow.axaml</DependentUpon>

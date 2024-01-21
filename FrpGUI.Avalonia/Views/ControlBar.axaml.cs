@@ -74,4 +74,9 @@ public partial class ControlBar : UserControl
         }
     }
 
+    private async void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        await new SettingsWindow().ShowDialog(this.GetWindow());
+    }
+
 }

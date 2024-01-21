@@ -21,9 +21,21 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="180,8,*,8,260">
-        <Grid RowDefinitions="*,Auto">
+    <Grid
+        ColumnDefinitions="180,0,*,8,260"
+        RowDefinitions="Auto,*">
+        <Grid
+            Grid.RowSpan="99"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+            RowDefinitions="Auto,8,*,8,Auto">
+            <TextBlock
+                Margin="0,8"
+                HorizontalAlignment="Center"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="FrpGUI" />
             <ListBox
+                Grid.Row="2"
                 ItemsSource="{Binding FrpConfigs}"
                 SelectedItem="{Binding CurrentFrpConfig}">
                 <ListBox.Styles>
@@ -58,7 +70,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <Grid
-                Grid.Row="2"
+                Grid.Row="4"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                 ColumnDefinitions="*,8,*">
                 <Button
@@ -92,18 +104,21 @@
                 </Button>
             </Grid>
         </Grid>
-        <Grid
-            Grid.Column="2"
-            RowDefinitions="Auto,*">
-            <v:ControlBar
-                DataContext="{Binding $self.DataContext}"
-                IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource NotNullConverter}}" />
-            <ContentControl
-                x:Name="mainPanel"
-                Grid.Row="1"
-                Content="{Binding CurrentPanel}" />
-        </Grid>
 
-        <v:LogPanel Grid.Column="4" />
+        <v:ControlBar
+            Grid.Column="2"
+            Grid.ColumnSpan="99"
+            DataContext="{Binding $self.DataContext}" />
+        <ContentControl
+            x:Name="mainPanel"
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="8"
+            Content="{Binding CurrentPanel}" />
+
+
+        <v:LogPanel
+            Grid.Row="1"
+            Grid.Column="4" />
     </Grid>
 </UserControl>

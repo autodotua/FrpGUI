@@ -9,8 +9,9 @@
     Title="FrpGUI.Avalonia"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    FontFamily="微软雅黑"
+    ExtendClientAreaToDecorationsHint="True"
     Icon="/Assets/avalonia-logo.ico"
+    Loaded="Window_Loaded"
     mc:Ignorable="d">
     <views:MainView />
 </Window>

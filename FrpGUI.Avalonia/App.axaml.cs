@@ -23,7 +23,8 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            bool startup = desktop.Args.Length > 0 && desktop.Args[0] == "s";
+            desktop.MainWindow = new MainWindow(startup);
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
