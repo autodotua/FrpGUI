@@ -8,15 +8,18 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <BaseOutputPath>../Generation/bin</BaseOutputPath>
+    <SatelliteResourceLanguages>zh-CN</SatelliteResourceLanguages>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
+    <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Avalonia\FrpGUI.Avalonia.csproj" />
+    <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +29,11 @@
     <Reference Include="FzLib.Avalonia">
       <HintPath>..\..\..\..\OneDrive\开发\模块\Release\net8.0\FzLib.Avalonia.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
