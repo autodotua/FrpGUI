@@ -6,6 +6,7 @@ using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Config;
+using FzLib.Avalonia;
 using System.Diagnostics;
 
 namespace FrpGUI.Avalonia.Views;
@@ -21,7 +22,7 @@ public partial class ClientPanel : ConfigPanelBase
     public async void AddRule()
     {
         var dialog = new RuleWindow();
-        var rule = await dialog.ShowDialog<Rule>(this.GetVisualRoot() as Window);
+        var rule = await dialog.ShowDialog<Rule>(this.GetWindow());
         if (rule != null)
         {
             (DataContext as FrpConfigPanelViewModel).Rules.Add(rule);
@@ -61,5 +62,14 @@ public partial class ClientPanel : ConfigPanelBase
         Debug.Assert(rule != null);
         var rules = (DataContext as FrpConfigPanelViewModel).Rules;
         rules.Remove(rule);
+    }
+
+    private void PanelBase_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        Resources["RuleWidth"] = lstRules.Bounds.Width switch
+        {
+            < 840 => lstRules.Bounds.Width - 0,
+            _ => 420d
+        };
     }
 }

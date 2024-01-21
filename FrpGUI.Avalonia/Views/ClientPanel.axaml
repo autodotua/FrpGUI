@@ -4,12 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:FrpConfigPanelViewModel"
+    SizeChanged="PanelBase_SizeChanged"
     mc:Ignorable="d">
+    <v:ConfigPanelBase.Resources>
+        <system:Double x:Key="RuleWidth">180</system:Double>
+    </v:ConfigPanelBase.Resources>
     <v:ConfigPanelBase.Resources>
         <PathGeometry x:Key="IconMore">
             M522.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
@@ -117,98 +122,106 @@
             VerticalAlignment="Center"
             Background="Gray"
             Opacity="0.5" />
-        <Grid Grid.Row="2">
-            <ItemsControl ItemsSource="{Binding Rules}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            Margin="2,8,24,8"
-                            Padding="8"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                            CornerRadius="4">
-                            <Border.Styles>
-                                <Style Selector="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center" />
-                                </Style>
-                            </Border.Styles>
-                            <Grid
-                                ColumnDefinitions="Auto,8,64,16,*,16,Auto"
-                                RowDefinitions="18,0,18">
+        <ItemsControl
+            x:Name="lstRules"
+            Grid.Row="2"
+            ItemsSource="{Binding Rules}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel
+                        ItemWidth="{DynamicResource RuleWidth}"
+                        Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Margin="2,8,24,8"
+                        Padding="8"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4">
+                        <Border.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                        </Border.Styles>
+                        <Grid
+                            ColumnDefinitions="Auto,8,64,16,*,16,Auto"
+                            RowDefinitions="18,0,18">
 
-                                <Border
-                                    Grid.RowSpan="99"
-                                    Width="8"
-                                    Height="8"
-                                    Background="Green"
-                                    CornerRadius="4"
-                                    IsVisible="{Binding Enable}" />
-                                <Button
-                                    Grid.RowSpan="99"
-                                    Grid.Column="99"
-                                    Background="Transparent">
-                                    <Button.Flyout>
-                                        <MenuFlyout>
-                                            <MenuItem
-                                                Click="EnableRuleMenu_Click"
-                                                Header="启用"
-                                                IsVisible="{Binding Enable}" />
-                                            <MenuItem
-                                                Click="DisableRuleMenu_Click"
-                                                Header="禁用"
-                                                IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
-                                            <MenuItem Header="-" />
-                                            <MenuItem
-                                                Click="ModifyRuleMenu_Click"
-                                                Header="修改" />
-                                            <MenuItem
-                                                Click="RemoveRuleMenu_Click"
-                                                Header="删除" />
-                                        </MenuFlyout>
-                                    </Button.Flyout>
-                                    <PathIcon Data="{StaticResource IconMore}" />
-                                </Button>
-                                <TextBlock
-                                    Grid.RowSpan="99"
-                                    Grid.Column="2"
-                                    VerticalAlignment="Center"
-                                    FontWeight="Bold"
-                                    Text="{Binding Name}"
-                                    TextTrimming="CharacterEllipsis" />
+                            <Border
+                                Grid.RowSpan="99"
+                                Width="8"
+                                Height="8"
+                                Background="Green"
+                                CornerRadius="4"
+                                IsVisible="{Binding Enable}" />
+                            <Button
+                                Grid.RowSpan="99"
+                                Grid.Column="99"
+                                Background="Transparent">
+                                <Button.Flyout>
+                                    <MenuFlyout>
+                                        <MenuItem
+                                            Click="EnableRuleMenu_Click"
+                                            Header="启用"
+                                            IsVisible="{Binding Enable}" />
+                                        <MenuItem
+                                            Click="DisableRuleMenu_Click"
+                                            Header="禁用"
+                                            IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
+                                        <MenuItem Header="-" />
+                                        <MenuItem
+                                            Click="ModifyRuleMenu_Click"
+                                            Header="修改" />
+                                        <MenuItem
+                                            Click="RemoveRuleMenu_Click"
+                                            Header="删除" />
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                                <PathIcon Data="{StaticResource IconMore}" />
+                            </Button>
+                            <TextBlock
+                                Grid.RowSpan="99"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                FontWeight="Bold"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
 
 
-                                <TextBlock
-                                    Grid.Column="4"
-                                    TextTrimming="CharacterEllipsis">
-                                    <Run Text="{Binding LocalAddress}" />
-                                    <Run>:</Run>
-                                    <Run Text="{Binding LocalPort}" />
-                                    <Run Text="→" />
-                                    <Run Text="{Binding RemotePort}" />
+                            <TextBlock
+                                Grid.Column="4"
+                                TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding LocalAddress}" />
+                                <Run>:</Run>
+                                <Run Text="{Binding LocalPort}" />
+                                <Run Text="→" />
+                                <Run Text="{Binding RemotePort}" />
+                            </TextBlock>
+                            <StackPanel
+                                Grid.Row="2"
+                                Grid.Column="4"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <TextBlock>
+                                    <Run FontWeight="Bold">类型：</Run>
+                                    <Run Text="{Binding Type}" />
                                 </TextBlock>
-                                <StackPanel
-                                    Grid.Row="2"
-                                    Grid.Column="4"
-                                    Orientation="Horizontal"
-                                    Spacing="8">
-                                    <TextBlock>
-                                        <Run FontWeight="Bold">类型：</Run>
-                                        <Run Text="{Binding Type}" />
-                                    </TextBlock>
-                                    <TextBlock
-                                        Foreground="Green"
-                                        IsVisible="{Binding Encryption}"
-                                        Text="加密" />
-                                    <TextBlock
-                                        Foreground="Green"
-                                        IsVisible="{Binding Compression}"
-                                        Text="压缩" />
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
+                                <TextBlock
+                                    Foreground="Green"
+                                    IsVisible="{Binding Encryption}"
+                                    Text="加密" />
+                                <TextBlock
+                                    Foreground="Green"
+                                    IsVisible="{Binding Compression}"
+                                    Text="压缩" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
 
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </v:ConfigPanelBase>

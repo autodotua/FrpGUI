@@ -18,6 +18,7 @@ namespace FrpGUI.Avalonia.Views
             if (frpConfig is ClientConfig cc)
             {
                 vm.Rules = new System.Collections.ObjectModel.ObservableCollection<Rule>(cc.Rules);
+                vm.Rules.CollectionChanged += (s, e) => cc.Rules = [.. vm.Rules];
             }
         }
     }
