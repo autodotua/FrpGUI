@@ -54,4 +54,15 @@ public partial class MainView : UserControl
             (DataContext as MainViewModel).FrpConfigs.Remove(config);
         }
     }
+
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
+        foreach (var config in (DataContext as MainViewModel).FrpConfigs)
+        {
+            if(config.AutoStart)
+            {
+                config.Start();
+            }
+        }
+    }
 }

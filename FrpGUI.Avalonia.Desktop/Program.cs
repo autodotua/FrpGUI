@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
@@ -19,6 +20,7 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
         InitializeLogs();
         Logger.NewLog += Logger_NewLog;
         try
@@ -51,7 +53,14 @@ class Program
                 Log.Info(e.Message);
                 break;
             case 'E':
-                Log.Error(e.Message);
+                if (e.Exception == null)
+                {
+                    Log.Error(e.Message);
+                }
+                else
+                {
+                    Log.Error(e.Message, e.Exception);
+                }
                 break;
             case 'W':
                 Log.Warn(e.Message);
@@ -79,7 +88,7 @@ class Program
             StaticLogFileName = true,
             RollingStyle = RollingFileAppender.RollingMode.Date,
             Layout = new PatternLayout("[%date]-[%thread]-[%-p]%newline%message%newline%newline"),
-            File = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "logs", "FrpGUI.log"),
+            File = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "logs", "FrpGUI.log"),
         };
         fa.ActivateOptions();
         ((log4net.Repository.Hierarchy.Logger)Log.Logger).AddAppender(fa);

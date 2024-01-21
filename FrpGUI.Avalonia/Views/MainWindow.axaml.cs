@@ -17,6 +17,15 @@ public partial class MainWindow : Window
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         Config.AppConfig.Instance.Save();
+        MainView mainView = Content as MainView;
+        MainViewModel mainViewModel = mainView?.DataContext as MainViewModel;
+
+        if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
+        {
+            e.Cancel = true;
+            TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+            Hide();
+        }
         base.OnClosing(e);
     }
 
@@ -25,21 +34,7 @@ public partial class MainWindow : Window
         if (startup)
         {
             Hide();
+            TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
         }
-    }
-
-    private void Window_Closing(object sender, WindowClosingEventArgs e)
-    {
-        MainView mainView = Content as MainView;
-        MainViewModel mainViewModel = mainView?.DataContext as MainViewModel;
-
-        if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
-        {
-            e.Cancel = true;
-            var trayIcon = TrayIcon.GetIcons(App.Current)[0];
-            trayIcon.IsVisible = true;
-            Hide();
-        }
-
     }
 }

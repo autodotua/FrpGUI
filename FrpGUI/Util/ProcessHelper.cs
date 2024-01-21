@@ -31,7 +31,14 @@ namespace FrpGUI.Util
             bool processHasStarted = false;
             try
             {
-                frpProcess?.Kill();
+                try
+                {
+                    frpProcess?.Kill();
+                }
+                catch
+                {
+
+                }
                 this.type = type;
                 this.obj = obj;
                 string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
@@ -87,7 +94,7 @@ namespace FrpGUI.Util
             }
             catch (Exception ex)
             {
-                Logger.Error("启动失败：" + ex.Message, FrpConfig.Name);
+                Logger.Error("启动失败：" + ex.Message, FrpConfig.Name, ex);
                 if (processHasStarted)
                 {
                     try

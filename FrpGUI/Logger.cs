@@ -20,7 +20,7 @@ namespace FrpGUI
 
         public static event EventHandler<LogEventArgs> NewLog;
 
-        public static void Error(string message, string instanceName = null) => Log(message, instanceName, 'E');
+        public static void Error(string message, string instanceName = null, Exception ex = null) => Log(message, instanceName, 'E', false, ex);
 
         public static void Info(string message, string instanceName = null) => Log(message, instanceName, 'I');
 
@@ -35,13 +35,13 @@ namespace FrpGUI
             }
             else
             {
-                type = errorMessages.Any(p=>message.Contains(p))?'E': 'I';
+                type = errorMessages.Any(p => message.Contains(p)) ? 'E' : 'I';
             }
             Log(message, instanceName, type, true);
         }
 
         public static void Warn(string message, string instanceName = null) => Log(message, instanceName, 'W');
 
-        private static void Log(string message, string instanceName, char type, bool fromFrp = false) => NewLog?.Invoke(null, new LogEventArgs(message, instanceName, type, fromFrp));
+        private static void Log(string message, string instanceName, char type, bool fromFrp = false, Exception ex = null) => NewLog?.Invoke(null, new LogEventArgs(message, instanceName, type, fromFrp, ex));
     }
 }

@@ -1,11 +1,4 @@
 ﻿try {
-    
-    Write-Output "请确保："
-    Write-Output "已经安装.NET 8 SDK"
-
-    pause
-    Clear-Host
-
     try {
         dotnet
     }
