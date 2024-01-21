@@ -16,7 +16,7 @@ namespace FrpGUI.Avalonia.ViewModels
             {
                 if (OperatingSystem.IsWindows())
                 {
-                    return Avalonia.Startup.IsRegistryKeyExist();
+                    return Utils.Startup.IsRegistryKeyExist();
                 }
                 return false;
             }
@@ -27,11 +27,11 @@ namespace FrpGUI.Avalonia.ViewModels
                 {
                     if(value)
                     {
-                        Avalonia.Startup.CreateRegistryKey("s");
+                        Utils.Startup.CreateRegistryKey("s");
                     }
                     else
                     {
-                        Avalonia.Startup.DeleteRegistryKey();
+                        Utils.Startup.DeleteRegistryKey();
                     }
                     OnPropertyChanged(nameof(Startup));
                 }

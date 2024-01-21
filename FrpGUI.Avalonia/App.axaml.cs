@@ -1,10 +1,14 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
+using FzLib.Avalonia.Dialogs;
+using System;
+using System.Linq;
 
 namespace FrpGUI.Avalonia;
 
@@ -32,5 +36,51 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private async void ExitMenuItem_Click(object sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            MainView mainView = desktop.MainWindow.Content as MainView;
+
+            MainViewModel mainViewModel = mainView.DataContext as MainViewModel;
+
+            if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
+            {
+                desktop.MainWindow.Show();
+                TrayIcon.GetIcons(this)[0].IsVisible = false;
+                int count = mainViewModel.FrpConfigs.Where(p => p.ProcessStatus == ProcessStatus.Running).Count();
+                if (await desktop.MainWindow.ShowYesNoDialogAsync("退出", $"存在{count}个正在运行的frp进程，是否退出？") == true)
+                {
+                    foreach (var frp in mainViewModel.FrpConfigs)
+                    {
+                        await frp.StopAsync();
+                    }
+                    desktop.MainWindow.Close();
+                }
+            }
+            else
+            {
+                desktop.MainWindow.Close();
+            }
+        }
+        else
+        {
+            throw new PlatformNotSupportedException();
+        }
+    }
+
+    private void TrayIcon_Clicked(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow.Show();
+            TrayIcon.GetIcons(this)[0].IsVisible = false;
+        }
+        else
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

@@ -9,15 +9,14 @@
     xmlns:r="using:FrpGUI.Avalonia"
     xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
-    Title="FrpGUI.Avalonia"
+    Title="客户端规则 - FrpGUI"
     Width="400"
     Height="400"
     Padding="4"
     d:DesignHeight="450"
     d:DesignWidth="800"
     CanResize="False"
-    FontFamily="微软雅黑"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/icon.ico"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Design.DataContext>

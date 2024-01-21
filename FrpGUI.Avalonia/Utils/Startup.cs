@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace FrpGUI.Avalonia
+namespace FrpGUI.Avalonia.Utils
 {
     public static class Startup
     {
