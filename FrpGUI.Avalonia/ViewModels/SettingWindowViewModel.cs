@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +11,12 @@ namespace FrpGUI.Avalonia.ViewModels
 {
     public partial class SettingWindowViewModel : ViewModelBase
     {
+        [ObservableProperty]
+        private ObservableCollection<Process> processes;
 
         public bool Startup
         {
-        get
+            get
             {
                 if (OperatingSystem.IsWindows())
                 {
@@ -25,7 +29,7 @@ namespace FrpGUI.Avalonia.ViewModels
                 OnPropertyChanging(nameof(Startup));
                 if (OperatingSystem.IsWindows())
                 {
-                    if(value)
+                    if (value)
                     {
                         Utils.Startup.CreateRegistryKey("s");
                     }

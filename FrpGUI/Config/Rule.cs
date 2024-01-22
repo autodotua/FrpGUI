@@ -85,7 +85,33 @@ namespace FrpGUI.Config
         public NetType Type
         {
             get => type;
-            set => this.SetValueAndNotify(ref type, value, nameof(Type), nameof(Domains), nameof(STCPKey), nameof(STCPServerName));
+            set
+            {
+                switch (value)
+                {
+                    case NetType.TCP or NetType.UDP:
+                        STCPKey = null;
+                        STCPServerName = null;
+                        Domains = null;
+                        break;
+
+                    case NetType.HTTP or NetType.HTTPS:
+                        STCPKey = null;
+                        STCPServerName = null;
+                        RemotePort = null;
+                        break;
+                    case NetType.STCP:
+                        RemotePort = null;
+                        Domains = null;
+                        STCPServerName = null;
+                        break;
+                    case NetType.STCP_Visitor:
+                        RemotePort = null;
+                        Domains = null;
+                        break;
+                }
+                this.SetValueAndNotify(ref type, value, nameof(Type), nameof(Domains), nameof(STCPKey), nameof(STCPServerName));
+            }
         }
 
         public object Clone()

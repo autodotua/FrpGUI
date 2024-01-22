@@ -198,6 +198,7 @@
                                 <Run Text="{Binding LocalPort}" />
                                 <Run Text="→" />
                                 <Run Text="{Binding RemotePort}" />
+                                <Run Text="{Binding STCPServerName}" />
                             </TextBlock>
                             <StackPanel
                                 Grid.Row="2"

@@ -14,7 +14,7 @@
     }
    
     Write-Output "正在发布（包含框架，单文件）"
-    dotnet publish FrpGUI.Avalonia.Desktop -r win-x64 -c Release -o Publish/Windows --self-contained true /p:PublishSingleFile=true -p:PublishTrimmed=true
+    dotnet publish FrpGUI.Avalonia.Desktop -r win-x64 -c Release -o Publish/Windows --self-contained true /p:PublishSingleFile=true 
     Copy-Item bin/* Publish/Windows -Recurse
     
     Write-Output "正在发布（包含框架，单文件）"
