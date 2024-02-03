@@ -7,19 +7,14 @@
     }
     
     Clear-Host
-    try {
-        Remove-Item Publish -Recurse
-    }
-    catch {
-    }
    
-    Write-Output "正在发布（包含框架，单文件）"
-    dotnet publish FrpGUI.Avalonia.Desktop -r win-x64 -c Release -o Publish/Windows --self-contained true /p:PublishSingleFile=true 
-    Copy-Item bin/* Publish/Windows -Recurse
+    Write-Output "正在发布win-x64"
+    dotnet publish FrpGUI.Avalonia.Desktop -r win-x64 -c Release -o Publish/win-x64 --self-contained true /p:PublishSingleFile=true 
+    Copy-Item bin/* Publish/win-x64 -Recurse
     
-    Write-Output "正在发布（包含框架，单文件）"
-    dotnet publish FrpGUI.Avalonia.Desktop -r linux-x64 -c Release -o Publish/Linux --self-contained true /p:PublishSingleFile=true 
-    Copy-Item bin/* Publish/Linux -Recurse
+    Write-Output "正在发布linux-x64"
+    dotnet publish FrpGUI.Avalonia.Desktop -r linux-x64 -c Release -o Publish/linux-x64 --self-contained true /p:PublishSingleFile=true 
+    Copy-Item bin/* Publish/linux-x64 -Recurse
 
     Write-Output "正在清理"
     Remove-Item FrpGUI*/bin/Release -Recurse
