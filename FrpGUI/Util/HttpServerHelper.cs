@@ -4,24 +4,28 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using FrpGUI.Config;
-using Newtonsoft.Json.Linq;
 
 namespace FrpGUI.Util
 {
     public class HttpServerHelper
     {
         private HttpListener listener;
+        private bool isManualStopping = false;
 
-        public async Task Start()
+        public bool IsRunning => listener != null && listener.IsListening;
+
+        public async Task StartAsync()
         {
+            isManualStopping = false;
             try
             {
-                HttpListener listener = new HttpListener();
-                listener.Prefixes.Add($"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}/");
+                listener = new HttpListener();
+                listener.Prefixes.Add($"http://{AppConfig.Instance.RemoteControlAddress}:{AppConfig.Instance.RemoteControlPort}/");
                 listener.Start();
-
+                Logger.Info("远程管理已启动");
                 var requests = new HashSet<Task>();
                 for (int i = 0; i < 10; i++)
                     requests.Add(listener.GetContextAsync());
@@ -41,8 +45,57 @@ namespace FrpGUI.Util
             }
             catch (Exception ex)
             {
-                Logger.Error("启动远程管理错误：" + ex.Message);
+                if (isManualStopping)
+                {
+                    return;
+                }
+                Logger.Error("远程管理错误：" + ex.Message);
             }
+        }
+
+        public void Stop()
+        {
+            isManualStopping = true;
+            listener.Stop();
+            Logger.Info("远程管理已停止");
+        }
+
+        private void AddNewListener()
+        {
+            var prefixes = new[] { $"http://{AppConfig.Instance.RemoteControlAddress}:{AppConfig.Instance.RemoteControlPort}/" };
+            if (listener != null)
+            {
+                return;
+            }
+            // URI prefixes are required,
+            // for example "http://contoso.com:8080/index/".
+            if (prefixes == null || prefixes.Length == 0)
+                throw new ArgumentException("prefixes");
+
+            // Create a listener.
+            listener = new HttpListener();
+            // Add the prefixes.
+            foreach (string s in prefixes)
+            {
+                listener.Prefixes.Add(s);
+            }
+            listener.Start();
+            Console.WriteLine("Listening...");
+            // Note: The GetContext method blocks while waiting for a request.
+            HttpListenerContext context = listener.GetContext();
+            HttpListenerRequest request = context.Request;
+            // Obtain a response object.
+            HttpListenerResponse response = context.Response;
+            // Construct a response.
+            string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            // Get a response stream and write the response to it.
+            response.ContentLength64 = buffer.Length;
+            System.IO.Stream output = response.OutputStream;
+            output.Write(buffer, 0, buffer.Length);
+            // You must close the output stream.
+            output.Close();
+            listener.Stop();
         }
 
         private async Task ProcessRequestAsync(HttpListenerContext context)
@@ -59,13 +112,13 @@ namespace FrpGUI.Util
                         {
                             using StreamReader reader = new StreamReader(body, request.ContentEncoding);
                             string value = reader.ReadToEnd();
-                            JObject json = JObject.Parse(value);
-                            bool b = json["action"].Value<bool>();
-                            string id = json["id"].Value<string>();
-                            string password = json["password"].Value<string>();
-                            if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(AppConfig.Instance.AdminPassword))
+                            JsonObject json = JsonNode.Parse(value) as JsonObject;
+                            bool b = json["action"].AsValue().GetValue<bool>();
+                            string id = json["id"].AsValue().GetValue<string>();
+                            string password = json["password"].AsValue().GetValue<string>();
+                            if (!string.IsNullOrEmpty(password) || !string.IsNullOrEmpty(AppConfig.Instance.RemoteControlPassword))
                             {
-                                if (password != AppConfig.Instance.AdminPassword)
+                                if (password != AppConfig.Instance.RemoteControlPassword)
                                 {
                                     Logger.Error(request.RemoteEndPoint.Address.ToString() + "：密码错误");
 
@@ -90,7 +143,7 @@ namespace FrpGUI.Util
                                 {
                                     server.Start();
                                 }
-                                catch(Exception ex)
+                                catch (Exception ex)
                                 {
 
                                 }
@@ -109,7 +162,7 @@ namespace FrpGUI.Util
                         Logger.Info($"远程管理：GET {context.Request.RawUrl}");
                         if (context.Request.RawUrl == "/")
                         {
-                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}");
+                            responseString = File.ReadAllText("html/admin.html").Replace("{{url}}", $"http://{AppConfig.Instance.RemoteControlAddress}:{AppConfig.Instance.RemoteControlPort}");
                             StringBuilder items = new StringBuilder();
                             foreach (var server in AppConfig.Instance.FrpConfigs.OfType<ServerConfig>())
                             {
@@ -147,44 +200,6 @@ namespace FrpGUI.Util
                 {
                 }
             }
-        }
-
-        private void AddNewListener()
-        {
-            var prefixes = new[] { $"http://{AppConfig.Instance.AdminAddress}:{AppConfig.Instance.AdminPort}/" };
-            if (listener != null)
-            {
-                return;
-            }
-            // URI prefixes are required,
-            // for example "http://contoso.com:8080/index/".
-            if (prefixes == null || prefixes.Length == 0)
-                throw new ArgumentException("prefixes");
-
-            // Create a listener.
-            listener = new HttpListener();
-            // Add the prefixes.
-            foreach (string s in prefixes)
-            {
-                listener.Prefixes.Add(s);
-            }
-            listener.Start();
-            Console.WriteLine("Listening...");
-            // Note: The GetContext method blocks while waiting for a request.
-            HttpListenerContext context = listener.GetContext();
-            HttpListenerRequest request = context.Request;
-            // Obtain a response object.
-            HttpListenerResponse response = context.Response;
-            // Construct a response.
-            string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-            // Get a response stream and write the response to it.
-            response.ContentLength64 = buffer.Length;
-            System.IO.Stream output = response.OutputStream;
-            output.Write(buffer, 0, buffer.Length);
-            // You must close the output stream.
-            output.Close();
-            listener.Stop();
         }
     }
 }

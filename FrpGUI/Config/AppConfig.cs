@@ -1,25 +1,29 @@
-﻿using FzLib.DataStorage.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.Encodings.Web;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using System.Text.Json.Nodes;
 
 namespace FrpGUI.Config
 {
-    public class AppConfig : IJsonSerializable
+    public class AppConfig
     {
-        private static readonly string path = "config.json";
-
-        private static AppConfig instance;
-
-        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
+        private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions()
         {
-            Formatting = Formatting.Indented,
-            TypeNameHandling = TypeNameHandling.Objects,
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            TypeInfoResolver = AppConfigSourceGenerationContext.Default,
+            Converters = { new FrpConfigJsonConverter() },
+            WriteIndented = true,
         };
+
+        private static readonly object lockObj = new object();
+        private static readonly string path = "config.json";
+        private static AppConfig instance;
 
         public AppConfig() : base()
         {
@@ -31,61 +35,87 @@ namespace FrpGUI.Config
         {
             get
             {
-                if (instance == null)
+                lock (lockObj)
                 {
-                    instance = new AppConfig();
-                    if (File.Exists(path))
+                    if (instance == null)
                     {
-                        try
+                        instance = new AppConfig();
+                        if (File.Exists(path))
                         {
-                            ConvertOldConfigJson();
-                            instance.TryLoadFromJsonFile(path, jsonSettings);
+                            try
+                            {
+                                instance = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(path), jsonOptions);
+                            }
+                            catch (Exception ex)
+                            {
+                                instance = new AppConfig();
+                            }
                         }
-                        catch (Exception ex)
+                        if (instance.FrpConfigs.Count == 0)
                         {
+                            instance.FrpConfigs.Add(new ServerConfig());
+                            instance.FrpConfigs.Add(new ClientConfig());
                         }
-                    }
-                    if (instance.FrpConfigs.Count == 0)
-                    {
-                        instance.FrpConfigs.Add(new ServerConfig());
-                        instance.FrpConfigs.Add(new ClientConfig());
                     }
                 }
                 return instance;
             }
         }
 
-        private static void ConvertOldConfigJson()
+        public bool RemoteControlEnable { get; set; } = true;
+
+        public string RemoteControlAddress { get; set; } = "127.0.0.1";
+
+        public string RemoteControlPassword { get; set; } = "1234";
+
+        public int RemoteControlPort { get; set; } = 12345;
+
+        public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
+
+        public string FrpConfigType { get; set; } = "TOML";
+        public void Save()
         {
-            JObject json = JObject.Parse(File.ReadAllText(path));
-            var configs = json["FrpConfigs"] as JArray;
-            if (json["$type"] != null)
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, jsonOptions);
+            File.WriteAllBytes(path, bytes);
+        }
+
+        public class FrpConfigJsonConverter : JsonConverter<FrpConfigBase>
+        {
+            public override FrpConfigBase Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                return;
-            }
-            foreach (var cfg in configs)
-            {
-                if (cfg["Port"] != null)
+                using JsonDocument doc = JsonDocument.ParseValue(ref reader);
+                if (doc.RootElement.TryGetProperty("Type", out JsonElement typeElement) && typeElement.ValueKind == JsonValueKind.String)
                 {
-                    cfg["$type"] = "FrpGUI.Config.ServerConfig, FrpGUI";
+                    char typeChar = typeElement.GetString()[0];
+                    return typeChar switch
+                    {
+                        'c' => JsonSerializer.Deserialize<ClientConfig>(doc.RootElement.GetRawText(), options),
+                        's' => JsonSerializer.Deserialize<ServerConfig>(doc.RootElement.GetRawText(), options),
+                        _ => throw new NotImplementedException(),
+                    };
+                }
+                //老版本的JSON配置文件没有Type属性
+                else if (doc.RootElement.TryGetProperty("Rules", out JsonElement rulesElement))
+                {
+                    return JsonSerializer.Deserialize<ClientConfig>(doc.RootElement.GetRawText(), options);
                 }
                 else
                 {
-                    cfg["$type"] = "FrpGUI.Config.ClientConfig, FrpGUI";
+                    return JsonSerializer.Deserialize<ServerConfig>(doc.RootElement.GetRawText(), options);
                 }
+
             }
-            File.WriteAllText(path, json.ToString(Formatting.Indented));
-        }
 
-        public void Save()
-        {
-            this.Save(path, jsonSettings);
+            public override void Write(Utf8JsonWriter writer, FrpConfigBase value, JsonSerializerOptions options)
+            {
+                JsonSerializer.Serialize(writer, value, value.GetType(), options);
+            }
         }
+    }
 
-        public string AdminAddress { get; set; } = "127.0.0.1";
-        public string AdminPassword { get; set; } = "";
-        public int AdminPort { get; set; } = 12345;
-        public string FrpConfigType { get; set; } = "TOML"; //TOML、INI
-        public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
+    [JsonSourceGenerationOptions(WriteIndented = true)]
+    [JsonSerializable(typeof(AppConfig))]
+    internal partial class AppConfigSourceGenerationContext : JsonSerializerContext
+    {
     }
 }

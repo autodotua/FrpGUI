@@ -1,0 +1,103 @@
+<v:ConfigPanelBase
+    x:Class="FrpGUI.Avalonia.Views.ServerPanel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:FrpConfigPanelViewModel"
+    mc:Ignorable="d">
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Auto">
+        <Grid
+            Margin="8"
+            ColumnDefinitions="108,8,*"
+            RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+            <Grid.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Styles>
+            <TextBlock Text="名称" />
+            <TextBox
+                Grid.Column="2"
+                Text="{Binding FrpConfig.Name}" />
+            <CheckBox
+                Grid.Row="2"
+                Grid.ColumnSpan="99"
+                Content="自动启动"
+                IsChecked="{Binding FrpConfig.AutoStart}" />
+            <TextBlock
+                Grid.Row="4"
+                Text="端口号" />
+            <TextBox
+                Grid.Row="4"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.Port}" />
+            <TextBlock
+                Grid.Row="6"
+                Text="连接密钥" />
+            <TextBox
+                Grid.Row="6"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.Token}" />
+            <TextBlock
+                Grid.Row="8"
+                Text="HTTP端口" />
+            <TextBox
+                Grid.Row="8"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.HttpPort}" />
+            <TextBlock
+                Grid.Row="10"
+                Text="HTTPS端口" />
+            <TextBox
+                Grid.Row="10"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.HttpsPort}" />
+
+            <TextBlock
+                Grid.Row="12"
+                Text="最大连接数" />
+            <TextBox
+                Grid.Row="12"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.MaxPoolCount}" />
+
+            <CheckBox
+                Grid.Row="14"
+                Grid.ColumnSpan="99"
+                Content="仅允许TLS传输层安全性协议"
+                IsChecked="{Binding FrpConfig.EnableTls}" />
+
+            <TextBlock
+                Grid.Row="16"
+                Text="控制面板端口号" />
+            <TextBox
+                Grid.Row="16"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.DashBoardPort}" />
+
+            <TextBlock
+                Grid.Row="18"
+                Text="控制面板用户名" />
+            <TextBox
+                Grid.Row="18"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.DashBoardUsername}" />
+
+            <TextBlock
+                Grid.Row="20"
+                Text="控制面板密码" />
+            <TextBox
+                Grid.Row="20"
+                Grid.Column="2"
+                Text="{Binding FrpConfig.DashBoardPassword}" />
+
+        </Grid>
+    </ScrollViewer>
+</v:ConfigPanelBase>

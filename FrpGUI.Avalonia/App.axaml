@@ -1,0 +1,34 @@
+<Application
+    x:Class="FrpGUI.Avalonia.App"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
+    RequestedThemeVariant="Default">
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+    <Application.Resources>
+        <c:NotNullConverter x:Key="NotNullConverter" />
+        <c:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <c:EqualConverter x:Key="EqualConverter" />
+        <FontFamily x:Key="ContentControlThemeFontFamily">微软雅黑</FontFamily>
+    </Application.Resources>
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon
+                Clicked="TrayIcon_Clicked"
+                Icon="/Assets/icon.ico"
+                IsVisible="False"
+                ToolTipText="FrpGUI">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem
+                            Click="ExitMenuItem_Click"
+                            Header="退出" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+</Application>

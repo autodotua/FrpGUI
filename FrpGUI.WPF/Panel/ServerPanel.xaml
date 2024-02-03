@@ -23,7 +23,8 @@
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ScrollViewer x:Name="scrConfig"
+            <ScrollViewer
+                x:Name="scrConfig"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
                 <WrapPanel
@@ -76,8 +77,9 @@
                         Text="{Binding FrpConfig.DashBoardUsername}" />
                     <TextBox
                         ui:ControlHelper.Header="控制面板密码"
-                        Text="{Binding FrpConfig.DashBoardUsername}" />
-                    <ComboBox HorizontalAlignment="Stretch"
+                        Text="{Binding FrpConfig.DashBoardPassword}" />
+                    <ComboBox
+                        HorizontalAlignment="Stretch"
                         ui:ControlHelper.Header="远程管理本地地址"
                         IsEditable="True"
                         ItemsSource="{Binding IPs}"

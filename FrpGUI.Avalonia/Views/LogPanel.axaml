@@ -1,0 +1,96 @@
+<UserControl
+    x:Class="FrpGUI.Avalonia.Views.LogPanel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:LogPanelViewModel"
+    mc:Ignorable="d">
+    <ListBox
+        x:Name="lbx"
+        AutoScrollToSelectedItem="True"
+        Background="Transparent"
+        ItemsSource="{Binding Logs}"
+        SelectedItem="{Binding SelectedLog}">
+        <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu>
+                            <MenuItem
+                                Click="CopyMenuItem_Click"
+                                Header="复制" />
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.Styles>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <Grid Width="220">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel
+                        VerticalAlignment="Center"
+                        Opacity="0.75"
+                        Orientation="Horizontal"
+                        Spacing="4">
+                        <TextBlock
+                            Text="{Binding ChangeableTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                            TextWrapping="NoWrap" />
+                        <TextBlock
+                            IsVisible="{Binding HasUpdated}"
+                            Text="{Binding UpdateTimes, StringFormat='×{0}'}"
+                            TextWrapping="NoWrap" />
+                    </StackPanel>
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Center"
+                        IsVisible="{Binding InstanceName, Converter={StaticResource NotNullConverter}}"
+                        Opacity="0.75"
+                        Text="{Binding InstanceName}"
+                        TextWrapping="NoWrap" />
+                    <Ellipse
+                        Grid.Row="2"
+                        Width="6"
+                        Height="6"
+                        Margin="-12,8,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Fill="{Binding TypeBrush}" />
+                    <Border
+                        Grid.RowSpan="2"
+                        Grid.Column="2"
+                        Padding="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Gray"
+                        BorderThickness="0"
+                        CornerRadius="4"
+                        IsVisible="{Binding FromFrp}">
+                        <TextBlock Text="frp" />
+                    </Border>
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.ColumnSpan="9"
+                        Margin="0,0,4,0"
+                        Text="{Binding Message}"
+                        TextWrapping="Wrap" />
+                </Grid>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

@@ -1,0 +1,228 @@
+<v:ConfigPanelBase
+    x:Class="FrpGUI.Avalonia.Views.ClientPanel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:FrpConfigPanelViewModel"
+    SizeChanged="PanelBase_SizeChanged"
+    mc:Ignorable="d">
+    <v:ConfigPanelBase.Resources>
+        <system:Double x:Key="RuleWidth">180</system:Double>
+    </v:ConfigPanelBase.Resources>
+    <v:ConfigPanelBase.Resources>
+        <PathGeometry x:Key="IconMore">
+            M522.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
+            M266.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
+            M778.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
+        </PathGeometry>
+    </v:ConfigPanelBase.Resources>
+    <Grid RowDefinitions="*,8,*">
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <Grid
+                Margin="8"
+                ColumnDefinitions="108,8,*"
+                RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+                <Grid.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Styles>
+                <TextBlock Text="名称" />
+                <TextBox
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.Name}" />
+                <CheckBox
+                    Grid.Row="2"
+                    Grid.ColumnSpan="99"
+                    Content="自动启动" />
+                <TextBlock
+                    Grid.Row="4"
+                    Text="服务器地址" />
+                <TextBox
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.ServerAddress}" />
+                <TextBlock
+                    Grid.Row="6"
+                    Text="端口号" />
+                <TextBox
+                    Grid.Row="6"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.ServerPort}" />
+                <TextBlock
+                    Grid.Row="8"
+                    Text="连接密钥" />
+                <TextBox
+                    Grid.Row="8"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.Token}" />
+                <TextBlock
+                    Grid.Row="10"
+                    Text="预连接数量" />
+                <TextBox
+                    Grid.Row="10"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.PoolCount}" />
+
+                <CheckBox
+                    Grid.Row="12"
+                    Grid.ColumnSpan="99"
+                    Content="异常自动停止"
+                    IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                <CheckBox
+                    Grid.Row="14"
+                    Grid.ColumnSpan="99"
+                    Content="启用TLS传输层安全性协议"
+                    IsChecked="{Binding FrpConfig.EnableTls}" />
+
+                <TextBlock
+                    Grid.Row="16"
+                    Text="管理面板地址" />
+                <TextBox
+                    Grid.Row="16"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.AdminAddress}" />
+
+                <TextBlock
+                    Grid.Row="18"
+                    Text="管理面板端口" />
+                <TextBox
+                    Grid.Row="18"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.AdminPort}" />
+
+                <TextBlock
+                    Grid.Row="20"
+                    Text="管理面板用户名" />
+                <TextBox
+                    Grid.Row="20"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.AdminUsername}" />
+                <TextBlock
+                    Grid.Row="22"
+                    Text="管理面板密码" />
+                <TextBox
+                    Grid.Row="22"
+                    Grid.Column="2"
+                    Text="{Binding FrpConfig.AdminPassword}" />
+            </Grid>
+        </ScrollViewer>
+        <GridSplitter
+            Grid.Row="1"
+            Width="128"
+            Height="1"
+            VerticalAlignment="Center"
+            Background="Gray"
+            Opacity="0.5" />
+        <ItemsControl
+            x:Name="lstRules"
+            Grid.Row="2"
+            ItemsSource="{Binding Rules}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel
+                        ItemWidth="{DynamicResource RuleWidth}"
+                        Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Margin="2,8,24,8"
+                        Padding="8"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4">
+                        <Border.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                        </Border.Styles>
+                        <Grid
+                            ColumnDefinitions="Auto,8,64,16,*,16,Auto"
+                            RowDefinitions="18,0,18">
+
+                            <Border
+                                Grid.RowSpan="99"
+                                Width="8"
+                                Height="8"
+                                Background="Green"
+                                CornerRadius="4"
+                                IsVisible="{Binding Enable}" />
+                            <Button
+                                Grid.RowSpan="99"
+                                Grid.Column="99"
+                                Background="Transparent">
+                                <Button.Flyout>
+                                    <MenuFlyout>
+                                        <MenuItem
+                                            Click="EnableRuleMenu_Click"
+                                            Header="启用"
+                                            IsVisible="{Binding Enable}" />
+                                        <MenuItem
+                                            Click="DisableRuleMenu_Click"
+                                            Header="禁用"
+                                            IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
+                                        <MenuItem Header="-" />
+                                        <MenuItem
+                                            Click="ModifyRuleMenu_Click"
+                                            Header="修改" />
+                                        <MenuItem
+                                            Click="RemoveRuleMenu_Click"
+                                            Header="删除" />
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                                <PathIcon Data="{StaticResource IconMore}" />
+                            </Button>
+                            <TextBlock
+                                Grid.RowSpan="99"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                FontWeight="Bold"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
+
+
+                            <TextBlock
+                                Grid.Column="4"
+                                TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding LocalAddress}" />
+                                <Run>:</Run>
+                                <Run Text="{Binding LocalPort}" />
+                                <Run Text="→" />
+                                <Run Text="{Binding RemotePort}" />
+                                <Run Text="{Binding STCPServerName}" />
+                            </TextBlock>
+                            <StackPanel
+                                Grid.Row="2"
+                                Grid.Column="4"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <TextBlock>
+                                    <Run FontWeight="Bold">类型：</Run>
+                                    <Run Text="{Binding Type}" />
+                                </TextBlock>
+                                <TextBlock
+                                    Foreground="Green"
+                                    IsVisible="{Binding Encryption}"
+                                    Text="加密" />
+                                <TextBlock
+                                    Foreground="Green"
+                                    IsVisible="{Binding Compression}"
+                                    Text="压缩" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</v:ConfigPanelBase>

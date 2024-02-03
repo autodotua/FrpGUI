@@ -1,13 +1,15 @@
 ﻿using FrpGUI.Util;
 using FzLib;
-using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Config
 {
+    [JsonDerivedType(typeof(ClientConfig))]
+    [JsonDerivedType(typeof(ServerConfig))]
     public abstract class FrpConfigBase : IToFrpConfig, ICloneable
     {
         private bool autoStart;
@@ -61,7 +63,7 @@ namespace FrpGUI.Config
         {
             var newItem = MemberwiseClone() as FrpConfigBase;
             newItem.processStatus = ProcessStatus.NotRun;
-            newItem.Process = new ProcessHelper(this);
+            newItem.Process = new ProcessHelper(newItem);
             return newItem;
         }
 

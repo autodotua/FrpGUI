@@ -1,0 +1,40 @@
+{
+  "AdminAddress": "127.0.0.1",
+  "AdminPassword": "",
+  "AdminPort": 12346,
+  "FrpConfigs": [
+    {
+      "DashBoardPassword": "admin",
+      "DashBoardPort": 7500,
+      "DashBoardUsername": "admin",
+      "HttpPort": null,
+      "HttpsPort": null,
+      "MaxPoolCount": 100,
+      "Port": 7000,
+      "TlsOnly": false,
+      "Token": null,
+      "Type": "s",
+      "AutoStart": false,
+      "ID": "85264c85-a006-4874-8da7-77dfdc71ba63",
+      "Name": "服务端"
+    },
+    {
+      "AdminAddress": "localhost",
+      "AdminPassword": "admin",
+      "AdminPort": 7400,
+      "AdminUsername": "admin",
+      "EnableTls": false,
+      "LoginFailExit": false,
+      "PoolCount": 50,
+      "Rules": [],
+      "ServerAddress": null,
+      "ServerPort": 7000,
+      "Token": null,
+      "Type": "c",
+      "AutoStart": false,
+      "ID": "6082263f-30d8-4a07-911f-eed11716f2b0",
+      "Name": "客户端1"
+    }
+  ],
+  "FrpConfigType": "TOML"
+}
