@@ -62,11 +62,13 @@ namespace FrpGUI.Config
             }
         }
 
-        public string AdminAddress { get; set; } = "127.0.0.1";
+        public bool RemoteControlEnable { get; set; } = true;
 
-        public string AdminPassword { get; set; } = "";
+        public string RemoteControlAddress { get; set; } = "127.0.0.1";
 
-        public int AdminPort { get; set; } = 12346;
+        public string RemoteControlPassword { get; set; } = "1234";
+
+        public int RemoteControlPort { get; set; } = 12345;
 
         public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
 

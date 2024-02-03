@@ -6,6 +6,8 @@ using Avalonia.Markup.Xaml;
 
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
+using FrpGUI.Config;
+using FrpGUI.Util;
 using FzLib.Avalonia.Dialogs;
 using System;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace FrpGUI.Avalonia;
 
 public partial class App : Application
 {
+    internal HttpServerHelper HttpServerHelper { get; } = new HttpServerHelper();
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -36,6 +39,11 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+
+        if (AppConfig.Instance.RemoteControlEnable)
+        {
+            HttpServerHelper.StartAsync().ConfigureAwait(false);
+        }
     }
 
     private async void ExitMenuItem_Click(object sender, EventArgs e)

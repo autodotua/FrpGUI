@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FrpGUI.Config;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,5 +46,7 @@ namespace FrpGUI.Avalonia.ViewModels
                 }
             }
         }
+
+        public AppConfig Config => AppConfig.Instance;
     }
 }

@@ -56,4 +56,19 @@ public partial class SettingsWindow : Window
             (Content as Grid).ShowErrorDialogAsync("停止进程失败", ex, true);
         }
     }
+
+    private async void RemoteControlEnableSwitch_Checked(object sender, RoutedEventArgs e)
+    {
+        if (!(App.Current as App).HttpServerHelper.IsRunning)
+        {
+            await (App.Current as App).HttpServerHelper.StartAsync();
+        }
+    }
+    private void RemoteControlEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if ((App.Current as App).HttpServerHelper.IsRunning)
+        {
+            (App.Current as App).HttpServerHelper.Stop();
+        }
+    }
 }

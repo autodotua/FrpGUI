@@ -66,7 +66,7 @@ namespace FrpGUI.WPF
                 MainWindow.Focus();
             };
 
-            await new HttpServerHelper().Start();
+            await new HttpServerHelper().StartAsync();
         }
 
         private void UnhandledException_UnhandledExceptionCatched(object sender, UnhandledException.UnhandledExceptionEventArgs e)
