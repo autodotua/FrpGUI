@@ -56,7 +56,10 @@
                                            Windows='True'}"
                     OffContent="关"
                     OnContent="开" />
-
+                <TextBlock
+                    IsVisible="{OnPlatform Default='True',
+                                           Windows='False'}"
+                    Text="仅Windows支持设置自动开机自启" />
 
                 <TextBlock Classes="Title">正在运行的进程</TextBlock>
                 <ItemsControl
