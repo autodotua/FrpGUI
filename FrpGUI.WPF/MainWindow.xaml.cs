@@ -302,7 +302,7 @@ namespace FrpGUI.WPF
     }
 
     [DebuggerDisplay("{Message}")]
-    public class UILog(LogEventArgs e) : LogEventArgs(e.Message, e.InstanceName, e.Type, e.FromFrp), INotifyPropertyChanged
+    public class UILog(LogEventArgs e) : LogEventArgs(e.Message, e.InstanceName, e.Type, e.FromFrp,e.Exception), INotifyPropertyChanged
     {
         private DateTime time = e.Time;
         private Brush typeBrush;

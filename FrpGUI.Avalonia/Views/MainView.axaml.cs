@@ -61,7 +61,14 @@ public partial class MainView : UserControl
         {
             if(config.AutoStart)
             {
-                config.Start();
+                try
+                {
+                    config.Start();
+                }
+                catch
+                {
+
+                }
             }
         }
     }

@@ -61,7 +61,8 @@ public partial class ControlBar : UserControl
                 default:
                     throw new Exception("未知FRP配置文件类型");
             }
-            if (await (VisualRoot as Window).ShowYesNoDialogAsync("导出配置", "是否导出配置文件？", config) == true)
+            var a = TopLevel.GetTopLevel(this);
+            if (await this.ShowYesNoDialogAsync("导出配置", "是否导出配置文件？", config) == true)
             {
                 var file = await TopLevel.GetTopLevel(this).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
@@ -99,7 +100,7 @@ public partial class ControlBar : UserControl
 
     private async void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        await new SettingsWindow().ShowDialog(this.GetWindow());
+        await new SettingsWindow().ShowDialog(DialogExtension.ContainerType,this);
     }
 
     private async void StartButton_Click(object sender, RoutedEventArgs e)

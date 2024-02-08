@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Views;
 
-public partial class SettingsWindow : Window
+public partial class SettingsWindow : DialogHost
 {
     public SettingsWindow()
     {
@@ -70,5 +70,10 @@ public partial class SettingsWindow : Window
         {
             (App.Current as App).HttpServerHelper.Stop();
         }
+    }
+
+    protected override void OnCloseButtonClick()
+    {
+        Close();
     }
 }
