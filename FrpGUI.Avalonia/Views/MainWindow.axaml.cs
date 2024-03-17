@@ -14,12 +14,16 @@ public partial class MainWindow : Window
         InitializeComponent();
         this.startup = startup;
     }
+
+    public MainViewModel GetDataContext()
+    {
+        return mainView?.DataContext as MainViewModel;
+    }
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         Config.AppConfig.Instance.Save();
-        MainViewModel mainViewModel = mainView?.DataContext as MainViewModel;
 
-        if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
+        if (GetDataContext() != null && GetDataContext().FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
         {
             e.Cancel = true;
             TrayIcon.GetIcons(App.Current)[0].IsVisible = true;

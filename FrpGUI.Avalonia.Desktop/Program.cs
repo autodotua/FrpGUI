@@ -81,18 +81,7 @@ class Program
     private static void InitializeLogs()
     {
         Log = LogManager.GetLogger(typeof(Program));
-        RollingFileAppender fa = new RollingFileAppender()
-        {
-            AppendToFile = true,
-            MaxSizeRollBackups = 100,
-            StaticLogFileName = true,
-            RollingStyle = RollingFileAppender.RollingMode.Date,
-            Layout = new PatternLayout("[%date]-[%thread]-[%-p]%newline%message%newline%newline"),
-            File = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "logs", "FrpGUI.log"),
-        };
-        fa.ActivateOptions();
-        ((log4net.Repository.Hierarchy.Logger)Log.Logger).AddAppender(fa);
-
+       
         Log.Info("程序启动");
     }
 }

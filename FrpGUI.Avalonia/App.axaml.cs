@@ -46,14 +46,23 @@ public partial class App : Application
         }
     }
 
+    private void OpenMenuItem_Click(object sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow.Show();
+            TrayIcon.GetIcons(this)[0].IsVisible = false;
+        }
+        else
+        {
+            throw new PlatformNotSupportedException();
+        }
+    }
     private async void ExitMenuItem_Click(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            MainView mainView = desktop.MainWindow.Content as MainView;
-
-            MainViewModel mainViewModel = mainView.DataContext as MainViewModel;
-
+            MainViewModel mainViewModel = (desktop.MainWindow as MainWindow).GetDataContext();
             if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
             {
                 desktop.MainWindow.Show();

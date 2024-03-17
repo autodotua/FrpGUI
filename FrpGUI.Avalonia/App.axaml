@@ -24,6 +24,9 @@
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem
+                            Click="OpenMenuItem_Click"
+                            Header="打开" />
+                        <NativeMenuItem
                             Click="ExitMenuItem_Click"
                             Header="退出" />
                     </NativeMenu>
