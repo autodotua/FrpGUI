@@ -102,7 +102,6 @@ namespace FrpGUI.Config
             StringBuilder str = new StringBuilder();
             str.Append("serverAddr = ").Append('"').Append(ServerAddress).Append('"').AppendLine();
             str.Append("serverPort = ").Append(ServerPort).AppendLine();
-            str.Append("poolCount = ").Append(PoolCount).AppendLine();
             str.Append("loginFailExit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
 
             str.Append("webServer.addr = ").Append('"').Append(AdminAddress).Append('"').AppendLine();
@@ -114,7 +113,8 @@ namespace FrpGUI.Config
                 str.Append("auth.token = ").Append('"').Append(Token).Append('"').AppendLine();
             }
 
-            str.Append("transport.tls.force = ").Append(EnableTls.ToString().ToLower()).AppendLine();
+            str.Append("transport.tls.enable = ").Append(EnableTls.ToString().ToLower()).AppendLine();
+            str.Append("transport.poolCount = ").Append(PoolCount).AppendLine();
 
             str.AppendLine();
             foreach (var rule in Rules.Where(p => p.Enable && !string.IsNullOrEmpty(p.Name)))
@@ -129,21 +129,21 @@ namespace FrpGUI.Config
         {
             StringBuilder str = new StringBuilder();
             str.Append("[common]").AppendLine();
-            str.Append("server_addr = ").Append(ServerAddress).AppendLine();
-            str.Append("server_port = ").Append(ServerPort).AppendLine();
-            str.Append("pool_count = ").Append(PoolCount).AppendLine();
-            str.Append("login_fail_exit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
-            str.Append("admin_addr = ").Append(AdminAddress).AppendLine();
-            str.Append("admin_port = ").Append(AdminPort).AppendLine();
-            str.Append("admin_user = ").Append(AdminUsername).AppendLine();
-            str.Append("admin_pwd = ").Append(AdminPassword).AppendLine();
+            str.Append("server-addr = ").Append(ServerAddress).AppendLine();
+            str.Append("server-port = ").Append(ServerPort).AppendLine();
+            str.Append("pool-count = ").Append(PoolCount).AppendLine();
+            str.Append("login-fail-exit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
+            str.Append("admin-addr = ").Append(AdminAddress).AppendLine();
+            str.Append("admin-port = ").Append(AdminPort).AppendLine();
+            str.Append("admin-user = ").Append(AdminUsername).AppendLine();
+            str.Append("admin-pwd = ").Append(AdminPassword).AppendLine();
             if (!string.IsNullOrWhiteSpace(Token))
             {
                 str.Append("token = ").Append(Token).AppendLine();
             }
             if (EnableTls)
             {
-                str.Append("tls_enable = true").AppendLine();
+                str.Append("tls-enable = true").AppendLine();
             }
             foreach (var rule in Rules.Where(p => p.Enable && !string.IsNullOrEmpty(p.Name)))
             {

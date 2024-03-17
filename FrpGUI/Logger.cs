@@ -16,7 +16,7 @@ namespace FrpGUI
             "Only one usage of each socket address (protocol/network address/port) is normally permitted.",
         ];
 
-        private static readonly Regex rFrpLog = new Regex(@"(?<Time>[0-9/: ]{19}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
+        private static readonly Regex rFrpLog = new Regex(@"(?<Time>[[0-9:\.\- ]{23}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
 
         public static event EventHandler<LogEventArgs> NewLog;
 
@@ -27,6 +27,7 @@ namespace FrpGUI
         public static void Output(string message, string instanceName)
         {
             char type;
+            message = Regex.Replace(message, @"\u001b\[[0-9;]*m", "");
             if (rFrpLog.IsMatch(message))
             {
                 var match = rFrpLog.Match(message);

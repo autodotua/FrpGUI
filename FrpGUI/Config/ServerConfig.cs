@@ -78,7 +78,6 @@ namespace FrpGUI.Config
         {
             StringBuilder str = new StringBuilder();
             str.Append("bindPort = ").Append(Port).AppendLine();
-            str.Append("transport.maxPoolCount = ").Append(MaxPoolCount).AppendLine();
             str.Append("webServer.port = ").Append(DashBoardPort).AppendLine();
             str.Append("webServer.user = ").Append('"').Append(DashBoardUsername).Append('"').AppendLine();
             str.Append("webServer.password  = ").Append('"').Append(DashBoardPassword).Append('"').AppendLine();
@@ -96,7 +95,8 @@ namespace FrpGUI.Config
                 str.Append("auth.token = ").Append('"').Append(Token).Append('"').AppendLine();
             }
 
-            str.Append("transport.tls.enable = ").Append(TlsOnly.ToString().ToLower()).AppendLine();
+            str.Append("transport.tls.force = ").Append(TlsOnly.ToString().ToLower()).AppendLine();
+            str.Append("transport.maxPoolCount = ").Append(MaxPoolCount).AppendLine();
 
             return str.ToString();
         }
@@ -105,18 +105,18 @@ namespace FrpGUI.Config
         {
             StringBuilder str = new StringBuilder();
             str.Append("[common]").AppendLine();
-            str.Append("bind_port = ").Append(Port).AppendLine();
-            str.Append("max_pool_count = ").Append(MaxPoolCount).AppendLine();
-            str.Append("dashboard_port = ").Append(DashBoardPort).AppendLine();
-            str.Append("dashboard_user = ").Append(DashBoardUsername).AppendLine();
-            str.Append("dashboard_pwd = ").Append(DashBoardPassword).AppendLine();
+            str.Append("bind-port = ").Append(Port).AppendLine();
+            str.Append("max-pool-count = ").Append(MaxPoolCount).AppendLine();
+            str.Append("dashboard-port = ").Append(DashBoardPort).AppendLine();
+            str.Append("dashboard-user = ").Append(DashBoardUsername).AppendLine();
+            str.Append("dashboard-pwd = ").Append(DashBoardPassword).AppendLine();
             if (HttpPort.HasValue && HttpPort.Value > 0)
             {
-                str.Append("vhost_http_port = ").Append(HttpPort.Value).AppendLine();
+                str.Append("vhost-http-port = ").Append(HttpPort.Value).AppendLine();
             }
             if (HttpsPort.HasValue && HttpsPort.Value > 0)
             {
-                str.Append("vhost_https_port = ").Append(HttpsPort.Value).AppendLine();
+                str.Append("vhost-https-port = ").Append(HttpsPort.Value).AppendLine();
             }
             if (!string.IsNullOrWhiteSpace(Token))
             {
@@ -124,7 +124,7 @@ namespace FrpGUI.Config
             }
             if (TlsOnly)
             {
-                str.Append("tls_only = true").AppendLine();
+                str.Append("tls-only = true").AppendLine();
             }
             return str.ToString();
         }

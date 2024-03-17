@@ -11,13 +11,17 @@
     Title="FrpGUI"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    ExtendClientAreaChromeHints="NoChrome"
-    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="{OnPlatform Default=Default,
+                                             Windows=NoChrome}"
+    ExtendClientAreaToDecorationsHint="{OnPlatform Default=False,
+                                                   Windows=True}"
     Icon="/Assets/icon.ico"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
     <Grid>
-        <views:MainView Margin="{Binding #win.OffScreenMargin}" />
+        <views:MainView
+            x:Name="mainView"
+            Margin="{Binding #win.OffScreenMargin}" />
         <ContentControl>
             <ContentControl.Content>
                 <OnPlatform Default="{x:Null}">

@@ -14,8 +14,7 @@
         x:Name="lbx"
         AutoScrollToSelectedItem="True"
         Background="Transparent"
-        ItemsSource="{Binding Logs}"
-        SelectedItem="{Binding SelectedLog}">
+        ItemsSource="{Binding Logs}">
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="ContextMenu">
@@ -77,7 +76,7 @@
                         Padding="4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Background="Gray"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
                         BorderThickness="0"
                         CornerRadius="4"
                         IsVisible="{Binding FromFrp}">

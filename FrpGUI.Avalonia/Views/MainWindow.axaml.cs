@@ -17,7 +17,6 @@ public partial class MainWindow : Window
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         Config.AppConfig.Instance.Save();
-        MainView mainView = Content as MainView;
         MainViewModel mainViewModel = mainView?.DataContext as MainViewModel;
 
         if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))

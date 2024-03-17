@@ -19,9 +19,6 @@ public partial class LogPanelViewModel : ViewModelBase
 
     public ObservableCollection<UILog> Logs { get; } = new ObservableCollection<UILog>();
 
-    [ObservableProperty]
-    private UILog selectedLog;
-
     public void AddLog(LogEventArgs e)
     {
         IBrush brush = Brushes.Transparent;
@@ -47,16 +44,11 @@ public partial class LogPanelViewModel : ViewModelBase
         }
         Dispatcher.UIThread.Invoke(() =>
         {
-            bool needScroll = Logs.Count == 0 || SelectedLog == Logs[^1] || SelectedLog == null;
             var log = new UILog(e)
             {
                 TypeBrush = brush,
             };
             Logs.Add(log);
-            if (needScroll)
-            {
-                SelectedLog = log;
-            }
         });
     }
 

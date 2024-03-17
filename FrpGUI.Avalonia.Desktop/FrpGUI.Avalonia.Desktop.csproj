@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
-    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="log4net"  />
   </ItemGroup>
 
   <ItemGroup>

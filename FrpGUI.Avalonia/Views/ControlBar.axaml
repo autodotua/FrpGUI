@@ -25,7 +25,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="{OnPlatform Default=160, Linux=0}" />
+            <ColumnDefinition Width="{OnPlatform Default=0, Windows=160}" />
         </Grid.ColumnDefinitions>
         <Grid.Styles>
             <Style Selector="Button">

@@ -85,7 +85,7 @@
                         Orientation="Horizontal"
                         Spacing="8">
                         <PathIcon Data="{StaticResource IconAdd}" />
-                        <TextBlock>服务端</TextBlock>
+                        <TextBlock VerticalAlignment="Center">服务端</TextBlock>
                     </StackPanel>
                 </Button>
                 <Button
@@ -100,7 +100,7 @@
                         Orientation="Horizontal"
                         Spacing="8">
                         <PathIcon Data="{StaticResource IconAdd}" />
-                        <TextBlock>客户端</TextBlock>
+                        <TextBlock VerticalAlignment="Center">客户端</TextBlock>
                     </StackPanel>
                 </Button>
             </Grid>
