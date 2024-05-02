@@ -13,7 +13,7 @@
     SizeChanged="PanelBase_SizeChanged"
     mc:Ignorable="d">
     <v:ConfigPanelBase.Resources>
-        <system:Double x:Key="RuleWidth">180</system:Double>
+        <system:Double x:Key="RuleWidth">200</system:Double>
     </v:ConfigPanelBase.Resources>
     <v:ConfigPanelBase.Resources>
         <PathGeometry x:Key="IconMore">
@@ -22,7 +22,7 @@
             M778.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
         </PathGeometry>
     </v:ConfigPanelBase.Resources>
-    <Grid RowDefinitions="*,8,*">
+    <Grid RowDefinitions="*,Auto,*">
         <ScrollViewer
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
@@ -118,7 +118,8 @@
         <GridSplitter
             Grid.Row="1"
             Width="128"
-            Height="1"
+            Height="4"
+            Margin="0,8"
             VerticalAlignment="Center"
             Background="Gray"
             Opacity="0.5" />
@@ -146,16 +147,24 @@
                             </Style>
                         </Border.Styles>
                         <Grid
-                            ColumnDefinitions="Auto,8,64,16,*,16,Auto"
+                            ColumnDefinitions="Auto,8,84,16,*,16,Auto"
                             RowDefinitions="18,0,18">
-
                             <Border
                                 Grid.RowSpan="99"
                                 Width="8"
                                 Height="8"
-                                Background="Green"
                                 CornerRadius="4"
-                                IsVisible="{Binding Enable}" />
+                                IsEnabled="{Binding Enable}">
+                                <Border.Styles>
+                                    <Style Selector="Border">
+                                        <Setter Property="Background" Value="Green" />
+                                    </Style>
+                                    <Style Selector="Border:disabled">
+                                        <Setter Property="Background" Value="Red" />
+                                    </Style>
+                                </Border.Styles>
+                            </Border>
+
                             <Button
                                 Grid.RowSpan="99"
                                 Grid.Column="99"
@@ -165,11 +174,11 @@
                                         <MenuItem
                                             Click="EnableRuleMenu_Click"
                                             Header="启用"
-                                            IsVisible="{Binding Enable}" />
+                                            IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
                                         <MenuItem
                                             Click="DisableRuleMenu_Click"
                                             Header="禁用"
-                                            IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
+                                            IsVisible="{Binding Enable}" />
                                         <MenuItem Header="-" />
                                         <MenuItem
                                             Click="ModifyRuleMenu_Click"

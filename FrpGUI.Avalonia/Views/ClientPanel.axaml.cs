@@ -33,7 +33,7 @@ public partial class ClientPanel : ConfigPanelBase
     {
         var rule = (sender as Visual).DataContext as Rule;
         Debug.Assert(rule != null);
-        rule.Enable = true;
+        rule.Enable = false;
     }
 
     private void EnableRuleMenu_Click(object sender, RoutedEventArgs e)
