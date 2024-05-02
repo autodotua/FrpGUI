@@ -88,7 +88,7 @@ public partial class App : Application
         }
     }
 
-    private void TrayIcon_Clicked(object? sender, EventArgs e)
+    private void TrayIcon_Clicked(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

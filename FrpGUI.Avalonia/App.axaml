@@ -9,10 +9,15 @@
         <FluentTheme />
     </Application.Styles>
     <Application.Resources>
-        <c:NotNullConverter x:Key="NotNullConverter" />
-        <c:InverseBoolConverter x:Key="InverseBoolConverter" />
-        <c:EqualConverter x:Key="EqualConverter" />
-        <FontFamily x:Key="ContentControlThemeFontFamily">微软雅黑</FontFamily>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://FzLib.Avalonia/Dialogs/DialogHostStyles.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <c:NotNullConverter x:Key="NotNullConverter" />
+            <c:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <c:EqualConverter x:Key="EqualConverter" />
+            <FontFamily x:Key="ContentControlThemeFontFamily">微软雅黑</FontFamily>
+        </ResourceDictionary>
     </Application.Resources>
     <TrayIcon.Icons>
         <TrayIcons>

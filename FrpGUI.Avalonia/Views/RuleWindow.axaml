@@ -1,31 +1,30 @@
-<Window
+<dialog:DialogHost
     x:Class="FrpGUI.Avalonia.Views.RuleWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
     xmlns:cf="clr-namespace:FrpGUI.Config;assembly=FrpGUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialog="using:FzLib.Avalonia.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:r="using:FrpGUI.Avalonia"
     xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
-    Title="客户端规则 - FrpGUI"
-    Width="400"
-    Height="400"
+    Title="客户端规则"
     Padding="4"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    CanResize="False"
-    Icon="/Assets/icon.ico"
-    WindowStartupLocation="CenterOwner"
+    CloseButtonContent="取消"
+    CloseButtonEnable="True"
+    PrimaryButtonContent="保存"
+    PrimaryButtonEnable="True"
+    Theme="{StaticResource DialogHostTheme}"
     mc:Ignorable="d">
     <Design.DataContext>
         <vm:RuleWindowViewModel />
     </Design.DataContext>
-    <Window.Resources>
+    <dialog:DialogHost.Resources>
         <c:RuleParameterEnableConverter x:Key="RuleParameterEnableConverter" />
-    </Window.Resources>
-    <Grid RowDefinitions="*,8,Auto,8,Auto">
+    </dialog:DialogHost.Resources>
+    <Grid RowDefinitions="*,8,Auto">
         <ScrollViewer
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
@@ -124,13 +123,5 @@
             Grid.Row="2"
             Foreground="Red"
             Text="{Binding ErrorMessage}" />
-
-        <Button
-            Grid.Row="4"
-            Width="96"
-            HorizontalAlignment="Right"
-            HorizontalContentAlignment="Center"
-            Click="SaveButton_Click"
-            Content="保存" />
     </Grid>
-</Window>
+</dialog:DialogHost>

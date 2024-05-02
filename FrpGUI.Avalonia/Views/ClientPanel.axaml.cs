@@ -22,7 +22,7 @@ public partial class ClientPanel : ConfigPanelBase
     public async void AddRule()
     {
         var dialog = new RuleWindow();
-        var rule = await dialog.ShowDialog<Rule>(this.GetWindow());
+        var rule = await dialog.ShowDialog<Rule>(FzLib.Avalonia.Dialogs.DialogContainerType.PopupPreferred, this.GetWindow());
         if (rule != null)
         {
             (DataContext as FrpConfigPanelViewModel).Rules.Add(rule);
@@ -48,7 +48,7 @@ public partial class ClientPanel : ConfigPanelBase
         var rule = (sender as Visual).DataContext as Rule;
         Debug.Assert(rule != null);
         var dialog = new RuleWindow(rule);
-        var newRule = await dialog.ShowDialog<Rule>(this.GetVisualRoot() as Window);
+        var newRule = await dialog.ShowDialog<Rule>(FzLib.Avalonia.Dialogs.DialogContainerType.PopupPreferred, this.GetVisualRoot() as Window);
         if (newRule != null)
         {
             var rules = (DataContext as FrpConfigPanelViewModel).Rules;
