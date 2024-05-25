@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using log4net;
 using log4net.Appender;
 using log4net.Layout;
@@ -14,15 +19,21 @@ namespace FrpGUI.Avalonia.Desktop;
 
 class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
+    private static SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
+
     [STAThread]
     public static void Main(string[] args)
     {
         Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
         InitializeLogs();
         Logger.NewLog += Logger_NewLog;
+
+        if (singleRunningApp.Register())
+        {
+            Log.Info("存在已打开的实例，进行了通知");
+            return;
+        }
+
         try
         {
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
@@ -30,6 +41,10 @@ class Program
         catch (Exception ex)
         {
             Log.Fatal("未捕获的异常", ex);
+        }
+        finally
+        {
+            singleRunningApp.Dispose();
         }
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -44,6 +59,7 @@ class Program
     {
         Log.Fatal("未捕获的TaskScheduler异常", e.Exception);
     }
+
 
     private static void Logger_NewLog(object sender, LogEventArgs e)
     {
@@ -81,7 +97,7 @@ class Program
     private static void InitializeLogs()
     {
         Log = LogManager.GetLogger(typeof(Program));
-       
+
         Log.Info("程序启动");
     }
 }

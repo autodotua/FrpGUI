@@ -10,7 +10,11 @@ using FrpGUI.Config;
 using FrpGUI.Util;
 using FzLib.Avalonia.Dialogs;
 using System;
+using System.IO.Pipes;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using Avalonia.Threading;
 
 namespace FrpGUI.Avalonia;
 
@@ -28,15 +32,13 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            bool startup = desktop.Args.Length > 0 && desktop.Args[0] == "s";
-            desktop.MainWindow = new MainWindow(startup);
+            throw new PlatformNotSupportedException();
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView();
-        }
+
+        bool startup = desktop.Args.Length > 0 && desktop.Args[0] == "s";
+        desktop.MainWindow = new MainWindow(startup);
 
         base.OnFrameworkInitializationCompleted();
 
@@ -44,7 +46,10 @@ public partial class App : Application
         {
             HttpServerHelper.StartAsync().ConfigureAwait(false);
         }
+        SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
+        singleRunningApp.StartListening();
     }
+
 
     private void OpenMenuItem_Click(object sender, EventArgs e)
     {
