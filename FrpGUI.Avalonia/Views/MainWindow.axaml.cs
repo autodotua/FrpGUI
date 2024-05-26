@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
+using FrpGUI.Config;
 using System.Linq;
 
 namespace FrpGUI.Avalonia.Views;
@@ -26,7 +27,10 @@ public partial class MainWindow : Window
         if (GetDataContext() != null && GetDataContext().FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
         {
             e.Cancel = true;
-            TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+            if (AppConfig.Instance.ShowTrayIcon)
+            {
+                TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+            }
             Hide();
         }
         base.OnClosing(e);

@@ -21,25 +21,9 @@ public partial class SettingsWindow : DialogHost
         InitializeComponent();
     }
 
-    private async void Window_Loaded(object sender, RoutedEventArgs e)
+    protected override void OnCloseButtonClick()
     {
-        IsEnabled = false;
-        try
-        {
-            List<Process> processes = null;
-            await Task.Run(() =>
-            {
-                processes = Process.GetProcesses()
-                .Where(p => p.ProcessName is "frps" or "frpc")
-                .ToList();
-            });
-            (DataContext as SettingWindowViewModel).Processes =
-                new ObservableCollection<Process>(processes);
-        }
-        finally
-        {
-            IsEnabled = true;
-        }
+        Close();
     }
 
     private void KillButton_Click(object sender, RoutedEventArgs e)
@@ -64,6 +48,7 @@ public partial class SettingsWindow : DialogHost
             await (App.Current as App).HttpServerHelper.StartAsync();
         }
     }
+
     private void RemoteControlEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
     {
         if ((App.Current as App).HttpServerHelper.IsRunning)
@@ -72,8 +57,24 @@ public partial class SettingsWindow : DialogHost
         }
     }
 
-    protected override void OnCloseButtonClick()
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        Close();
+        IsEnabled = false;
+        try
+        {
+            List<Process> processes = null;
+            await Task.Run(() =>
+            {
+                processes = Process.GetProcesses()
+                .Where(p => p.ProcessName is "frps" or "frpc")
+                .ToList();
+            });
+            (DataContext as SettingWindowViewModel).Processes =
+                new ObservableCollection<Process>(processes);
+        }
+        finally
+        {
+            IsEnabled = true;
+        }
     }
 }

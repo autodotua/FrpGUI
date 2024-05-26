@@ -58,6 +58,22 @@
                                            Windows='False'}"
                     Text="仅Windows支持设置自动开机自启" />
 
+                <TextBlock />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="显示托盘图标" />
+                <ToggleSwitch
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding Config.ShowTrayIcon}"
+                    IsEnabled="{OnPlatform Default='False',
+                                           Windows='True'}"
+                    OffContent="关"
+                    OnContent="开" />
+                <TextBlock
+                    Text="不显示托盘图标后 ，可通过打开FrpGUI程序跳转到正在运行的程序界面。仅Windows具有良好的支持。"
+                    TextWrapping="Wrap" />
+
                 <TextBlock Classes="Title">正在运行的进程</TextBlock>
                 <ItemsControl
                     BorderBrush="Gray"

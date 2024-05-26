@@ -51,18 +51,6 @@ public partial class App : Application
     }
 
 
-    private void OpenMenuItem_Click(object sender, EventArgs e)
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow.Show();
-            TrayIcon.GetIcons(this)[0].IsVisible = false;
-        }
-        else
-        {
-            throw new PlatformNotSupportedException();
-        }
-    }
     private async void ExitMenuItem_Click(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -93,6 +81,23 @@ public partial class App : Application
         }
     }
 
+    private void HideMenuItem_Click(object sender, EventArgs e)
+    {
+        TrayIcon.GetIcons(this)[0].IsVisible = false;
+    }
+
+    private void OpenMenuItem_Click(object sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow.Show();
+            TrayIcon.GetIcons(this)[0].IsVisible = false;
+        }
+        else
+        {
+            throw new PlatformNotSupportedException();
+        }
+    }
     private void TrayIcon_Clicked(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

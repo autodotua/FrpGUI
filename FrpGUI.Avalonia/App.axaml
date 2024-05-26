@@ -32,6 +32,9 @@
                             Click="OpenMenuItem_Click"
                             Header="打开" />
                         <NativeMenuItem
+                            Click="HideMenuItem_Click"
+                            Header="隐藏图标" />
+                        <NativeMenuItem
                             Click="ExitMenuItem_Click"
                             Header="退出" />
                     </NativeMenu>
