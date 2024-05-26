@@ -42,7 +42,8 @@
                 <CheckBox
                     Grid.Row="2"
                     Grid.ColumnSpan="99"
-                    Content="自动启动" />
+                    Content="自动启动"
+                    IsChecked="{Binding FrpConfig.AutoStart}" />
                 <TextBlock
                     Grid.Row="4"
                     Text="服务器地址" />
