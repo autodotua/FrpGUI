@@ -9,6 +9,8 @@
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     x:Name="win"
     Title="FrpGUI"
+    MinWidth="800"
+    MinHeight="360"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ExtendClientAreaChromeHints="{OnPlatform Default=Default,
