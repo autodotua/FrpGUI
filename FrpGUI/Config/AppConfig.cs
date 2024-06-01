@@ -16,7 +16,7 @@ namespace FrpGUI.Config
         private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions()
         {
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-            TypeInfoResolver = AppConfigSourceGenerationContext.Default,
+            //TypeInfoResolver = AppConfigSourceGenerationContext.Default,
             Converters = { new FrpConfigJsonConverter() },
             WriteIndented = true,
         };
@@ -48,6 +48,7 @@ namespace FrpGUI.Config
                             }
                             catch (Exception ex)
                             {
+                                Logger.Error("读取配置失败：" + ex.Message);
                                 instance = new AppConfig();
                             }
                         }

@@ -30,8 +30,8 @@
             VerticalScrollBarVisibility="Auto">
             <Grid
                 Margin="8"
-                ColumnDefinitions="108,8,*"
-                RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+                ColumnDefinitions="128,8,*"
+                RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
                 <Grid.Styles>
                     <Style Selector="TextBlock">
                         <Setter Property="VerticalAlignment" Value="Center" />
@@ -94,25 +94,34 @@
                 <TextBox
                     Grid.Row="12"
                     Grid.Column="2"
-                    IsEnabled="{Binding Rule.Type, ConverterParameter=STCPKey, Converter={StaticResource RuleParameterEnableConverter}}"
-                    Text="{Binding Rule.STCPKey}" />
+                    IsEnabled="{Binding Rule.Type, ConverterParameter=StcpKey, Converter={StaticResource RuleParameterEnableConverter}}"
+                    Text="{Binding Rule.StcpKey}" />
                 <TextBlock
                     Grid.Row="14"
                     Text="STCP服务名" />
                 <TextBox
                     Grid.Row="14"
                     Grid.Column="2"
-                    IsEnabled="{Binding Rule.Type, ConverterParameter=STCPServerName, Converter={StaticResource RuleParameterEnableConverter}}"
-                    Text="{Binding Rule.STCPServerName}" />
-
+                    IsEnabled="{Binding Rule.Type, ConverterParameter=StcpServerName, Converter={StaticResource RuleParameterEnableConverter}}"
+                    Text="{Binding Rule.StcpServerName}" />
 
                 <CheckBox
                     Grid.Row="16"
+                    Content="带宽限制 (KB)"
+                    IsChecked="{Binding Rule.EnableBandwidthLimit}" />
+                <TextBox
+                    Grid.Row="16"
+                    Grid.Column="2"
+                    IsEnabled="{Binding Rule.EnableBandwidthLimit}"
+                    Text="{Binding Rule.BandwidthLimitKB}" />
+
+                <CheckBox
+                    Grid.Row="18"
                     Grid.ColumnSpan="99"
                     Content="压缩"
                     IsChecked="{Binding Rule.Compression}" />
                 <CheckBox
-                    Grid.Row="18"
+                    Grid.Row="20"
                     Grid.ColumnSpan="99"
                     Content="加密"
                     IsChecked="{Binding Rule.Encryption}" />

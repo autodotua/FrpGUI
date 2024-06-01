@@ -13,8 +13,8 @@ namespace FrpGUI.Avalonia.Converters
             return (parameter as string) switch
             {
                 nameof(Rule.Domains) => type is NetType.HTTP or NetType.HTTPS,
-                nameof(Rule.STCPKey) => type is NetType.STCP or NetType.STCP_Visitor,
-                nameof(Rule.STCPServerName) => type is NetType.STCP_Visitor,
+                nameof(Rule.StcpKey) => type is NetType.STCP or NetType.STCP_Visitor,
+                nameof(Rule.StcpServerName) => type is NetType.STCP_Visitor,
                 nameof(Rule.RemotePort) => type is NetType.TCP or NetType.UDP,
                 _ => throw new ArgumentException(),
             };

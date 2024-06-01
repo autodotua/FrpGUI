@@ -22,8 +22,7 @@ namespace FrpGUI.Avalonia
 
         public bool Register()
         {
-            bool createdNew;
-            mutex = new Mutex(true, Name, out createdNew);
+            mutex = new Mutex(true, Name, out bool createdNew);
 
             if (!createdNew)
             {

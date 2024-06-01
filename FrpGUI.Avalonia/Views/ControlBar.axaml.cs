@@ -43,19 +43,13 @@ public partial class ControlBar : UserControl
             switch (AppConfig.Instance.FrpConfigType)
             {
                 case "INI":
-                    config = viewModel.CurrentFrpConfig.ToIni();
-                    filter = new FilePickerFileType("TOML配置文件")
-                    {
-                        Patterns = ["*.toml"],
-                        MimeTypes = ["application/toml"]
-                    };
-                    break;
+                    throw new NotImplementedException();
                 case "TOML":
                     config = viewModel.CurrentFrpConfig.ToToml();
                     filter = new FilePickerFileType("ini配置文件")
                     {
-                        Patterns = ["*.ini"],
-                        MimeTypes = ["text/plain"]
+                        Patterns = ["*.toml"],
+                        MimeTypes = ["application/toml"]
                     };
                     break;
                 default:
@@ -100,7 +94,7 @@ public partial class ControlBar : UserControl
 
     private async void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        await new SettingsWindow().ShowDialog(DialogExtension.ContainerType,this);
+        await new SettingsWindow().ShowDialog(DialogExtension.ContainerType, this);
     }
 
     private async void StartButton_Click(object sender, RoutedEventArgs e)

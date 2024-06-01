@@ -116,8 +116,8 @@ public partial class RuleWindowViewModel : ViewModelBase
                 case NetType.STCP_Visitor:
                     break;
             }
-            if (Rule.Type is NetType.STCP or NetType.STCP_Visitor && string.IsNullOrWhiteSpace(Rule.STCPKey)) T("STCP密钥为空");
-            if (Rule.Type is NetType.STCP_Visitor && string.IsNullOrWhiteSpace(Rule.STCPServerName)) T("STCP服务名为空");
+            if (Rule.Type is NetType.STCP or NetType.STCP_Visitor && string.IsNullOrWhiteSpace(Rule.StcpKey)) T("STCP密钥为空");
+            if (Rule.Type is NetType.STCP_Visitor && string.IsNullOrWhiteSpace(Rule.StcpServerName)) T("STCP服务名为空");
 
             //暂不考虑端口不对应
 

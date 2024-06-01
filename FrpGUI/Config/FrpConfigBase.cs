@@ -1,4 +1,5 @@
-﻿using FrpGUI.Util;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FrpGUI.Util;
 using FzLib;
 using System;
 using System.ComponentModel;
@@ -10,10 +11,16 @@ namespace FrpGUI.Config
 {
     [JsonDerivedType(typeof(ClientConfig))]
     [JsonDerivedType(typeof(ServerConfig))]
-    public abstract class FrpConfigBase : IToFrpConfig, ICloneable
+    public abstract partial class FrpConfigBase :ObservableObject, IToFrpConfig, ICloneable
     {
+        [ObservableProperty]
         private bool autoStart;
+
+        [ObservableProperty]
         private string name;
+
+        [ObservableProperty]
+        [property:JsonIgnore]
         private ProcessStatus processStatus = ProcessStatus.NotRun;
 
         public FrpConfigBase()
@@ -22,33 +29,12 @@ namespace FrpGUI.Config
             Process.Exited += Process_Exited;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public event EventHandler StatusChanged;
-
-        public bool AutoStart
-        {
-            get => autoStart;
-            set => this.SetValueAndNotify(ref autoStart, value, nameof(AutoStart));
-        }
 
         public Guid ID { get; set; } = Guid.NewGuid();
 
-        public string Name
-        {
-            get => name;
-            set => this.SetValueAndNotify(ref name, value, nameof(Name));
-        }
-
         [JsonIgnore]
         public ProcessHelper Process { get; protected set; }
-
-        [JsonIgnore]
-        public ProcessStatus ProcessStatus
-        {
-            get => processStatus;
-            private set => this.SetValueAndNotify(ref processStatus, value, nameof(ProcessStatus));
-        }
 
         public abstract char Type { get; }
 
@@ -62,7 +48,7 @@ namespace FrpGUI.Config
         public virtual object Clone()
         {
             var newItem = MemberwiseClone() as FrpConfigBase;
-            newItem.processStatus = ProcessStatus.NotRun;
+            newItem.ProcessStatus = ProcessStatus.NotRun;
             newItem.Process = new ProcessHelper(newItem);
             return newItem;
         }
@@ -105,8 +91,6 @@ namespace FrpGUI.Config
             await Process.StopAsync();
             ChangeStatus(ProcessStatus.NotRun);
         }
-
-        public abstract string ToIni();
 
         public abstract string ToToml();
 

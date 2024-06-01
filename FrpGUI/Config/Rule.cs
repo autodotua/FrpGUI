@@ -1,118 +1,54 @@
-﻿using FzLib;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FzLib;
 using System;
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FrpGUI.Config
 {
-    public class Rule : IToFrpConfig, ICloneable
+    public partial class Rule : ObservableObject, IToFrpConfig, ICloneable
     {
+        [ObservableProperty]
+        private int bandwidthLimitKB = 1024;
+
+        [ObservableProperty]
+        private bool enableBandwidthLimit;
+
+        [ObservableProperty]
         private bool compression;
+
+        [ObservableProperty]
         private string domains;
+
+        [ObservableProperty]
         private bool enable = true;
+
+        [ObservableProperty]
         private bool encryption;
+
+        [ObservableProperty]
         private string localAddress = "localhost";
+
+        [ObservableProperty]
         private string localPort = "";
+
+        [ObservableProperty]
         private string name = "";
+
+        [ObservableProperty]
         private string remotePort = "";
+
+        [ObservableProperty]
+        [property: JsonPropertyName("STCPKey")]
         private string stcpKey;
+
+        [ObservableProperty]
+        [property: JsonPropertyName("STCPServerName")]
         private string stcpServerName;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Domains), nameof(StcpKey), nameof(StcpServerName))]
         private NetType type = NetType.TCP;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public bool Compression
-        {
-            get => compression;
-            set => this.SetValueAndNotify(ref compression, value, nameof(Compression));
-        }
-
-        public string Domains
-        {
-            get => domains;
-            set => this.SetValueAndNotify(ref domains, value, nameof(Domains));
-        }
-
-        public bool Enable
-        {
-            get => enable;
-            set => this.SetValueAndNotify(ref enable, value, nameof(Enable));
-        }
-
-
-        public bool Encryption
-        {
-            get => encryption;
-            set => this.SetValueAndNotify(ref encryption, value, nameof(Encryption));
-        }
-
-        public string LocalAddress
-        {
-            get => localAddress;
-            set => this.SetValueAndNotify(ref localAddress, value, nameof(LocalAddress));
-        }
-
-        public string LocalPort
-        {
-            get => localPort;
-            set => this.SetValueAndNotify(ref localPort, value, nameof(LocalPort));
-        }
-
-        public string Name
-        {
-            get => name;
-            set => this.SetValueAndNotify(ref name, value, nameof(Name));
-        }
-
-        public string RemotePort
-        {
-            get => remotePort;
-            set => this.SetValueAndNotify(ref remotePort, value, nameof(RemotePort));
-        }
-
-        public string STCPKey
-        {
-            get => stcpKey;
-            set => this.SetValueAndNotify(ref stcpKey, value, nameof(STCPKey));
-        }
-
-        public string STCPServerName
-        {
-            get => stcpServerName;
-            set => this.SetValueAndNotify(ref stcpServerName, value, nameof(STCPServerName));
-        }
-
-        public NetType Type
-        {
-            get => type;
-            set
-            {
-                switch (value)
-                {
-                    case NetType.TCP or NetType.UDP:
-                        STCPKey = null;
-                        STCPServerName = null;
-                        Domains = null;
-                        break;
-
-                    case NetType.HTTP or NetType.HTTPS:
-                        STCPKey = null;
-                        STCPServerName = null;
-                        RemotePort = null;
-                        break;
-                    case NetType.STCP:
-                        RemotePort = null;
-                        Domains = null;
-                        STCPServerName = null;
-                        break;
-                    case NetType.STCP_Visitor:
-                        RemotePort = null;
-                        Domains = null;
-                        break;
-                }
-                this.SetValueAndNotify(ref type, value, nameof(Type), nameof(Domains), nameof(STCPKey), nameof(STCPServerName));
-            }
-        }
 
         public object Clone()
         {
@@ -141,6 +77,11 @@ namespace FrpGUI.Config
             {
                 str.AppendLine("transport.useCompression = true");
             }
+            if (EnableBandwidthLimit && BandwidthLimitKB > 0)
+            {
+                str.Append("transport.bandwidthLimit = \"").Append(BandwidthLimitKB).Append("KB\"").AppendLine();
+            }
+
             switch (Type)
             {
                 case NetType.HTTP or NetType.HTTPS:
@@ -154,12 +95,12 @@ namespace FrpGUI.Config
 
             if (Type == NetType.STCP || Type == NetType.STCP_Visitor)
             {
-                str.Append("secretKey = ").Append('"').Append(STCPKey).Append('"').AppendLine();
+                str.Append("secretKey = ").Append('"').Append(StcpKey).Append('"').AppendLine();
             }
 
             if (Type == NetType.STCP_Visitor)
             {
-                str.Append("serverName = ").Append('"').Append(STCPServerName).Append('"').AppendLine();
+                str.Append("serverName = ").Append('"').Append(StcpServerName).Append('"').AppendLine();
                 str.Append("bindAddr  = ").Append('"').Append(LocalAddress).Append('"').AppendLine();
                 str.Append("bindPort = ").Append(LocalPort).AppendLine();
             }
@@ -173,45 +114,31 @@ namespace FrpGUI.Config
             return str.ToString();
         }
 
-        public string ToIni()
+        partial void OnTypeChanged(NetType value)
         {
-            StringBuilder str = new StringBuilder();
-            str.Append('[')
-                .Append(localPort.Contains(',') || localPort.Contains('-') ? "range:" : "")
-                .Append(Name)
-                .Append(']')
-                .AppendLine();
-            str.Append("type = ").Append(Type.ToString().Split('_')[0].ToLower()).AppendLine();
-            str.Append("use_encryption = ").Append(Encryption.ToString().ToLower()).AppendLine();
-            str.Append("use_compression = ").Append(Compression.ToString().ToLower()).AppendLine();
-            if (Type == NetType.HTTP || Type == NetType.HTTPS)
+            switch (value)
             {
-                str.Append("custom_domains = ").Append(Domains).AppendLine();
-            }
-            else
-            {
-                str.Append("remote_port = ").Append(RemotePort).AppendLine();
-            }
-            if (Type == NetType.STCP || Type == NetType.STCP_Visitor)
-            {
-                str.Append("sk = ").Append(STCPKey).AppendLine();
-            }
+                case NetType.TCP or NetType.UDP:
+                    StcpKey = null;
+                    StcpServerName = null;
+                    Domains = null;
+                    break;
 
-            if (Type == NetType.STCP_Visitor)
-            {
-                str.Append("role = visitor").AppendLine();
-                str.Append("server_name = ").Append(STCPServerName).AppendLine();
-                str.Append("bind_addr = ").Append(LocalAddress).AppendLine();
-                str.Append("bind_port = ").Append(LocalPort).AppendLine();
+                case NetType.HTTP or NetType.HTTPS:
+                    StcpKey = null;
+                    StcpServerName = null;
+                    RemotePort = null;
+                    break;
+                case NetType.STCP:
+                    RemotePort = null;
+                    Domains = null;
+                    StcpServerName = null;
+                    break;
+                case NetType.STCP_Visitor:
+                    RemotePort = null;
+                    Domains = null;
+                    break;
             }
-            else
-            {
-                str.Append("local_ip = ").Append(LocalAddress).AppendLine();
-                str.Append("local_port = ").Append(LocalPort).AppendLine();
-            }
-
-            str.AppendLine();
-            return str.ToString();
         }
     }
 }

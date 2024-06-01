@@ -2,10 +2,8 @@
 
 namespace FrpGUI.Config
 {
-    public interface IToFrpConfig : INotifyPropertyChanged
+    public interface IToFrpConfig
     {
-        public string ToIni();
-
         public string ToToml();
     }
 }

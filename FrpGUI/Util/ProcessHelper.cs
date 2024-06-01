@@ -50,9 +50,7 @@ namespace FrpGUI.Util
                 switch (AppConfig.Instance.FrpConfigType)
                 {
                     case "INI":
-                        configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".ini");
-                        File.WriteAllText(configFile, obj.ToIni());
-                        break;
+                        throw new NotImplementedException();
                     case "TOML":
                         configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
                         File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
