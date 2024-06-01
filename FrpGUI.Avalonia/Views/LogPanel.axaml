@@ -21,7 +21,8 @@
                     <Setter.Value>
                         <ContextMenu>
                             <MenuItem
-                                Click="CopyMenuItem_Click"
+                                Command="{Binding $parent[UserControl].DataContext.CopyLogCommand}"
+                                CommandParameter="{Binding .}"
                                 Header="复制" />
                         </ContextMenu>
                     </Setter.Value>
@@ -47,7 +48,7 @@
                         Orientation="Horizontal"
                         Spacing="4">
                         <TextBlock
-                            Text="{Binding ChangeableTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                            Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
                             TextWrapping="NoWrap" />
                         <TextBlock
                             IsVisible="{Binding HasUpdated}"

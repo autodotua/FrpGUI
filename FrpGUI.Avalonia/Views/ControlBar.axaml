@@ -49,7 +49,7 @@
             IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource NotNullConverter}}"
             Orientation="Horizontal">
 
-            <Button Click="StartButton_Click">
+            <Button Command="{Binding StartCommand}">
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
@@ -67,7 +67,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Click="StopButton_Click">
+            <Button Command="{Binding StopCommand}">
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
@@ -85,7 +85,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Click="RestartButton_Click">
+            <Button Command="{Binding RestartCommand}">
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
@@ -103,7 +103,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Click="ExportButton_Click">
+            <Button Command="{Binding ExportCommand}">
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4">
@@ -115,7 +115,7 @@
 
             <Button
                 Width="88"
-                Click="AddRuleButton_Click"
+                Command="{Binding AddRuleCommand}"
                 IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type cf:ClientConfig}}">
                 <StackPanel
                     Orientation="Horizontal"
@@ -132,7 +132,7 @@
             Grid.Column="2"
             Width="32"
             HorizontalContentAlignment="Center"
-            Click="SettingsButton_Click">
+            Command="{Binding SettingsCommand}">
             <PathIcon
                 Width="16"
                 Height="16"

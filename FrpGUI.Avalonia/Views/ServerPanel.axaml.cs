@@ -10,7 +10,6 @@ public partial class ServerPanel : ConfigPanelBase
 {
     public ServerPanel()
     {
-        DataContext = new FrpConfigPanelViewModel();
         InitializeComponent();
     }
 }

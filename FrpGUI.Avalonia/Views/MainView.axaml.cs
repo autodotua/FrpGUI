@@ -1,6 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using CommunityToolkit.Mvvm.Messaging;
+using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Config;
 using FzLib.Avalonia;
@@ -8,6 +10,7 @@ using FzLib.Avalonia.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Views;
@@ -18,57 +21,94 @@ public partial class MainView : UserControl
     {
         DataContext = new MainViewModel();
         InitializeComponent();
+        RegisterMessages();
+        (DataContext as MainViewModel).PropertyChanged += MainView_PropertyChanged;
     }
 
-    private void AddClientButton_Click(object sender, RoutedEventArgs e)
+    private void MainView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        var newConfig = new ClientConfig();
-        (DataContext as MainViewModel).FrpConfigs.Add(newConfig);
-        (DataContext as MainViewModel).CurrentFrpConfig = newConfig;
-    }
-
-    private void AddServerButton_Click(object sender, RoutedEventArgs e)
-    {
-        var newConfig = new ServerConfig();
-        (DataContext as MainViewModel).FrpConfigs.Add(newConfig);
-        (DataContext as MainViewModel).CurrentFrpConfig = newConfig;
-    }
-    private void CreateCopyMenuItem_Click(object sender, RoutedEventArgs e)
-    {
-        var config = (sender as MenuItem).DataContext as FrpConfigBase;
-        var newConfig = config.Clone() as FrpConfigBase;
-        newConfig.Name = newConfig.Name + "（复制）";
-        (DataContext as MainViewModel).FrpConfigs.Add(newConfig);
-        (DataContext as MainViewModel).CurrentFrpConfig = newConfig;
-    }
-
-    private async void DeleteConfigMenuItem_Click(object sender, RoutedEventArgs e)
-    {
-        var config = (sender as MenuItem).DataContext as FrpConfigBase;
-        if (await this.GetWindow().ShowYesNoDialogAsync("删除配置", $"是否删除配置“{config.Name}”？")==true)
+        if (e.PropertyName == nameof(MainViewModel.CurrentFrpConfig))
         {
-            if (config.ProcessStatus == ProcessStatus.Running)
+            if ((DataContext as MainViewModel).CurrentFrpConfig is ServerConfig)
             {
-                await config.StopAsync();
+                mainPanel.Content = new ServerPanel();
             }
-            (DataContext as MainViewModel).FrpConfigs.Remove(config);
+            else
+            {
+                mainPanel.Content = new ClientPanel();
+            }
         }
+    }
+
+    private void RegisterMessages()
+    {
+        WeakReferenceMessenger.Default.Register<DialogHostMessage>(this, async (_, m) =>
+        {
+            try
+            {
+                var result = await m.Dialog.ShowDialog<object>(DialogContainerType.PopupPreferred, TopLevel.GetTopLevel(this));
+                m.SetResult(result);
+            }
+            catch (Exception ex)
+            {
+                m.SetException(ex);
+            }
+        });
+
+        WeakReferenceMessenger.Default.Register<StorageProviderMessage>(this, (_, m) =>
+        {
+            m.StorageProvider = TopLevel.GetTopLevel(this).StorageProvider;
+        });
+
+        WeakReferenceMessenger.Default.Register<ClipboardMessage>(this, (_, m) =>
+        {
+            m.Clipboard = TopLevel.GetTopLevel(this).Clipboard;
+        });
+
+        WeakReferenceMessenger.Default.Register<CommonDialogMessage>(this, async (_, m) =>
+        {
+            try
+            {
+                object result = null;
+                switch (m.Type)
+                {
+                    case CommonDialogMessage.CommonDialogType.Ok:
+                       await this.ShowOkDialogAsync(m.Title, m.Message, m.Detail);
+                        break;
+                    case CommonDialogMessage.CommonDialogType.Error:
+                        if (m.Exception == null)
+                        {
+                            result =await this.ShowErrorDialogAsync(m.Title, m.Message, m.Detail);
+                        }
+                        else
+                        {
+                            result =await this.ShowErrorDialogAsync(m.Title, m.Exception);
+                        }
+                        break;
+                    case CommonDialogMessage.CommonDialogType.YesNo:
+                        result =await this.ShowYesNoDialogAsync(m.Title, m.Message, m.Detail);
+                        break;
+                }
+                m.SetResult(result);
+            }
+            catch (Exception ex)
+            {
+                m.SetException(ex);
+            }
+        });
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        foreach (var config in (DataContext as MainViewModel).FrpConfigs)
+        foreach (var config in (DataContext as MainViewModel).FrpConfigs.Where(p => p.AutoStart))
         {
-            if(config.AutoStart)
+            try
             {
-                try
-                {
-                    config.Start();
-                }
-                catch
-                {
+                config.Start();
+            }
+            catch
+            {
 
-                }
             }
         }
     }

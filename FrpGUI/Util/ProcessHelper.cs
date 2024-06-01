@@ -46,18 +46,9 @@ namespace FrpGUI.Util
                 {
                     Directory.CreateDirectory(tempDir);
                 }
-                string configFile = null;
-                switch (AppConfig.Instance.FrpConfigType)
-                {
-                    case "INI":
-                        throw new NotImplementedException();
-                    case "TOML":
-                        configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
-                        File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
-                        break;
-                    default:
-                        throw new Exception("未知FRP配置文件类型");
-                }
+                string configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
+                File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
+
                 Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
                 string frpExe = $"./frp/frp{type}";
                 if (!File.Exists(frpExe) && !File.Exists(frpExe + ".exe"))

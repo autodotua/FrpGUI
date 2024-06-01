@@ -45,10 +45,12 @@
                             <Setter.Value>
                                 <ContextMenu>
                                     <MenuItem
-                                        Click="DeleteConfigMenuItem_Click"
+                                        Command="{Binding $parent[UserControl].DataContext.DeleteConfigCommand}"
+                                        CommandParameter="{Binding .}"
                                         Header="删除" />
                                     <MenuItem
-                                        Click="CreateCopyMenuItem_Click"
+                                        Command="{Binding $parent[UserControl].DataContext.CreateCopyCommand}"
+                                        CommandParameter="{Binding .}"
                                         Header="建立副本" />
                                 </ContextMenu>
                             </Setter.Value>
@@ -79,7 +81,7 @@
                     Padding="8"
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
-                    Click="AddServerButton_Click">
+                    Command="{Binding AddServerCommand}">
                     <StackPanel
                         HorizontalAlignment="Center"
                         Orientation="Horizontal"
@@ -94,7 +96,7 @@
                     Padding="8"
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
-                    Click="AddClientButton_Click">
+                    Command="{Binding AddClientCommand}">
                     <StackPanel
                         HorizontalAlignment="Center"
                         Orientation="Horizontal"
@@ -115,7 +117,7 @@
             Grid.Row="1"
             Grid.Column="2"
             Margin="8"
-            Content="{Binding CurrentPanel}" />
+            DataContext="{Binding CurrentPanelViewModel}" />
 
 
         <v:LogPanel

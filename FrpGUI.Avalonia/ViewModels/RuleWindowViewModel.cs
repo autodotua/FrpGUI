@@ -19,7 +19,7 @@ public partial class RuleWindowViewModel : ViewModelBase
     {
         if (ushort.TryParse(port, out ushort result))
         {
-            return new ushort[] { result };
+            return [result];
         }
         HashSet<ushort> ports = new HashSet<ushort>();
         foreach (var part in port.Split(','))

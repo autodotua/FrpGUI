@@ -101,8 +101,9 @@
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         Click="KillButton_Click"
-                                        Content="停止进程"
-                                        DataContext="{Binding .}" />
+                                        Command="{Binding $parent[ItemsControl].DataContext.KillProcessCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Content="停止进程" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

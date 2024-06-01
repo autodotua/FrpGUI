@@ -28,17 +28,7 @@ public partial class SettingsWindow : DialogHost
 
     private void KillButton_Click(object sender, RoutedEventArgs e)
     {
-        Process p = (sender as Button).DataContext as Process;
-        Debug.Assert(p != null);
-        try
-        {
-            p.Kill();
-            (DataContext as SettingWindowViewModel).Processes.Remove(p);
-        }
-        catch (Exception ex)
-        {
-            (Content as Grid).ShowErrorDialogAsync("停止进程失败", ex, true);
-        }
+       
     }
 
     private async void RemoteControlEnableSwitch_Checked(object sender, RoutedEventArgs e)

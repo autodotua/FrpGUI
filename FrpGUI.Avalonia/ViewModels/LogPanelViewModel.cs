@@ -1,12 +1,12 @@
 ﻿using Avalonia.Media;
 using System.ComponentModel;
-using System.Diagnostics;
-using System;
 using System.Collections.ObjectModel;
 using FrpGUI.Avalonia.Views;
 using FzLib;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Controls;
+using FrpGUI.Avalonia.Messages;
+using CommunityToolkit.Mvvm.Input;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -17,7 +17,7 @@ public partial class LogPanelViewModel : ViewModelBase
         Logger.NewLog += (s, e) => AddLog(e);
     }
 
-    public ObservableCollection<UILog> Logs { get; } = new ObservableCollection<UILog>();
+    public ObservableCollection<LogViewModel> Logs { get; } = new ObservableCollection<LogViewModel>();
 
     public void AddLog(LogEventArgs e)
     {
@@ -37,49 +37,21 @@ public partial class LogPanelViewModel : ViewModelBase
             {
                 if (Logs[^i].Message == e.Message)
                 {
-                    Logs[^i].UpdateTime();
+                    Logs[^i].UpdateTimes++;
                     return;
                 }
             }
         }
-        Dispatcher.UIThread.Invoke(() =>
+        var log = new LogViewModel(e)
         {
-            var log = new UILog(e)
-            {
-                TypeBrush = brush,
-            };
-            Logs.Add(log);
-        });
+            TypeBrush = brush,
+        };
+        Logs.Add(log);
     }
 
-}
-
-[DebuggerDisplay("{Message}")]
-public class UILog(LogEventArgs e) : LogEventArgs(e.Message, e.InstanceName, e.Type, e.FromFrp, e.Exception), INotifyPropertyChanged
-{
-    private DateTime time = e.Time;
-    private IBrush typeBrush;
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public DateTime ChangeableTime
+    [RelayCommand]
+    private void CopyLog(LogViewModel log)
     {
-        get => time;
-        private set => this.SetValueAndNotify(ref time, value, nameof(ChangeableTime));
-    }
-
-    public bool HasUpdated => UpdateTimes > 0;
-
-    public IBrush TypeBrush
-    {
-        get => typeBrush;
-        set => this.SetValueAndNotify(ref typeBrush, value, nameof(TypeBrush));
-    }
-
-    public int UpdateTimes { get; set; }
-
-    public void UpdateTime()
-    {
-        UpdateTimes++;
-        this.Notify(nameof(UpdateTimes), nameof(HasUpdated));
+        SendMessage(new ClipboardMessage()).Clipboard.SetTextAsync(log.Message);
     }
 }

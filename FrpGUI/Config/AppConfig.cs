@@ -64,7 +64,6 @@ namespace FrpGUI.Config
         }
 
         public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
-        public string FrpConfigType { get; set; } = "TOML";
         public string RemoteControlAddress { get; set; } = "127.0.0.1";
         public bool RemoteControlEnable { get; set; } = true;
         public string RemoteControlPassword { get; set; } = "1234";

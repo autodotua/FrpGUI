@@ -7,6 +7,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    x:Name="root"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:FrpConfigPanelViewModel"
@@ -176,19 +177,23 @@
                                     <Button.Flyout>
                                         <MenuFlyout>
                                             <MenuItem
-                                                Click="EnableRuleMenu_Click"
+                                                Command="{Binding $parent[v:ConfigPanelBase].DataContext.EnableRuleCommand}"
+                                                CommandParameter="{Binding .}"
                                                 Header="启用"
                                                 IsVisible="{Binding Enable, Converter={StaticResource InverseBoolConverter}}" />
                                             <MenuItem
-                                                Click="DisableRuleMenu_Click"
+                                                Command="{Binding $parent[v:ConfigPanelBase].DataContext.DisableRuleCommand}"
+                                                CommandParameter="{Binding .}"
                                                 Header="禁用"
                                                 IsVisible="{Binding Enable}" />
                                             <MenuItem Header="-" />
                                             <MenuItem
-                                                Click="ModifyRuleMenu_Click"
+                                                Command="{Binding $parent[v:ConfigPanelBase].DataContext.ModifyRuleCommand}"
+                                                CommandParameter="{Binding .}"
                                                 Header="修改" />
                                             <MenuItem
-                                                Click="RemoveRuleMenu_Click"
+                                                Command="{Binding $parent[v:ConfigPanelBase].DataContext.RemoveRuleCommand}"
+                                                CommandParameter="{Binding .}"
                                                 Header="删除" />
                                         </MenuFlyout>
                                     </Button.Flyout>
@@ -227,7 +232,7 @@
                                         Foreground="Green"
                                         IsVisible="{Binding Encryption}"
                                         Text="加密" />
-                                    <TextBlock  
+                                    <TextBlock
                                         Grid.Column="4"
                                         Foreground="Orange"
                                         IsVisible="{Binding Compression}"
