@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Avalonia.Threading;
+using Avalonia.Media;
 
 namespace FrpGUI.Avalonia;
 
@@ -24,6 +25,10 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        if (OperatingSystem.IsWindows())
+        {
+            Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));
+        }
     }
 
     public override void OnFrameworkInitializationCompleted()

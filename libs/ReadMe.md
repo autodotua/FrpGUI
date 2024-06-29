@@ -1,0 +1,1 @@
+从[FzLib](https://github.com/autodotua/FzLib)（master_v2分支）编译`FzLib.dll`和`FzLib.Avalonia.dll`，也可下载Release中发布的dll。当前版本对应的`FzLib`的Commit版本为2024年6月29日版本。

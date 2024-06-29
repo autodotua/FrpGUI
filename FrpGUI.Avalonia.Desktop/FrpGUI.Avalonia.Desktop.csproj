@@ -24,10 +24,10 @@
 
   <ItemGroup>
     <Reference Include="FzLib">
-      <HintPath>..\..\..\..\OneDrive\开发\模块\Publish\Release\net8.0\FzLib.dll</HintPath>
+      <HintPath>..\libs\FzLib.dll</HintPath>
     </Reference>
     <Reference Include="FzLib.Avalonia">
-      <HintPath>..\..\..\..\OneDrive\开发\模块\Publish\Release\net8.0\FzLib.Avalonia.dll</HintPath>
+      <HintPath>..\libs\FzLib.Avalonia.dll</HintPath>
     </Reference>
   </ItemGroup>
 

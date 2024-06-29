@@ -5,8 +5,8 @@ using FrpGUI.Avalonia.Views;
 using FzLib;
 using Avalonia.Threading;
 using Avalonia.Controls;
-using FrpGUI.Avalonia.Messages;
 using CommunityToolkit.Mvvm.Input;
+using FzLib.Avalonia.Messages;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -52,6 +52,6 @@ public partial class LogPanelViewModel : ViewModelBase
     [RelayCommand]
     private void CopyLog(LogViewModel log)
     {
-        SendMessage(new ClipboardMessage()).Clipboard.SetTextAsync(log.Message);
+        SendMessage(new GetClipboardMessage()).Clipboard.SetTextAsync(log.Message);
     }
 }

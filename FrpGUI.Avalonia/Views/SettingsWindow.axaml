@@ -17,7 +17,6 @@
     x:DataType="vm:SettingWindowViewModel"
     CloseButtonContent="关闭"
     Loaded="Window_Loaded"
-    Theme="{StaticResource DialogHostTheme}"
     mc:Ignorable="d">
     <dialog:DialogHost.Resources>
         <ResourceDictionary>

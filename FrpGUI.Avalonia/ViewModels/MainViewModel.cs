@@ -3,10 +3,10 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Config;
 using FzLib.Avalonia.Dialogs;
+using FzLib.Avalonia.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using static FrpGUI.Avalonia.Messages.CommonDialogMessage;
+using static FzLib.Avalonia.Messages.CommonDialogMessage;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -107,7 +107,7 @@ public partial class MainViewModel : ViewModelBase
 
             if ( true.Equals(await message.Task))
             {
-                var file = await SendMessage(new StorageProviderMessage()).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                var file = await SendMessage(new GetStorageProviderMessage()).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
                     FileTypeChoices = [filter],
                     SuggestedFileName = CurrentFrpConfig.Name,

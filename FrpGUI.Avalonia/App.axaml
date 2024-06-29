@@ -11,12 +11,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://FzLib.Avalonia/Dialogs/DialogHostStyles.axaml" />
+                <ResourceInclude Source="avares://FzLib.Avalonia/Resources.axaml" />
             </ResourceDictionary.MergedDictionaries>
-            <c:NotNullConverter x:Key="NotNullConverter" />
-            <c:InverseBoolConverter x:Key="InverseBoolConverter" />
-            <c:EqualConverter x:Key="EqualConverter" />
-            <FontFamily x:Key="ContentControlThemeFontFamily">微软雅黑</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
     <TrayIcon.Icons>

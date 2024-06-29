@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Config;
+using FzLib.Avalonia.Messages;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -36,6 +36,7 @@ public partial class FrpConfigPanelViewModel : ViewModelBase
             Rules.CollectionChanged += (s, e) => cc.Rules = [.. Rules];
         }
     }
+
     [RelayCommand]
     private void DisableRule(Rule rule)
     {

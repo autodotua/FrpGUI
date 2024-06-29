@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="using:FzLib.Avalonia.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:r="using:FrpGUI.Avalonia"
+    xmlns:r="using:FzLib.Avalonia.MarkupExtensions"
     xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     Title="客户端规则"
