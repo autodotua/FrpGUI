@@ -3,15 +3,17 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.0.10" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.0.10" />
+    <PackageVersion Include="Avalonia" Version="11.0.11" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.0.11" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.0.10" />
+    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.11" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.0.11" />
+    <PackageVersion Include="FzLib" Version="2.0.0" />
+    <PackageVersion Include="FzLib.Avalonia" Version="2.0.0" />
     <PackageVersion Include="log4net" Version="2.0.17" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.5.0" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.5.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="ModernWpfUI" Version="0.9.6" />

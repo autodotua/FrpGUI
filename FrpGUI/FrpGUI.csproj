@@ -10,12 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="FzLib">
-      <HintPath>..\..\..\..\OneDrive\开发\模块\Publish\Release\net8.0\FzLib.dll</HintPath>
-    </Reference>
+    <PackageReference Include="FzLib" />
   </ItemGroup>
 
   <ItemGroup>

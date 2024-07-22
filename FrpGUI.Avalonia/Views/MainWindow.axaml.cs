@@ -41,7 +41,10 @@ public partial class MainWindow : Window
         if (startup)
         {
             Hide();
-            TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+            if (AppConfig.Instance.ShowTrayIcon)
+            {
+                TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+            }
         }
     }
 }

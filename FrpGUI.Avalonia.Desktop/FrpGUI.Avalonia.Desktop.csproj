@@ -14,21 +14,13 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
-    <PackageReference Include="log4net"  />
+    <PackageReference Include="FzLib.Avalonia" />
+    <PackageReference Include="log4net" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Avalonia\FrpGUI.Avalonia.csproj" />
     <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="FzLib">
-      <HintPath>..\libs\FzLib.dll</HintPath>
-    </Reference>
-    <Reference Include="FzLib.Avalonia">
-      <HintPath>..\libs\FzLib.Avalonia.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
