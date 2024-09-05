@@ -3,8 +3,10 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Config;
+using FrpGUI.Configs;
+using FrpGUI.Enums;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
 using System;
@@ -29,10 +31,16 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<FrpConfigBase> frpConfigs = new ObservableCollection<FrpConfigBase>();
 
-    public MainViewModel()
+    public MainViewModel(DataProvider provider)
     {
-        FrpConfigs = new ObservableCollection<FrpConfigBase>(AppConfig.Instance.FrpConfigs);
+         InitializeData(provider);
     }
+
+    private async Task InitializeData(DataProvider provider)
+    {
+        FrpConfigs = new ObservableCollection<FrpConfigBase>(await provider.GetFrpConfigsAsync());
+    }
+
     [RelayCommand]
     private void AddClient()
     {

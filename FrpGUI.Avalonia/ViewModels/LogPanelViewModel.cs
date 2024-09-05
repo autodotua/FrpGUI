@@ -10,14 +10,14 @@ using FzLib.Avalonia.Messages;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
-public partial class LogPanelViewModel : ViewModelBase
+public partial class LogViewModel : ViewModelBase
 {
-    public LogPanelViewModel()
+    public LogViewModel()
     {
         Logger.NewLog += (s, e) => AddLog(e);
     }
 
-    public ObservableCollection<LogViewModel> Logs { get; } = new ObservableCollection<LogViewModel>();
+    public ObservableCollection<LogInfo> Logs { get; } = new ObservableCollection<LogInfo>();
 
     public void AddLog(LogEventArgs e)
     {
@@ -42,7 +42,7 @@ public partial class LogPanelViewModel : ViewModelBase
                 }
             }
         }
-        var log = new LogViewModel(e)
+        var log = new LogInfo(e)
         {
             TypeBrush = brush,
         };
@@ -50,7 +50,7 @@ public partial class LogPanelViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void CopyLog(LogViewModel log)
+    private void CopyLog(LogInfo log)
     {
         SendMessage(new GetClipboardMessage()).Clipboard.SetTextAsync(log.Message);
     }

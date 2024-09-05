@@ -6,7 +6,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ public partial class LogPanel : UserControl
 
     public LogPanel()
     {
-        DataContext = new LogPanelViewModel();
+        DataContext = new LogViewModel();
         InitializeComponent();
     }
 
@@ -30,7 +30,7 @@ public partial class LogPanel : UserControl
         base.OnLoaded(e);
 
         lstScrollViewer = lbx.GetVisualChildren().First().GetVisualChildren().First() as ScrollViewer;
-        (DataContext as LogPanelViewModel).Logs.CollectionChanged += Logs_CollectionChanged;
+        (DataContext as LogViewModel).Logs.CollectionChanged += Logs_CollectionChanged;
     }
     private async void Logs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {

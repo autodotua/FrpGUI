@@ -3,7 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using FzLib.Avalonia;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;

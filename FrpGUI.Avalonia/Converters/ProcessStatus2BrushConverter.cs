@@ -1,5 +1,6 @@
 ﻿using Avalonia.Data.Converters;
 using Avalonia.Media;
+using FrpGUI.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,7 +19,7 @@ namespace FrpGUI.Avalonia.Converters
                 return null;
             }
             ProcessStatus status = (ProcessStatus)value;
-            if (status == ProcessStatus.NotRun)
+            if (status == ProcessStatus.Stopped)
             {
                 return Brushes.Red;
             }

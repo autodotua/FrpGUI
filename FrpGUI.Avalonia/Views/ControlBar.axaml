@@ -2,7 +2,7 @@
     x:Class="FrpGUI.Avalonia.Views.ControlBar"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cf="clr-namespace:FrpGUI.Config;assembly=FrpGUI"
+    xmlns:cf="clr-namespace:FrpGUI.Configs;assembly=FrpGUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:f="clr-namespace:FrpGUI;assembly=FrpGUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,7 +10,6 @@
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
     <UserControl.Resources>
         <StreamGeometry x:Key="IconStart">M817.088 484.96l-512-323.744C295.232 154.976 282.752 154.592 272.576 160.224 262.336 165.856 256 176.608 256 188.256l0 647.328c0 11.648 6.336 22.4 16.576 28.032 4.8 2.656 10.112 3.968 15.424 3.968 5.952 0 11.904-1.664 17.088-4.928l512-323.616C826.368 533.184 832 522.976 832 512 832 501.024 826.368 490.816 817.088 484.96z</StreamGeometry>

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using FzLib.Avalonia.Messages;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;

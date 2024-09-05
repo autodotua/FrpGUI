@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using FzLib.Avalonia;
 using System.Diagnostics;
 

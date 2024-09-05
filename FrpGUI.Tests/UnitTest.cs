@@ -1,4 +1,5 @@
-using FrpGUI.Config;
+using FrpGUI.Configs;
+using FrpGUI.Enums;
 using System.Diagnostics;
 
 namespace FrpGUI.Tests

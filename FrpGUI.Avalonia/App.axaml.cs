@@ -6,8 +6,6 @@ using Avalonia.Markup.Xaml;
 
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Config;
-using FrpGUI.Util;
 using FzLib.Avalonia.Dialogs;
 using System;
 using System.IO.Pipes;
@@ -16,12 +14,16 @@ using System.Linq;
 using System.Threading;
 using Avalonia.Threading;
 using Avalonia.Media;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using FrpGUI.Enums;
+using FrpGUI.Avalonia.DataProviders;
 
 namespace FrpGUI.Avalonia;
 
 public partial class App : Application
 {
-    internal HttpServerHelper HttpServerHelper { get; } = new HttpServerHelper();
+    //internal HttpServerHelper HttpServerHelper { get; } = new HttpServerHelper();
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -29,6 +31,27 @@ public partial class App : Application
         {
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));
         }
+        var builder = Host.CreateApplicationBuilder();
+        builder.Services.AddSingleton<DataProvider>();
+
+        builder.Services.AddTransient<MainWindow>();
+        builder.Services.AddTransient<MainView>();
+        builder.Services.AddTransient<MainViewModel>();
+
+        builder.Services.AddTransient<ClientPanel>();
+        builder.Services.AddTransient<ServerPanel>();
+        builder.Services.AddTransient<FrpConfigPanelViewModel>();
+
+        builder.Services.AddTransient<RuleWindow>();
+        builder.Services.AddTransient<RuleViewModel>();
+
+        builder.Services.AddTransient<SettingsWindow>();
+        builder.Services.AddTransient<SettingViewModel>();
+
+        builder.Services.AddTransient<LogPanel>();
+        builder.Services.AddTransient<LogInfo>();
+
+        builder.Build().Start();
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -47,10 +70,10 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
 
-        if (AppConfig.Instance.RemoteControlEnable)
-        {
-            HttpServerHelper.StartAsync().ConfigureAwait(false);
-        }
+        //if (AppConfig.Instance.RemoteControlEnable)
+        //{
+        //    HttpServerHelper.StartAsync().ConfigureAwait(false);
+        //}
         SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
         singleRunningApp.StartListening();
     }

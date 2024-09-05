@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FrpGUI.Enums;
 using FzLib;
 using System;
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace FrpGUI.Config
+namespace FrpGUI.Configs
 {
     public partial class Rule : ObservableObject, IToFrpConfig, ICloneable
     {
@@ -46,6 +47,7 @@ namespace FrpGUI.Config
         [ObservableProperty]
         [property: JsonPropertyName("STCPServerName")]
         private string stcpServerName;
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Domains), nameof(StcpKey), nameof(StcpServerName))]
         private NetType type = NetType.TCP;

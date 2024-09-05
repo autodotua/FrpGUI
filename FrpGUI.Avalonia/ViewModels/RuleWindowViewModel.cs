@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using System.Collections.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Linq;
+using FrpGUI.Enums;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
-public partial class RuleWindowViewModel : ViewModelBase
+public partial class RuleViewModel : ViewModelBase
 {
     [ObservableProperty]
     public Rule rule = new Rule();

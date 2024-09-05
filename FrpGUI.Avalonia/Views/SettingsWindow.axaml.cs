@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using FzLib.Avalonia.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public partial class SettingsWindow : DialogHost
 {
     public SettingsWindow()
     {
-        DataContext = new SettingWindowViewModel();
+        DataContext = new SettingViewModel();
         InitializeComponent();
     }
 
@@ -31,21 +31,6 @@ public partial class SettingsWindow : DialogHost
        
     }
 
-    private async void RemoteControlEnableSwitch_Checked(object sender, RoutedEventArgs e)
-    {
-        if (!(App.Current as App).HttpServerHelper.IsRunning)
-        {
-            await (App.Current as App).HttpServerHelper.StartAsync();
-        }
-    }
-
-    private void RemoteControlEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
-    {
-        if ((App.Current as App).HttpServerHelper.IsRunning)
-        {
-            (App.Current as App).HttpServerHelper.Stop();
-        }
-    }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
@@ -59,7 +44,7 @@ public partial class SettingsWindow : DialogHost
                 .Where(p => p.ProcessName is "frps" or "frpc")
                 .ToList();
             });
-            (DataContext as SettingWindowViewModel).Processes =
+            (DataContext as SettingViewModel).Processes =
                 new ObservableCollection<Process>(processes);
         }
         finally

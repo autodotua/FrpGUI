@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace FrpGUI.Avalonia.ViewModels;
 
 [DebuggerDisplay("{Message}")]
-public partial class LogViewModel(LogEventArgs e) :ViewModelBase
+public partial class LogInfo(LogEventArgs e) :ViewModelBase
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasUpdated))]

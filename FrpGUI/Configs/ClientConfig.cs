@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FrpGUI.Config
+namespace FrpGUI.Configs
 {
     public partial class ClientConfig : FrpConfigBase
     {

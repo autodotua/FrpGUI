@@ -1,8 +1,8 @@
-﻿namespace FrpGUI
+﻿namespace FrpGUI.Enums
 {
     public enum ProcessStatus
     {
-        NotRun,
+        Stopped,
         Running,
         Busy
     }

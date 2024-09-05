@@ -1,4 +1,4 @@
-﻿using FrpGUI.Config;
+﻿using FrpGUI.Configs;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FrpGUI.Util
+namespace FrpGUI.Service.Util
 {
     public class ProcessHelper(FrpConfigBase frpConfig)
     {
@@ -16,15 +16,11 @@ namespace FrpGUI.Util
 
         private Process frpProcess;
 
-        private char type;
-
-        private IToFrpConfig obj;
-
-        public void Start(char type, IToFrpConfig obj)
+        public void Start( )
         {
-            if (type is not ('c' or 's'))
+            if (FrpConfig.Type is not ('c' or 's'))
             {
-                throw new ArgumentOutOfRangeException(nameof(type));
+                throw new ArgumentOutOfRangeException(nameof(FrpConfig.Type));
             }
             Logger.Info($"正在启动", FrpConfig.Name);
 
@@ -39,18 +35,16 @@ namespace FrpGUI.Util
                 {
 
                 }
-                this.type = type;
-                this.obj = obj;
                 string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
                 if (!Directory.Exists(tempDir))
                 {
                     Directory.CreateDirectory(tempDir);
                 }
                 string configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
-                File.WriteAllText(configFile, obj.ToToml(), new UTF8Encoding(false));
+                File.WriteAllText(configFile, FrpConfig.ToToml(), new UTF8Encoding(false));
 
                 Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
-                string frpExe = $"./frp/frp{type}";
+                string frpExe = $"./frp/frp{FrpConfig.Type}";
                 if (!File.Exists(frpExe) && !File.Exists(frpExe + ".exe"))
                 {
                     throw new FileNotFoundException("没有找到frp程序，请将可执行文件放置在./frp/中");
@@ -141,7 +135,7 @@ namespace FrpGUI.Util
                 throw new Exception();
             }
             await StopAsync();
-            Start(type, obj);
+            Start();
         }
 
         public Task StopAsync()

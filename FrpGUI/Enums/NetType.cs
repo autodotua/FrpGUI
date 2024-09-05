@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading;
 
-namespace FrpGUI.Config
+namespace FrpGUI.Enums
 {
     public enum NetType
     {

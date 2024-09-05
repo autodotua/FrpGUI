@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Config;
+using FrpGUI.Configs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

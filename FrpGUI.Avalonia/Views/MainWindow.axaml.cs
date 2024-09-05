@@ -1,7 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Config;
+using FrpGUI.Configs;
+using FrpGUI.Enums;
 using System.Linq;
 
 namespace FrpGUI.Avalonia.Views;
