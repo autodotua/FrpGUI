@@ -10,6 +10,7 @@
     xmlns:r="using:FzLib.Avalonia.MarkupExtensions"
     xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    xmlns:e="using:FrpGUI.Enums"
     Title="客户端规则"
     MinWidth="384"
     Padding="4"
@@ -54,7 +55,7 @@
                     Grid.Row="2"
                     Grid.Column="2"
                     HorizontalAlignment="Stretch"
-                    ItemsSource="{r:EnumValues EnumType=cf:NetType}"
+                    ItemsSource="{r:EnumValues EnumType=e:NetType}"
                     SelectedItem="{Binding Rule.Type}" />
 
                 <TextBlock

@@ -7,6 +7,7 @@ using Avalonia.VisualTree;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -19,9 +20,9 @@ public partial class LogPanel : UserControl
 {
     private ScrollViewer lstScrollViewer;
 
-    public LogPanel()
+    public LogPanel( )
     {
-        DataContext = new LogViewModel();
+        DataContext = App.Services.GetRequiredService<LogViewModel>();
         InitializeComponent();
     }
 

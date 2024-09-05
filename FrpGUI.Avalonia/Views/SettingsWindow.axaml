@@ -14,7 +14,7 @@
     Width="640"
     Height="540"
     Padding="4"
-    x:DataType="vm:SettingWindowViewModel"
+    x:DataType="vm:SettingViewModel"
     CloseButtonContent="关闭"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
@@ -109,7 +109,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Classes="Title">远程管理</TextBlock>
+                <!--<TextBlock Classes="Title">远程管理</TextBlock>
                 <TextBlock>开启远程管理，可用浏览器控制服务端的启停</TextBlock>
                 <ToggleSwitch
                     Checked="RemoteControlEnableSwitch_Checked"
@@ -142,7 +142,7 @@
                     <TextBox
                         Grid.Row="4"
                         Text="{Binding Config.RemoteControlPassword}" />
-                </Grid>
+                </Grid>-->
             </StackPanel>
         </Grid>
     </ScrollViewer>

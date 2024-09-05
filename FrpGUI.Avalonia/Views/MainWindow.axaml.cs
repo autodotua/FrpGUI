@@ -9,12 +9,9 @@ namespace FrpGUI.Avalonia.Views;
 
 public partial class MainWindow : Window
 {
-    private readonly bool startup;
-
-    public MainWindow(bool startup)
+    public MainWindow( )
     {
         InitializeComponent();
-        this.startup = startup;
     }
 
     public MainViewModel GetDataContext()
@@ -23,29 +20,29 @@ public partial class MainWindow : Window
     }
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        Config.AppConfig.Instance.Save();
+        //Config.AppConfig.Instance.Save();
 
-        if (GetDataContext() != null && GetDataContext().FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
-        {
-            e.Cancel = true;
-            if (AppConfig.Instance.ShowTrayIcon)
-            {
-                TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
-            }
-            Hide();
-        }
+        //if (GetDataContext() != null && GetDataContext().FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
+        //{
+        //    e.Cancel = true;
+        //    if (AppConfig.Instance.ShowTrayIcon)
+        //    {
+        //        TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+        //    }
+        //    Hide();
+        //}
         base.OnClosing(e);
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        if (startup)
-        {
-            Hide();
-            if (AppConfig.Instance.ShowTrayIcon)
-            {
-                TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
-            }
-        }
+        //if (startup)
+        //{
+        //    Hide();
+        //    if (AppConfig.Instance.ShowTrayIcon)
+        //    {
+        //        TrayIcon.GetIcons(App.Current)[0].IsVisible = true;
+        //    }
+        //}
     }
 }

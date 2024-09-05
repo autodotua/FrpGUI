@@ -1,14 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
 using FzLib.Avalonia.Messages;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels;
-public partial class FrpConfigPanelViewModel : ViewModelBase
+public partial class FrpConfigViewModel(IDataProvider provider,IServiceProvider services) : ViewModelBase(provider)
 {
     [ObservableProperty]
     private FrpConfigBase frpConfig;
@@ -18,7 +21,7 @@ public partial class FrpConfigPanelViewModel : ViewModelBase
 
     public async Task AddRuleAsync()
     {
-        var dialog = new RuleWindow();
+        var dialog = services.GetRequiredService<RuleWindow>();
         var message = SendMessage(new DialogHostMessage(dialog));
         var result = await message.Task;
         if (result is Rule newRule)
@@ -52,7 +55,8 @@ public partial class FrpConfigPanelViewModel : ViewModelBase
     [RelayCommand]
     private async Task ModifyRuleAsync(Rule rule)
     {
-        var dialog = new RuleWindow(rule);
+        var dialog = services.GetRequiredService<RuleWindow>();
+        dialog.SetRule(rule);
         var message = SendMessage(new DialogHostMessage(dialog));
         var result = await message.Task;
         if (result is Rule newRule)

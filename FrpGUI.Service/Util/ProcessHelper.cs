@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Service.Util
 {
-    public class ProcessHelper(FrpConfigBase frpConfig)
+    public class ProcessHelper(FrpConfigBase frpConfig,FrpGUI.Logger logger)
     {
         public bool IsRunning { get; set; }
 
@@ -22,7 +22,7 @@ namespace FrpGUI.Service.Util
             {
                 throw new ArgumentOutOfRangeException(nameof(FrpConfig.Type));
             }
-            Logger.Info($"正在启动", FrpConfig.Name);
+            logger.Info($"正在启动", FrpConfig);
 
             bool processHasStarted = false;
             try
@@ -43,7 +43,7 @@ namespace FrpGUI.Service.Util
                 string configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
                 File.WriteAllText(configFile, FrpConfig.ToToml(), new UTF8Encoding(false));
 
-                Logger.Info("配置文件地址：" + configFile, FrpConfig.Name);
+                logger.Info("配置文件地址：" + configFile, FrpConfig);
                 string frpExe = $"./frp/frp{FrpConfig.Type}";
                 if (!File.Exists(frpExe) && !File.Exists(frpExe + ".exe"))
                 {
@@ -77,7 +77,7 @@ namespace FrpGUI.Service.Util
             }
             catch (Exception ex)
             {
-                Logger.Error("启动失败：" + ex.Message, FrpConfig.Name, ex);
+                logger.Error("启动失败：" + ex.Message, FrpConfig, ex);
                 if (processHasStarted)
                 {
                     try
@@ -172,7 +172,7 @@ namespace FrpGUI.Service.Util
             {
                 return;
             }
-            Logger.Output(e.Data, FrpConfig.Name);
+            logger.Output(e.Data, FrpConfig);
         }
 
         public event EventHandler Exited;

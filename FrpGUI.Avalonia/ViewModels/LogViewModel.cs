@@ -7,19 +7,41 @@ using Avalonia.Threading;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using FzLib.Avalonia.Messages;
+using System;
+using FrpGUI.Avalonia.DataProviders;
+using System.Threading;
+using FrpGUI.Models;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
 public partial class LogViewModel : ViewModelBase
 {
-    public LogViewModel()
+    public LogViewModel(IDataProvider provider) : base(provider)
     {
-        Logger.NewLog += (s, e) => AddLog(e);
+        StartTimer();
+    }
+
+    private async void StartTimer()
+    {
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
+        DateTime lastRequestTime = DateTime.MinValue;
+        while (await timer.WaitForNextTickAsync())
+        {
+            var logs = await DataProvider.GetLogsAsync(lastRequestTime);
+            if (logs.Count > 0)
+            {
+                lastRequestTime = logs[^1].Time;
+                foreach (var log in logs)
+                {
+                    AddLog(log);
+                }
+            }
+        }
     }
 
     public ObservableCollection<LogInfo> Logs { get; } = new ObservableCollection<LogInfo>();
 
-    public void AddLog(LogEventArgs e)
+    public void AddLog(LogEntity e)
     {
         IBrush brush = Brushes.Transparent;
         if (e.Type == 'W')

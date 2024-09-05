@@ -6,10 +6,11 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Linq;
 using FrpGUI.Enums;
+using FrpGUI.Avalonia.DataProviders;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
-public partial class RuleViewModel : ViewModelBase
+public partial class RuleViewModel(IDataProvider provider) : ViewModelBase(provider)
 {
     [ObservableProperty]
     public Rule rule = new Rule();
@@ -124,7 +125,7 @@ public partial class RuleViewModel : ViewModelBase
 
             return true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             ErrorMessage = ex.Message;
             return false;

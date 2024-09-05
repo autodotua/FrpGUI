@@ -7,6 +7,7 @@ using FrpGUI.Configs;
 using FzLib.Avalonia;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ public partial class MainView : UserControl
 {
     public MainView()
     {
-        DataContext = new MainViewModel();
+        DataContext = App.Services.GetRequiredService<MainViewModel>();
         InitializeComponent();
         RegisterMessages();
         (DataContext as MainViewModel).PropertyChanged += MainView_PropertyChanged;
@@ -46,20 +47,5 @@ public partial class MainView : UserControl
         this.RegisterDialogHostMessage();
         this.RegisterGetClipboardMessage();
         this.RegisterGetStorageProviderMessage();
-    }
-
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        foreach (var config in (DataContext as MainViewModel).FrpConfigs.Where(p => p.AutoStart))
-        {
-            try
-            {
-                config.Start();
-            }
-            catch
-            {
-
-            }
-        }
     }
 }

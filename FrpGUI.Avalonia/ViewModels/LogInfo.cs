@@ -2,18 +2,16 @@
 using System.Diagnostics;
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FrpGUI.Models;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
 [DebuggerDisplay("{Message}")]
-public partial class LogInfo(LogEventArgs e) :ViewModelBase
+public partial class LogInfo(LogEntity e) : ObservableObject
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasUpdated))]
     public int updateTimes;
-
-    [ObservableProperty]
-    private Exception exception = e.Exception;
 
     [ObservableProperty]
     private bool fromFrp = e.FromFrp;

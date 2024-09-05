@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FrpGUI.Configs;
+using FrpGUI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,23 +9,29 @@ using System.Threading.Tasks;
 
 namespace FrpGUI
 {
-    public static class Logger
+    public class Logger
     {
-        private static readonly string[] errorMessages = [
+        private readonly FrpDbContext db;
+
+        private readonly string[] errorMessages = [
             "error",
             "unknown",
             "Only one usage of each socket address (protocol/network address/port) is normally permitted.",
         ];
 
-        private static readonly Regex rFrpLog = new Regex(@"(?<Time>[[0-9:\.\- ]{23}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
+        private readonly Regex rFrpLog = new Regex(@"(?<Time>[[0-9:\.\- ]{23}) \[(?<Type>.)\] \[[^\]]+\] (?<Content>.*)", RegexOptions.Compiled);
+        PeriodicTimer timer;
 
-        public static event EventHandler<LogEventArgs> NewLog;
+        public Logger(FrpDbContext db)
+        {
+            StartTimer();
+            this.db = db;
+        }
+        public void Error(string message, FrpConfigBase config = null, Exception ex = null) => Log(message, 'E', config, false, ex);
 
-        public static void Error(string message, string instanceName = null, Exception ex = null) => Log(message, instanceName, 'E', false, ex);
+        public void Info(string message, FrpConfigBase config = null) => Log(message, 'I', config);
 
-        public static void Info(string message, string instanceName = null) => Log(message, instanceName, 'I');
-
-        public static void Output(string message, string instanceName)
+        public void Output(string message, FrpConfigBase config = null)
         {
             char type;
             message = Regex.Replace(message, @"\u001b\[[0-9;]*m", "");
@@ -37,11 +45,30 @@ namespace FrpGUI
             {
                 type = errorMessages.Any(p => message.Contains(p)) ? 'E' : 'I';
             }
-            Log(message, instanceName, type, true);
+            Log(message, type, config, true);
         }
 
-        public static void Warn(string message, string instanceName = null) => Log(message, instanceName, 'W');
+        public void Warn(string message, FrpConfigBase config = null) => Log(message, 'W', config);
 
-        private static void Log(string message, string instanceName, char type, bool fromFrp = false, Exception ex = null) => NewLog?.Invoke(null, new LogEventArgs(message, instanceName, type, fromFrp, ex));
+        private void Log(string message, char type, FrpConfigBase config, bool fromFrp = false, Exception ex = null)
+        {
+            db.Add(new LogEntity(message, type, config, fromFrp, ex));
+        }
+
+        private async void StartTimer()
+        {
+            timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            while (await timer.WaitForNextTickAsync())
+            {
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch
+                {
+
+                }
+            }
+        }
     }
 }

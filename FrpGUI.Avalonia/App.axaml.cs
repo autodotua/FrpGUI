@@ -23,7 +23,7 @@ namespace FrpGUI.Avalonia;
 
 public partial class App : Application
 {
-    //internal HttpServerHelper HttpServerHelper { get; } = new HttpServerHelper();
+    public static IServiceProvider Services { get; private set; }
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -32,7 +32,7 @@ public partial class App : Application
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));
         }
         var builder = Host.CreateApplicationBuilder();
-        builder.Services.AddSingleton<DataProvider>();
+        builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<MainView>();
@@ -40,7 +40,7 @@ public partial class App : Application
 
         builder.Services.AddTransient<ClientPanel>();
         builder.Services.AddTransient<ServerPanel>();
-        builder.Services.AddTransient<FrpConfigPanelViewModel>();
+        builder.Services.AddTransient<FrpConfigViewModel>();
 
         builder.Services.AddTransient<RuleWindow>();
         builder.Services.AddTransient<RuleViewModel>();
@@ -49,9 +49,11 @@ public partial class App : Application
         builder.Services.AddTransient<SettingViewModel>();
 
         builder.Services.AddTransient<LogPanel>();
-        builder.Services.AddTransient<LogInfo>();
+        builder.Services.AddTransient<LogViewModel>();
 
-        builder.Build().Start();
+        var host = builder.Build();
+        Services = host.Services;
+        host.Start();
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -65,8 +67,7 @@ public partial class App : Application
             throw new PlatformNotSupportedException();
         }
 
-        bool startup = desktop.Args.Length > 0 && desktop.Args[0] == "s";
-        desktop.MainWindow = new MainWindow(startup);
+        desktop.MainWindow = new MainWindow();
 
         base.OnFrameworkInitializationCompleted();
 
@@ -81,32 +82,32 @@ public partial class App : Application
 
     private async void ExitMenuItem_Click(object sender, EventArgs e)
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            MainViewModel mainViewModel = (desktop.MainWindow as MainWindow).GetDataContext();
-            if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
-            {
-                desktop.MainWindow.Show();
-                TrayIcon.GetIcons(this)[0].IsVisible = false;
-                int count = mainViewModel.FrpConfigs.Where(p => p.ProcessStatus == ProcessStatus.Running).Count();
-                if (await desktop.MainWindow.ShowYesNoDialogAsync("退出", $"存在{count}个正在运行的frp进程，是否退出？") == true)
-                {
-                    foreach (var frp in mainViewModel.FrpConfigs)
-                    {
-                        await frp.StopAsync();
-                    }
-                    desktop.MainWindow.Close();
-                }
-            }
-            else
-            {
-                desktop.MainWindow.Close();
-            }
-        }
-        else
-        {
-            throw new PlatformNotSupportedException();
-        }
+        //if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        //{
+        //    MainViewModel mainViewModel = (desktop.MainWindow as MainWindow).GetDataContext();
+        //    if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
+        //    {
+        //        desktop.MainWindow.Show();
+        //        TrayIcon.GetIcons(this)[0].IsVisible = false;
+        //        int count = mainViewModel.FrpConfigs.Where(p => p.ProcessStatus == ProcessStatus.Running).Count();
+        //        if (await desktop.MainWindow.ShowYesNoDialogAsync("退出", $"存在{count}个正在运行的frp进程，是否退出？") == true)
+        //        {
+        //            foreach (var frp in mainViewModel.FrpConfigs)
+        //            {
+        //                await frp.StopAsync();
+        //            }
+        //            desktop.MainWindow.Close();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        desktop.MainWindow.Close();
+        //    }
+        //}
+        //else
+        //{
+        //    throw new PlatformNotSupportedException();
+        //}
     }
 
     private void HideMenuItem_Click(object sender, EventArgs e)

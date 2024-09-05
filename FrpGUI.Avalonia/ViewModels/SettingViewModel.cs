@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Configs;
 using FzLib.Avalonia.Messages;
 using System;
@@ -18,6 +19,10 @@ namespace FrpGUI.Avalonia.ViewModels
     {
         [ObservableProperty]
         private ObservableCollection<Process> processes;
+
+        public SettingViewModel(IDataProvider provider) : base(provider)
+        {
+        }
 
         [RelayCommand]
         private async Task KillProcessAsync(Process p)

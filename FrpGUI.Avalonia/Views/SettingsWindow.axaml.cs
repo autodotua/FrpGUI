@@ -15,9 +15,9 @@ namespace FrpGUI.Avalonia.Views;
 
 public partial class SettingsWindow : DialogHost
 {
-    public SettingsWindow()
+    public SettingsWindow(SettingViewModel viewModel)
     {
-        DataContext = new SettingViewModel();
+        DataContext = viewModel;
         InitializeComponent();
     }
 

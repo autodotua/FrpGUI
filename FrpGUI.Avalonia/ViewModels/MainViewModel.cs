@@ -9,6 +9,7 @@ using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,25 +27,33 @@ public partial class MainViewModel : ViewModelBase
     private FrpConfigBase currentFrpConfig;
 
     [ObservableProperty]
-    private FrpConfigPanelViewModel currentPanelViewModel = new FrpConfigPanelViewModel();
+    private FrpConfigViewModel currentPanelViewModel;
 
     [ObservableProperty]
     private ObservableCollection<FrpConfigBase> frpConfigs = new ObservableCollection<FrpConfigBase>();
 
-    public MainViewModel(DataProvider provider)
+    partial void OnCurrentFrpConfigChanging(FrpConfigBase oldValue, FrpConfigBase newValue)
     {
-         InitializeData(provider);
+        DataProvider.ModifyConfigAsync(oldValue);
+    }
+    private readonly IDataProvider provider;
+    private readonly IServiceProvider services;
+
+    public MainViewModel(IDataProvider provider, IServiceProvider services) : base(provider)
+    {
+        InitializeData(provider);
+        this.services = services;
     }
 
-    private async Task InitializeData(DataProvider provider)
+    private async Task InitializeData(IDataProvider provider)
     {
         FrpConfigs = new ObservableCollection<FrpConfigBase>(await provider.GetFrpConfigsAsync());
     }
 
     [RelayCommand]
-    private void AddClient()
+    private async Task AddClientAsync()
     {
-        var newConfig = new ClientConfig();
+        var newConfig = await DataProvider.AddClientAsync();
         FrpConfigs.Add(newConfig);
         CurrentFrpConfig = newConfig;
     }
@@ -56,9 +65,9 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void AddServer()
+    private async Task AddServerAsync()
     {
-        var newConfig = new ServerConfig();
+        var newConfig = await DataProvider.AddServerAsync();
         FrpConfigs.Add(newConfig);
         CurrentFrpConfig = newConfig;
     }
@@ -77,17 +86,14 @@ public partial class MainViewModel : ViewModelBase
     {
         var message = SendMessage(new CommonDialogMessage()
         {
-            Type=CommonDialogType.YesNo,
+            Type = CommonDialogType.YesNo,
             Title = "删除配置",
             Message = $"是否删除配置“{config.Name}”？"
         });
-        if (true.Equals( await message.Task))
+        if (true.Equals(await message.Task))
         {
-            if (config.ProcessStatus == ProcessStatus.Running)
-            {
-                await config.StopAsync();
-            }
             FrpConfigs.Remove(config);
+            await DataProvider.DeleteFrpConfigAsync(config.ID);
         }
     }
 
@@ -113,7 +119,7 @@ public partial class MainViewModel : ViewModelBase
                 Detail = config
             });
 
-            if ( true.Equals(await message.Task))
+            if (true.Equals(await message.Task))
             {
                 var file = await SendMessage(new GetStorageProviderMessage()).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
@@ -151,7 +157,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            await CurrentFrpConfig.RestartAsync();
+            await DataProvider.RestartFrpAsync(CurrentFrpConfig.ID);
         }
         catch (Exception ex)
         {
@@ -167,7 +173,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task SettingsAsync()
     {
-        await SendMessage(new DialogHostMessage(new SettingsWindow())).Task;
+        await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsWindow>())).Task;
     }
 
     [RelayCommand]
@@ -175,7 +181,8 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            CurrentFrpConfig.Start();
+            await DataProvider.ModifyConfigAsync(CurrentFrpConfig);
+            await DataProvider.StartFrpAsync(CurrentFrpConfig.ID);
         }
         catch (Exception ex)
         {
@@ -193,7 +200,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            await CurrentFrpConfig.StopAsync();
+            await DataProvider.StopFrpAsync(CurrentFrpConfig.ID);
         }
         catch (Exception ex)
         {

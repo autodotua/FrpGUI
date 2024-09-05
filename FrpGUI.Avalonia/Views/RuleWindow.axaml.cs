@@ -9,15 +9,15 @@ namespace FrpGUI.Avalonia.Views;
 
 public partial class RuleWindow : DialogHost
 {
-    public RuleWindow([NotNull] Rule oldRule)
+    public RuleWindow(RuleViewModel viewModel)
     {
-        DataContext = new RuleViewModel() { Rule = oldRule.Clone() as Rule };
+        DataContext = viewModel;
         InitializeComponent();
     }
-    public RuleWindow()
+
+    public void SetRule(Rule rule)
     {
-        DataContext = new RuleViewModel();
-        InitializeComponent();
+        (DataContext as RuleViewModel).Rule = rule.Clone() as Rule;
     }
     protected override void OnPrimaryButtonClick()
     {

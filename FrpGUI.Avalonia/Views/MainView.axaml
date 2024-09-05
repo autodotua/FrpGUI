@@ -12,7 +12,6 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
-    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
     <UserControl.Resources>
         <StreamGeometry x:Key="IconAdd">M856.47 455.44H543.48V142.46c0-17.38-14.1-31.48-31.48-31.48-17.37 0-31.48 14.1-31.48 31.48v312.98H167.54c-17.38 0-31.48 14.1-31.48 31.48 0 17.37 14.1 31.48 31.48 31.48h312.98v312.99c0 17.41 14.1 31.48 31.48 31.48 17.38 0 31.48-14.07 31.48-31.48V518.4h312.99c17.41 0 31.48-14.1 31.48-31.48 0-17.37-14.08-31.48-31.48-31.48z</StreamGeometry>

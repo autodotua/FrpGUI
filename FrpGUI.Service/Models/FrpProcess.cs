@@ -9,13 +9,16 @@ namespace FrpGUI.Service.Models
 {
     public class FrpProcess : IFrpProcess
     {
-        public FrpProcess(FrpConfigBase config)
+        private readonly Logger logger;
+
+        public FrpProcess(FrpConfigBase config, Logger logger)
         {
             Config = config;
-            Process = new ProcessHelper(Config);
+            this.logger = logger;
+            Process = new ProcessHelper(Config, logger);
             Process.Exited += Process_Exited;
         }
-         
+
         public ProcessHelper Process { get; protected set; }
 
         public FrpConfigBase Config { get; }
@@ -43,7 +46,7 @@ namespace FrpGUI.Service.Models
 
         public Task StartAsync()
         {
-            if (ProcessStatus==ProcessStatus.Running)
+            if (ProcessStatus == ProcessStatus.Running)
             {
                 throw new Exception("进程已在运行");
             }
@@ -63,7 +66,7 @@ namespace FrpGUI.Service.Models
 
         public void ChangeStatus(ProcessStatus status)
         {
-            Logger.Info("进程状态改变：" + status.ToString(), Config.Name);
+            logger.Info("进程状态改变：" + status.ToString(), Config);
             ProcessStatus = status;
             StatusChanged?.Invoke(this, new EventArgs());
         }

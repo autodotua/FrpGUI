@@ -26,7 +26,7 @@ class Program
     {
         Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
         InitializeLogs();
-        Logger.NewLog += Logger_NewLog;
+        //Logger.NewLog += Logger_NewLog;
 
         if (singleRunningApp.Register())
         {
@@ -61,28 +61,28 @@ class Program
     }
 
 
-    private static void Logger_NewLog(object sender, LogEventArgs e)
-    {
-        switch (e.Type)
-        {
-            case 'I':
-                Log.Info(e.Message);
-                break;
-            case 'E':
-                if (e.Exception == null)
-                {
-                    Log.Error(e.Message);
-                }
-                else
-                {
-                    Log.Error(e.Message, e.Exception);
-                }
-                break;
-            case 'W':
-                Log.Warn(e.Message);
-                break;
-        }
-    }
+    //private static void Logger_NewLog(object sender, LogEventArgs e)
+    //{
+    //    switch (e.Type)
+    //    {
+    //        case 'I':
+    //            Log.Info(e.Message);
+    //            break;
+    //        case 'E':
+    //            if (e.Exception == null)
+    //            {
+    //                Log.Error(e.Message);
+    //            }
+    //            else
+    //            {
+    //                Log.Error(e.Message, e.Exception);
+    //            }
+    //            break;
+    //        case 'W':
+    //            Log.Warn(e.Message);
+    //            break;
+    //    }
+    //}
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()

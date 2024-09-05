@@ -10,7 +10,7 @@
     x:Name="root"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="vm:FrpConfigPanelViewModel"
+    x:DataType="vm:FrpConfigViewModel"
     SizeChanged="PanelBase_SizeChanged"
     mc:Ignorable="d">
     <v:ConfigPanelBase.Resources>
