@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrpGUI.Avalonia", "FrpGUI.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrpGUI.Avalonia.Desktop", "FrpGUI.Avalonia.Desktop\FrpGUI.Avalonia.Desktop.csproj", "{ABF197CE-A590-46B0-999F-8B8F0CBDF85B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrpGUI.Service", "FrpGUI.Service\FrpGUI.Service.csproj", "{77E7C5D5-25BB-4AC1-8566-5E1813090682}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrpGUI.Service", "FrpGUI.Service\FrpGUI.Service.csproj", "{77E7C5D5-25BB-4AC1-8566-5E1813090682}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrpGUI.Avalonia.Browser", "FrpGUI.Avalonia.Browser\FrpGUI.Avalonia.Browser.csproj", "{FA92A1BC-C65B-4CA3-B7A8-5BEE8AC33400}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{77E7C5D5-25BB-4AC1-8566-5E1813090682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77E7C5D5-25BB-4AC1-8566-5E1813090682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77E7C5D5-25BB-4AC1-8566-5E1813090682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA92A1BC-C65B-4CA3-B7A8-5BEE8AC33400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA92A1BC-C65B-4CA3-B7A8-5BEE8AC33400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA92A1BC-C65B-4CA3-B7A8-5BEE8AC33400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA92A1BC-C65B-4CA3-B7A8-5BEE8AC33400}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

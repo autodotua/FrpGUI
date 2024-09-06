@@ -25,6 +25,10 @@ namespace FrpGUI.Avalonia;
 
 public partial class App : Application
 {
+    public App()
+    {
+
+    }
     public static IServiceProvider Services { get; private set; }
     public override void Initialize()
     {
@@ -32,6 +36,10 @@ public partial class App : Application
         if (OperatingSystem.IsWindows())
         {
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));
+        }
+        else if (OperatingSystem.IsBrowser())
+        {
+            Resources.Add("ContentControlThemeFontFamily", new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
         }
         var builder = Host.CreateApplicationBuilder();
         builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
@@ -62,27 +70,24 @@ public partial class App : Application
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
-        BindingPlugins.DataValidators.RemoveAt(0);
 
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is  IClassicDesktopStyleApplicationLifetime desktop)
         {
-            throw new PlatformNotSupportedException();
+            BindingPlugins.DataValidators.RemoveAt(0);
+            desktop.MainWindow = new MainWindow();
+        }
+        else if(ApplicationLifetime is ISingleViewApplicationLifetime s)
+        {
+            s.MainView = new MainView();
         }
 
-        desktop.MainWindow = new MainWindow();
 
         base.OnFrameworkInitializationCompleted();
 
-        //if (AppConfig.Instance.RemoteControlEnable)
-        //{
-        //    HttpServerHelper.StartAsync().ConfigureAwait(false);
-        //}
-        SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
-        singleRunningApp.StartListening();
     }
 
 
-    private async void ExitMenuItem_Click(object sender, EventArgs e)
+    private void ExitMenuItem_Click(object sender, EventArgs e)
     {
         //if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         //{

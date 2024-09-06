@@ -98,6 +98,7 @@ internal class Program
         }
         //app.UseWebSockets();
         app.UseHttpsRedirection();
+        app.UseCors(o => o.AllowAnyOrigin());
         //app.UseAuthorization();
         app.MapControllers();
     }
