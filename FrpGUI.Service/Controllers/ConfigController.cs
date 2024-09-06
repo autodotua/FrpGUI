@@ -9,9 +9,9 @@ namespace FrpGUI.Service.Controllers;
 public class ConfigController : FrpControllerBase
 {
     private readonly AppConfig configs;
-    private readonly FrpProcessManager processes;
+    private readonly FrpProcessService processes;
 
-    public ConfigController(AppConfig configs, Logger logger, FrpProcessManager processes) : base(configs, logger)
+    public ConfigController(AppConfig configs, Logger logger, FrpProcessService processes) : base(configs, logger)
     {
         this.configs = configs;
         this.processes = processes;

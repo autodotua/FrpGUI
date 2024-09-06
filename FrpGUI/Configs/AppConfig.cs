@@ -18,6 +18,7 @@ namespace FrpGUI.Configs
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
             //TypeInfoResolver = AppConfigSourceGenerationContext.Default,
             Converters = { new FrpConfigJsonConverter() },
+            PropertyNameCaseInsensitive=true,
             WriteIndented = true,
         };
 

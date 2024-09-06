@@ -30,9 +30,6 @@ namespace FrpGUI.Configs
         [ObservableProperty]
         private bool tlsOnly;
 
-        [ObservableProperty]
-        private string token;
-
         public ServerConfig()
         {
             Name = "服务端";

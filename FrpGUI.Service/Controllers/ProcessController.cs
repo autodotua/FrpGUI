@@ -14,9 +14,9 @@ public class ProcessController : FrpControllerBase
 {
     private readonly AppConfig config;
     private readonly Logger logger;
-    private readonly FrpProcessManager processes;
+    private readonly FrpProcessService processes;
 
-    public ProcessController(AppConfig config, Logger logger, FrpProcessManager processes) : base(config, logger)
+    public ProcessController(AppConfig config, Logger logger, FrpProcessService processes) : base(config, logger)
     {
         this.config = config;
         this.logger = logger;
@@ -25,25 +25,25 @@ public class ProcessController : FrpControllerBase
 
 
 
-    [HttpPost("Start")]
+    [HttpPost("Start/{id}")]
     public Task StartAsync(string id)
     {
         return processes.GetOrCreateProcess(id).StartAsync();
     }
 
-    [HttpPost("Stop")]
+    [HttpPost("Stop/{id}")]
     public Task StopAsync(string id)
     {
         return processes.GetOrCreateProcess(id).StopAsync();
     }
 
-    [HttpPost("Restart")]
+    [HttpPost("Restart/{id}")]
     public Task RestartAsync(string id)
     {
         return processes.GetOrCreateProcess(id).RestartAsync();
     }
 
-    [HttpGet("Status")]
+    [HttpGet("Status/{id}")]
     public ProcessStatus GetStatusAsync(string id)
     {
         return processes.GetOrCreateProcess(id).ProcessStatus;

@@ -38,8 +38,6 @@ namespace FrpGUI.Configs
         [ObservableProperty]
         private ushort serverPort = 7000;
 
-        [ObservableProperty]
-        private string token;
 
         public ClientConfig()
         {

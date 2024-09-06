@@ -34,20 +34,39 @@ public partial class MainViewModel : ViewModelBase
 
     partial void OnCurrentFrpConfigChanging(FrpConfigBase oldValue, FrpConfigBase newValue)
     {
-        DataProvider.ModifyConfigAsync(oldValue);
+        if (oldValue != null)
+        {
+            DataProvider.ModifyConfigAsync(oldValue);
+        }
     }
     private readonly IDataProvider provider;
     private readonly IServiceProvider services;
 
-    public MainViewModel(IDataProvider provider, IServiceProvider services) : base(provider)
+    public MainViewModel(IDataProvider provider,
+                         IServiceProvider services,
+                         FrpConfigViewModel frpConfigViewModel) : base(provider)
     {
-        InitializeData(provider);
         this.services = services;
+        InitializeData();
+        CurrentPanelViewModel = frpConfigViewModel;
     }
 
-    private async Task InitializeData(IDataProvider provider)
+    private async void InitializeData()
     {
-        FrpConfigs = new ObservableCollection<FrpConfigBase>(await provider.GetFrpConfigsAsync());
+        try
+        {
+            FrpConfigs = new ObservableCollection<FrpConfigBase>(await DataProvider.GetFrpConfigsAsync());
+        }
+        catch (Exception ex)
+        {
+            this.SendMessage(new CommonDialogMessage()
+            {
+                Type = CommonDialogType.Error,
+                Title = "获取配置列表失败",
+                Exception = ex
+            });
+        }
+
     }
 
     [RelayCommand]

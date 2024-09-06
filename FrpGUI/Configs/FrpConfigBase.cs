@@ -19,6 +19,9 @@ namespace FrpGUI.Configs
         [ObservableProperty]
         private string name;
 
+        [ObservableProperty]
+        private string token="";
+
         public FrpConfigBase()
         {
         }

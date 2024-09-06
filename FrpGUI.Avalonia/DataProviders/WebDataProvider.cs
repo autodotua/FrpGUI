@@ -22,9 +22,9 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string RestartFrpEndpoint = "Process/Restart";
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
-        private const string AddClientEndpoint = "Config/Add/Client";
-        private const string AddServerEndpoint = "Config/Add/Server";
-        private const string ModifyConfigEndpoint = "Config/Modify";
+        private const string AddClientEndpoint = "Config/FrpConfigs/Add/Client";
+        private const string AddServerEndpoint = "Config/FrpConfigs/Add/Server";
+        private const string ModifyConfigEndpoint = "Config/FrpConfigs/Modify";
         private readonly HttpClient HttpClient = new HttpClient();
         public Task DeleteFrpConfigAsync(string id)
         {
@@ -42,22 +42,22 @@ namespace FrpGUI.Avalonia.DataProviders
         }
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
-            return GetAsync<List<LogEntity>>(LogsEndpoint, ("timeAfter", timeAfter.ToString()));
+            return GetAsync<List<LogEntity>>(LogsEndpoint, ("timeAfter", timeAfter.ToString("o")));
         }
 
         public Task RestartFrpAsync(string id)
         {
-            return PostAsync(RestartFrpEndpoint);
+            return PostAsync($"{RestartFrpEndpoint}/{id}");
         }
 
         public Task StartFrpAsync(string id)
         {
-            return PostAsync(StartFrpEndpoint);
+            return PostAsync($"{StartFrpEndpoint}/{id}");
         }
 
         public Task StopFrpAsync(string id)
         {
-            return PostAsync(StopFrpEndpoint);
+            return PostAsync($"{StopFrpEndpoint}/{id}");
         }
 
         public Task<ClientConfig> AddClientAsync()
@@ -87,7 +87,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         private Task<T> GetAsync<T>(string endpoint, params (string Key, string Value)[] query) where T : class
         {
-            var querys = query.Select(p => $"{Uri.EscapeDataString(p.Key)}={Uri.EscapeDataString(p.Value)}");
+            var querys = query.Select(p => $"{p.Key}={p.Value}");
             return GetAsync<T>(endpoint + "?" + string.Join('&', querys));
         }
 
@@ -97,6 +97,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
             if (response.IsSuccessStatusCode)
             {
+                //var a =await response.Content.ReadAsStringAsync();
                 using var responseStream = await response.Content.ReadAsStreamAsync();
                 return await JsonSerializer.DeserializeAsync<T>(responseStream, AppConfig.JsonOptions);
             }
@@ -106,7 +107,9 @@ namespace FrpGUI.Avalonia.DataProviders
             }
             else
             {
-                throw new Exception($"API请求失败，状态码：{response.StatusCode}");
+                var message = response.Content == null ? "（无返回信息）" : await response.Content.ReadAsStringAsync();
+                message = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[0];
+                throw new Exception($"API请求失败（{response.StatusCode}）：{message}");
             }
         }
 
@@ -114,10 +117,11 @@ namespace FrpGUI.Avalonia.DataProviders
         {
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, AppConfig.JsonOptions), Encoding.UTF8, "application/json");
             var response = await HttpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
-
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"API请求失败，状态码：{response.StatusCode}");
+                var message = response.Content == null ? "（无返回信息）" : await response.Content.ReadAsStringAsync();
+                message = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[0];
+                throw new Exception($"API请求失败（{response.StatusCode}）：{message}");
             }
         }
 
@@ -125,12 +129,14 @@ namespace FrpGUI.Avalonia.DataProviders
         {
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, AppConfig.JsonOptions), Encoding.UTF8, "application/json");
             var response = await HttpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
-            return await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), AppConfig.JsonOptions);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"API请求失败，状态码：{response.StatusCode}");
+                var message = response.Content == null ? "（无返回信息）" : await response.Content.ReadAsStringAsync();
+                message = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[0];
+                throw new Exception($"API请求失败（{response.StatusCode}）：{message}");
             }
+            return await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), AppConfig.JsonOptions);
         }
 
         private async Task PutAsync(string endpoint, object data)

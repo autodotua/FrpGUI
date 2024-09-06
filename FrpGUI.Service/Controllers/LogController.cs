@@ -17,18 +17,11 @@ public class LogController : ControllerBase
     }
 
     [HttpGet("List")]
-    public async Task<IList<LogEntity>> GetAsync(DateTime timerAfter)
+    public async Task<IList<LogEntity>> GetAsync(DateTime timeAfter)
     {
-        //DateTime time = DateTime.MinValue;
-        //var timeString = HttpContext.Session.GetString(lastGetLogsTimeKey);
-        //if (timeString != null)
-        //{
-        //    time = DateTime.Parse(timeString);
-        //}
-        //HttpContext.Session.SetString(lastGetLogsTimeKey, time.ToString());
         var logs = await db.Logs
               .Where(p => p.ProcessStartTime == LogEntity.CurrentProcessStartTime)
-              .Where(p => p.Time > timerAfter)
+              .Where(p => p.Time > timeAfter)
               .OrderByDescending(p => p.Time)
               .Take(100)
               .ToListAsync();

@@ -22,7 +22,7 @@ internal class Program
         app = builder.Build();
 
         SettingApp(app);
-        
+
         app.Run();
     }
 
@@ -59,7 +59,12 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers().AddJsonOptions(o =>
+        builder.Services.AddControllers(o =>
+        {
+            //不开这个，传入的参数有null（比如token）就会400 Bad Request
+            o.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+        }        )
+            .AddJsonOptions(o =>
         {
             o.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
             o.JsonSerializerOptions.Converters.Add(new FrpConfigJsonConverter());
@@ -69,8 +74,8 @@ internal class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<FrpDbContext>(ServiceLifetime.Transient);
         builder.Services.AddSingleton<FrpGUI.Logger>();
-        //builder.Services.AddSingleton<FrpProcessManager>();
-        builder.Services.AddHostedService<FrpProcessManager>();
+        builder.Services.AddSingleton<FrpProcessService>();
+        builder.Services.AddHostedService<AppLifetimeService>();
 
         builder.Host.UseSerilog();
 
@@ -93,7 +98,7 @@ internal class Program
         }
         //app.UseWebSockets();
         app.UseHttpsRedirection();
-        app.UseAuthorization();
+        //app.UseAuthorization();
         app.MapControllers();
     }
 }
