@@ -36,8 +36,8 @@
                 Text="FrpGUI" />
             <ListBox
                 Grid.Row="2"
-                ItemsSource="{Binding FrpConfigs}"
-                SelectedItem="{Binding CurrentFrpConfig}">
+                ItemsSource="{Binding FrpProcesses}"
+                SelectedItem="{Binding CurrentFrpProcess}">
                 <ListBox.Styles>
                     <Style Selector="ListBoxItem">
                         <Setter Property="ContextMenu">
@@ -66,7 +66,7 @@
                                 Height="10"
                                 VerticalAlignment="Center"
                                 Fill="{Binding ProcessStatus, Converter={StaticResource ProcessStatus2BrushConverter}}" />
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Config.Name}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

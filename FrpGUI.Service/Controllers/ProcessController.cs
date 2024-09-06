@@ -1,5 +1,6 @@
 using FrpGUI.Configs;
 using FrpGUI.Enums;
+using FrpGUI.Models;
 using FrpGUI.Service.Models;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,12 @@ public class ProcessController : FrpControllerBase
         this.processes = processes;
     }
 
+
+    [HttpGet("Status")]
+    public IList<IFrpProcess> GetFrpProcessList()
+    {
+        return processes.GetAll();
+    }
 
 
     [HttpPost("Start/{id}")]

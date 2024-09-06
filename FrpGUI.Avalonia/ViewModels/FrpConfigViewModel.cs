@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
+using FrpGUI.Models;
 using FzLib.Avalonia.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,10 +12,10 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels;
-public partial class FrpConfigViewModel(IDataProvider provider,IServiceProvider services) : ViewModelBase(provider)
+public partial class FrpConfigViewModel(IDataProvider provider, IServiceProvider services) : ViewModelBase(provider)
 {
     [ObservableProperty]
-    private FrpConfigBase frpConfig;
+    private IFrpProcess frp;
 
     [ObservableProperty]
     private ObservableCollection<Rule> rules;
@@ -30,10 +31,10 @@ public partial class FrpConfigViewModel(IDataProvider provider,IServiceProvider 
         }
     }
 
-    public void LoadConfig(FrpConfigBase frpConfig)
+    public void LoadConfig(IFrpProcess frp)
     {
-        FrpConfig = frpConfig;
-        if (frpConfig is ClientConfig cc)
+        Frp = frp;
+        if (frp.Config is ClientConfig cc)
         {
             Rules = new ObservableCollection<Rule>(cc.Rules);
             Rules.CollectionChanged += (s, e) => cc.Rules = [.. Rules];

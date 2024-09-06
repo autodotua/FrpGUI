@@ -46,14 +46,14 @@
             </Style>
         </Grid.Styles>
         <StackPanel
-            IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource NotNullConverter}}"
+            IsVisible="{Binding CurrentFrpProcess, Converter={StaticResource NotNullConverter}}"
             Orientation="Horizontal">
 
             <Button Command="{Binding StartCommand}">
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
-                        Path="CurrentFrpConfig.ProcessStatus">
+                        Path="CurrentFrpProcess.ProcessStatus">
                         <Binding.ConverterParameter>
                             <e:ProcessStatus>Stopped</e:ProcessStatus>
                         </Binding.ConverterParameter>
@@ -71,7 +71,7 @@
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
-                        Path="CurrentFrpConfig.ProcessStatus">
+                        Path="CurrentFrpProcess.ProcessStatus">
                         <Binding.ConverterParameter>
                             <e:ProcessStatus>Running</e:ProcessStatus>
                         </Binding.ConverterParameter>
@@ -89,7 +89,7 @@
                 <Button.IsEnabled>
                     <Binding
                         Converter="{StaticResource EqualConverter}"
-                        Path="CurrentFrpConfig.ProcessStatus">
+                        Path="CurrentFrpProcess.ProcessStatus">
                         <Binding.ConverterParameter>
                             <e:ProcessStatus>Running</e:ProcessStatus>
                         </Binding.ConverterParameter>
@@ -116,7 +116,7 @@
             <Button
                 Width="88"
                 Command="{Binding AddRuleCommand}"
-                IsVisible="{Binding CurrentFrpConfig, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type cf:ClientConfig}}">
+                IsVisible="{Binding CurrentFrpProcess, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type cf:ClientConfig}}">
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4">

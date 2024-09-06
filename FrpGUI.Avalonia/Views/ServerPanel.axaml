@@ -25,40 +25,40 @@
             <TextBlock Text="名称" />
             <TextBox
                 Grid.Column="2"
-                Text="{Binding FrpConfig.Name}" />
+                Text="{Binding Frp.Config.Name}" />
             <CheckBox
                 Grid.Row="2"
                 Grid.ColumnSpan="99"
                 Content="自动启动"
-                IsChecked="{Binding FrpConfig.AutoStart}" />
+                IsChecked="{Binding Frp.Config.AutoStart}" />
             <TextBlock
                 Grid.Row="4"
                 Text="端口号" />
             <TextBox
                 Grid.Row="4"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.Port}" />
+                Text="{Binding Frp.Config.Port}" />
             <TextBlock
                 Grid.Row="6"
                 Text="连接密钥" />
             <TextBox
                 Grid.Row="6"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.Token}" />
+                Text="{Binding Frp.Config.Token}" />
             <TextBlock
                 Grid.Row="8"
                 Text="HTTP端口" />
             <TextBox
                 Grid.Row="8"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.HttpPort}" />
+                Text="{Binding Frp.Config.HttpPort}" />
             <TextBlock
                 Grid.Row="10"
                 Text="HTTPS端口" />
             <TextBox
                 Grid.Row="10"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.HttpsPort}" />
+                Text="{Binding Frp.Config.HttpsPort}" />
 
             <TextBlock
                 Grid.Row="12"
@@ -66,13 +66,13 @@
             <TextBox
                 Grid.Row="12"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.MaxPoolCount}" />
+                Text="{Binding Frp.Config.MaxPoolCount}" />
 
             <CheckBox
                 Grid.Row="14"
                 Grid.ColumnSpan="99"
                 Content="仅允许TLS传输层安全性协议"
-                IsChecked="{Binding FrpConfig.EnableTls}" />
+                IsChecked="{Binding Frp.Config.EnableTls}" />
 
             <TextBlock
                 Grid.Row="16"
@@ -80,7 +80,7 @@
             <TextBox
                 Grid.Row="16"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.DashBoardPort}" />
+                Text="{Binding Frp.Config.DashBoardPort}" />
 
             <TextBlock
                 Grid.Row="18"
@@ -88,7 +88,7 @@
             <TextBox
                 Grid.Row="18"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.DashBoardUsername}" />
+                Text="{Binding Frp.Config.DashBoardUsername}" />
 
             <TextBlock
                 Grid.Row="20"
@@ -96,7 +96,7 @@
             <TextBox
                 Grid.Row="20"
                 Grid.Column="2"
-                Text="{Binding FrpConfig.DashBoardPassword}" />
+                Text="{Binding Frp.Config.DashBoardPassword}" />
 
         </Grid>
     </ScrollViewer>

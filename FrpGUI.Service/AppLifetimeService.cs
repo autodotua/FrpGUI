@@ -8,11 +8,11 @@ namespace FrpGUI.Service
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            foreach (var frpConfig in processes.Keys)
+            foreach (var frpConfig in processes.Values)
             {
-                if (frpConfig.AutoStart)
+                if (frpConfig.Config.AutoStart)
                 {
-                    await processes.GetOrCreateProcess(frpConfig.ID).StartAsync();
+                    await processes.GetOrCreateProcess(frpConfig.Config.ID).StartAsync();
                 }
             }
         }

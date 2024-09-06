@@ -10,6 +10,7 @@ using FrpGUI.Configs;
 using System.Net.Http;
 using FrpGUI.Models;
 using System.Dynamic;
+using FrpGUI.Avalonia.Models;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -22,6 +23,7 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string RestartFrpEndpoint = "Process/Restart";
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
+        private const string FrpStatusEndpoint = "Process/Status";
         private const string AddClientEndpoint = "Config/FrpConfigs/Add/Client";
         private const string AddServerEndpoint = "Config/FrpConfigs/Add/Server";
         private const string ModifyConfigEndpoint = "Config/FrpConfigs/Modify";
@@ -58,6 +60,16 @@ namespace FrpGUI.Avalonia.DataProviders
         public Task StopFrpAsync(string id)
         {
             return PostAsync($"{StopFrpEndpoint}/{id}");
+        }
+
+        public Task GetFrpStatusAsync(string id)
+        {
+            return PostAsync($"{FrpStatusEndpoint}/{id}");
+        }
+
+        public Task<IList<FrpProcess>> GetFrpStatusesAsync()
+        {
+            return GetAsync<IList<FrpProcess>>(FrpStatusEndpoint);
         }
 
         public Task<ClientConfig> AddClientAsync()

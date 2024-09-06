@@ -1,4 +1,5 @@
 ﻿using FrpGUI.Configs;
+using FrpGUI.Models;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,12 @@ public class ConfigController : FrpControllerBase
     }
 
     [HttpGet("FrpConfigs")]
-    public List<FrpConfigBase> GetFrpConfigList()
+    public IList<FrpConfigBase> GetFrpConfigList()
     {
         return configs.FrpConfigs;
     }
-
-    [HttpPost("FrpConfigs/Delete")]
+    
+    [HttpPost("FrpConfigs/Delete/{id}")]
     public async Task DeleteFrpConfigAsync(string id)
     {
         var frp = processes.GetOrCreateProcess(id);
@@ -32,7 +33,7 @@ public class ConfigController : FrpControllerBase
             await frp.StopAsync();
         }
         configs.FrpConfigs.Remove(frp.Config);
-        processes.Remove(frp.Config);
+        processes.Remove(frp.Config.ID);
     }
 
     [HttpPost("FrpConfigs/Add/Client")]

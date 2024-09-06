@@ -39,51 +39,51 @@
                 <TextBlock Text="名称" />
                 <TextBox
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.Name}" />
+                    Text="{Binding Frp.Config.Name}" />
                 <CheckBox
                     Grid.Row="2"
                     Grid.ColumnSpan="99"
                     Content="自动启动"
-                    IsChecked="{Binding FrpConfig.AutoStart}" />
+                    IsChecked="{Binding Frp.Config.AutoStart}" />
                 <TextBlock
                     Grid.Row="4"
                     Text="服务器地址" />
                 <TextBox
                     Grid.Row="4"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.ServerAddress}" />
+                    Text="{Binding Frp.Config.ServerAddress}" />
                 <TextBlock
                     Grid.Row="6"
                     Text="端口号" />
                 <TextBox
                     Grid.Row="6"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.ServerPort}" />
+                    Text="{Binding Frp.Config.ServerPort}" />
                 <TextBlock
                     Grid.Row="8"
                     Text="连接密钥" />
                 <TextBox
                     Grid.Row="8"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.Token}" />
+                    Text="{Binding Frp.Config.Token}" />
                 <TextBlock
                     Grid.Row="10"
                     Text="预连接数量" />
                 <TextBox
                     Grid.Row="10"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.PoolCount}" />
+                    Text="{Binding Frp.Config.PoolCount}" />
 
                 <CheckBox
                     Grid.Row="12"
                     Grid.ColumnSpan="99"
                     Content="异常自动停止"
-                    IsChecked="{Binding FrpConfig.LoginFailExit}" />
+                    IsChecked="{Binding Frp.Config.LoginFailExit}" />
                 <CheckBox
                     Grid.Row="14"
                     Grid.ColumnSpan="99"
                     Content="启用TLS传输层安全性协议"
-                    IsChecked="{Binding FrpConfig.EnableTls}" />
+                    IsChecked="{Binding Frp.Config.EnableTls}" />
 
                 <TextBlock
                     Grid.Row="16"
@@ -91,7 +91,7 @@
                 <TextBox
                     Grid.Row="16"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminAddress}" />
+                    Text="{Binding Frp.Config.AdminAddress}" />
 
                 <TextBlock
                     Grid.Row="18"
@@ -99,7 +99,7 @@
                 <TextBox
                     Grid.Row="18"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminPort}" />
+                    Text="{Binding Frp.Config.AdminPort}" />
 
                 <TextBlock
                     Grid.Row="20"
@@ -107,14 +107,14 @@
                 <TextBox
                     Grid.Row="20"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminUsername}" />
+                    Text="{Binding Frp.Config.AdminUsername}" />
                 <TextBlock
                     Grid.Row="22"
                     Text="管理面板密码" />
                 <TextBox
                     Grid.Row="22"
                     Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminPassword}" />
+                    Text="{Binding Frp.Config.AdminPassword}" />
             </Grid>
         </ScrollViewer>
         <GridSplitter

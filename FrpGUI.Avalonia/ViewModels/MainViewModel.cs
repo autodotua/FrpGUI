@@ -4,9 +4,11 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
+using FrpGUI.Avalonia.Models;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
+using FrpGUI.Models;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +17,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static FzLib.Avalonia.Messages.CommonDialogMessage;
 
@@ -23,58 +27,35 @@ namespace FrpGUI.Avalonia.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    private readonly IDataProvider provider;
+
+    private readonly IServiceProvider services;
+
     [ObservableProperty]
-    private FrpConfigBase currentFrpConfig;
+    private IFrpProcess currentFrpProcess;
 
     [ObservableProperty]
     private FrpConfigViewModel currentPanelViewModel;
 
     [ObservableProperty]
-    private ObservableCollection<FrpConfigBase> frpConfigs = new ObservableCollection<FrpConfigBase>();
-
-    partial void OnCurrentFrpConfigChanging(FrpConfigBase oldValue, FrpConfigBase newValue)
-    {
-        if (oldValue != null)
-        {
-            DataProvider.ModifyConfigAsync(oldValue);
-        }
-    }
-    private readonly IDataProvider provider;
-    private readonly IServiceProvider services;
+    private ObservableCollection<IFrpProcess> frpProcesses = new ObservableCollection<IFrpProcess>();
 
     public MainViewModel(IDataProvider provider,
                          IServiceProvider services,
                          FrpConfigViewModel frpConfigViewModel) : base(provider)
     {
         this.services = services;
-        InitializeData();
+        InitializeDataAndStartTimer();
         CurrentPanelViewModel = frpConfigViewModel;
-    }
-
-    private async void InitializeData()
-    {
-        try
-        {
-            FrpConfigs = new ObservableCollection<FrpConfigBase>(await DataProvider.GetFrpConfigsAsync());
-        }
-        catch (Exception ex)
-        {
-            this.SendMessage(new CommonDialogMessage()
-            {
-                Type = CommonDialogType.Error,
-                Title = "获取配置列表失败",
-                Exception = ex
-            });
-        }
-
     }
 
     [RelayCommand]
     private async Task AddClientAsync()
     {
         var newConfig = await DataProvider.AddClientAsync();
-        FrpConfigs.Add(newConfig);
-        CurrentFrpConfig = newConfig;
+        var fp = new FrpProcess(newConfig);
+        FrpProcesses.Add(fp);
+        CurrentFrpProcess = fp;
     }
 
     [RelayCommand]
@@ -87,32 +68,33 @@ public partial class MainViewModel : ViewModelBase
     private async Task AddServerAsync()
     {
         var newConfig = await DataProvider.AddServerAsync();
-        FrpConfigs.Add(newConfig);
-        CurrentFrpConfig = newConfig;
+        var fp = new FrpProcess(newConfig);
+        FrpProcesses.Add(fp);
+        CurrentFrpProcess = fp;
     }
 
     [RelayCommand]
     private void CreateCopy(FrpConfigBase config)
     {
-        var newConfig = config.Clone() as FrpConfigBase;
-        newConfig.Name = newConfig.Name + "（复制）";
-        FrpConfigs.Add(newConfig);
-        CurrentFrpConfig = newConfig;
+        //var newConfig = config.Clone() as FrpConfigBase;
+        //newConfig.Name = newConfig.Name + "（复制）";
+        //FrpConfigs.Add(newConfig);
+        //CurrentFrpProcess = newConfig;
     }
 
     [RelayCommand]
-    private async Task DeleteConfigAsync(FrpConfigBase config)
+    private async Task DeleteConfigAsync(IFrpProcess fp)
     {
         var message = SendMessage(new CommonDialogMessage()
         {
             Type = CommonDialogType.YesNo,
             Title = "删除配置",
-            Message = $"是否删除配置“{config.Name}”？"
+            Message = $"是否删除配置“{fp.Config.Name}”？"
         });
         if (true.Equals(await message.Task))
         {
-            FrpConfigs.Remove(config);
-            await DataProvider.DeleteFrpConfigAsync(config.ID);
+            FrpProcesses.Remove(fp);
+            await DataProvider.DeleteFrpConfigAsync(fp.Config.ID);
         }
     }
 
@@ -124,7 +106,7 @@ public partial class MainViewModel : ViewModelBase
             string config;
             FilePickerFileType filter;
 
-            config = CurrentFrpConfig.ToToml();
+            config = CurrentFrpProcess.Config.ToToml();
             filter = new FilePickerFileType("ini配置文件")
             {
                 Patterns = ["*.toml"],
@@ -143,7 +125,7 @@ public partial class MainViewModel : ViewModelBase
                 var file = await SendMessage(new GetStorageProviderMessage()).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
                     FileTypeChoices = [filter],
-                    SuggestedFileName = CurrentFrpConfig.Name,
+                    SuggestedFileName = CurrentFrpProcess.Config.Name,
                     DefaultExtension = filter.Patterns[0].Split('.')[1]
                 });
                 if (file != null)
@@ -167,16 +149,56 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    partial void OnCurrentFrpConfigChanged(FrpConfigBase value)
+    private async void InitializeDataAndStartTimer()
     {
-        CurrentPanelViewModel.LoadConfig(CurrentFrpConfig);
+        try
+        {
+            FrpProcesses = new ObservableCollection<IFrpProcess>(await DataProvider.GetFrpStatusesAsync());
+        }
+        catch (Exception ex)
+        {
+            SendMessage(new CommonDialogMessage()
+            {
+                Type = CommonDialogType.Error,
+                Title = "获取配置列表失败",
+                Exception = ex
+            });
+        }
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        while (await timer.WaitForNextTickAsync())
+        {
+            try
+            {
+                await UpdateStatusAsync(false);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+    }
+
+    partial void OnCurrentFrpProcessChanged(IFrpProcess value)
+    {
+        CurrentPanelViewModel.LoadConfig(CurrentFrpProcess);
+    }
+
+    partial void OnCurrentFrpProcessChanging(IFrpProcess oldValue, IFrpProcess newValue)
+    {
+        if (oldValue != null)
+        {
+            DataProvider.ModifyConfigAsync(oldValue.Config);
+        }
     }
     [RelayCommand]
     private async Task RestartAsync()
     {
         try
         {
-            await DataProvider.RestartFrpAsync(CurrentFrpConfig.ID);
+            await DataProvider.ModifyConfigAsync(CurrentFrpProcess.Config);
+            await DataProvider.RestartFrpAsync(CurrentFrpProcess.Config.ID);
+            //await   WaitForNextUpdate();
+            await UpdateStatusAsync(true);
         }
         catch (Exception ex)
         {
@@ -200,8 +222,9 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            await DataProvider.ModifyConfigAsync(CurrentFrpConfig);
-            await DataProvider.StartFrpAsync(CurrentFrpConfig.ID);
+            await DataProvider.ModifyConfigAsync(CurrentFrpProcess.Config);
+            await DataProvider.StartFrpAsync(CurrentFrpProcess.Config.ID);
+            await UpdateStatusAsync(true);
         }
         catch (Exception ex)
         {
@@ -219,7 +242,8 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            await DataProvider.StopFrpAsync(CurrentFrpConfig.ID);
+            await DataProvider.StopFrpAsync(CurrentFrpProcess.Config.ID);
+            await UpdateStatusAsync(true);
         }
         catch (Exception ex)
         {
@@ -231,4 +255,35 @@ public partial class MainViewModel : ViewModelBase
             }).Task;
         }
     }
+
+    TaskCompletionSource tcsUpdate;
+    public Task WaitForNextUpdate()
+    {
+        tcsUpdate = new TaskCompletionSource();
+        return tcsUpdate.Task;
+    }
+    private async Task UpdateStatusAsync(bool force)
+    {
+        if (!force && (DateTime.Now - lastUpdateStatusTime).TotalSeconds < 1)
+        {
+            return;
+        }
+        lastUpdateStatusTime = DateTime.Now;
+        var fps = await DataProvider.GetFrpStatusesAsync();
+        var local = FrpProcesses.ToDictionary(p => p.Config.ID);
+        foreach (var fp in fps)
+        {
+            if (local.TryGetValue(fp.Config.ID, out var localFp))
+            {
+                localFp.ProcessStatus = fp.ProcessStatus;
+            }
+        }
+        if (tcsUpdate != null)
+        {
+            tcsUpdate.SetResult();
+            tcsUpdate = null;
+        }
+    }
+
+    private DateTime lastUpdateStatusTime = DateTime.MinValue;
 }

@@ -28,9 +28,9 @@ public partial class MainView : UserControl
 
     private void MainView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(MainViewModel.CurrentFrpConfig))
+        if (e.PropertyName == nameof(MainViewModel.CurrentFrpProcess))
         {
-            if ((DataContext as MainViewModel).CurrentFrpConfig is ServerConfig)
+            if ((DataContext as MainViewModel).CurrentFrpProcess.Config is ServerConfig)
             {
                 mainPanel.Content = new ServerPanel();
             }
