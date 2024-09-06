@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Models
@@ -14,12 +16,16 @@ namespace FrpGUI.Avalonia.Models
     {
         private ProcessStatus processStatus;
 
+        public FrpProcess()
+        {
+
+        }
         public FrpProcess(FrpConfigBase config)
         {
             Config = config;
             ProcessStatus = ProcessStatus.Stopped;
         }
-        public FrpConfigBase Config { get; }
+        public FrpConfigBase Config { get; set; }
         public ProcessStatus ProcessStatus
         {
             get => processStatus; set

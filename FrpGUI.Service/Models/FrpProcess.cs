@@ -19,6 +19,7 @@ namespace FrpGUI.Service.Models
             Process.Exited += Process_Exited;
         }
 
+        [JsonIgnore]
         public ProcessHelper Process { get; protected set; }
 
         public FrpConfigBase Config { get; }

@@ -11,6 +11,7 @@ using System.Net.Http;
 using FrpGUI.Models;
 using System.Dynamic;
 using FrpGUI.Avalonia.Models;
+using System.Text.Json.Nodes;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -40,11 +41,11 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task<List<FrpConfigBase>> GetFrpConfigsAsync()
         {
-            return GetAsync<List<FrpConfigBase>>(FrpConfigsEndpoint);
+            return GetObjectAsync<List<FrpConfigBase>>(FrpConfigsEndpoint);
         }
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
-            return GetAsync<List<LogEntity>>(LogsEndpoint, ("timeAfter", timeAfter.ToString("o")));
+            return GetObjectAsync<List<LogEntity>>(LogsEndpoint, ("timeAfter", timeAfter.ToString("o")));
         }
 
         public Task RestartFrpAsync(string id)
@@ -67,9 +68,20 @@ namespace FrpGUI.Avalonia.DataProviders
             return PostAsync($"{FrpStatusEndpoint}/{id}");
         }
 
-        public Task<IList<FrpProcess>> GetFrpStatusesAsync()
+        public async Task<IList<FrpProcess>> GetFrpStatusesAsync()
         {
-            return GetAsync<IList<FrpProcess>>(FrpStatusEndpoint);
+           return await GetObjectAsync<IList<FrpProcess>>(FrpStatusEndpoint);
+            //var content=await GetAsync(FrpStatusEndpoint);
+            //var jarray = JsonNode.Parse(await content.ReadAsStreamAsync()) as JsonArray;
+            //List<FrpProcess> fps = new List<FrpProcess>();
+            //foreach (var jfp in jarray)
+            //{
+            //    var jconfig = jfp["config"] as JsonObject;
+            //    if (jconfig["type"])
+            //    FrpProcess fp = new FrpProcess();
+            //}
+
+            //return null;
         }
 
         public Task<ClientConfig> AddClientAsync()
@@ -97,21 +109,25 @@ namespace FrpGUI.Avalonia.DataProviders
             }
         }
 
-        private Task<T> GetAsync<T>(string endpoint, params (string Key, string Value)[] query) where T : class
+        private Task<T> GetObjectAsync<T>(string endpoint, params (string Key, string Value)[] query) where T : class
         {
             var querys = query.Select(p => $"{p.Key}={p.Value}");
-            return GetAsync<T>(endpoint + "?" + string.Join('&', querys));
+            return GetObjectAsync<T>(endpoint + "?" + string.Join('&', querys));
         }
 
-        private async Task<T> GetAsync<T>(string endpoint) where T : class
+        private async Task<T> GetObjectAsync<T>(string endpoint) where T : class
+        {
+            using var responseStream = await (await GetAsync(endpoint)).ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<T>(responseStream, AppConfig.JsonOptions);
+        }
+
+        private async Task<HttpContent> GetAsync(string endpoint)
         {
             var response = await HttpClient.GetAsync($"{BaseApiUrl}/{endpoint}");
 
             if (response.IsSuccessStatusCode)
             {
-                //var a =await response.Content.ReadAsStringAsync();
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<T>(responseStream, AppConfig.JsonOptions);
+                return response.Content;
             }
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

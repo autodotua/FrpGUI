@@ -180,7 +180,7 @@ public partial class MainViewModel : ViewModelBase
 
     partial void OnCurrentFrpProcessChanged(IFrpProcess value)
     {
-        CurrentPanelViewModel.LoadConfig(CurrentFrpProcess);
+        CurrentPanelViewModel.LoadConfig(value);
     }
 
     partial void OnCurrentFrpProcessChanging(IFrpProcess oldValue, IFrpProcess newValue)
