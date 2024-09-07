@@ -24,8 +24,8 @@ namespace FrpGUI
 
         public Logger(FrpDbContext db)
         {
-            StartTimer();
             this.db = db;
+            StartTimer();
         }
         public void Error(string message, FrpConfigBase config = null, Exception ex = null) => Log(message, 'E', config, false, ex);
 
@@ -64,7 +64,7 @@ namespace FrpGUI
                 {
                     await db.SaveChangesAsync();
                 }
-                catch
+                catch(Exception ex)
                 {
 
                 }

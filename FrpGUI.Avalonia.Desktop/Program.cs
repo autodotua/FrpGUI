@@ -19,20 +19,11 @@ namespace FrpGUI.Avalonia.Desktop;
 
 class Program
 {
-    private static SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
-
     [STAThread]
     public static void Main(string[] args)
     {
         Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
         InitializeLogs();
-        //Logger.NewLog += Logger_NewLog;
-
-        if (singleRunningApp.Register())
-        {
-            Log.Info("存在已打开的实例，进行了通知");
-            return;
-        }
 
         try
         {
@@ -44,7 +35,7 @@ class Program
         }
         finally
         {
-            singleRunningApp.Dispose();
+            //singleRunningApp.Dispose();
         }
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

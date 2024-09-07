@@ -118,7 +118,7 @@ namespace FrpGUI.Avalonia.DataProviders
         private async Task<T> GetObjectAsync<T>(string endpoint) where T : class
         {
             using var responseStream = await (await GetAsync(endpoint)).ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<T>(responseStream, AppConfig.JsonOptions);
+            return await JsonSerializer.DeserializeAsync<T>(responseStream, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
         }
 
         private async Task<HttpContent> GetAsync(string endpoint)
@@ -143,7 +143,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         private async Task PostAsync(string endpoint, object data = null)
         {
-            var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, AppConfig.JsonOptions), Encoding.UTF8, "application/json");
+            var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");
             var response = await HttpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
             if (!response.IsSuccessStatusCode)
             {
@@ -155,7 +155,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         private async Task<T> PostAsync<T>(string endpoint, object data = null)
         {
-            var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, AppConfig.JsonOptions), Encoding.UTF8, "application/json");
+            var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");
             var response = await HttpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
 
             if (!response.IsSuccessStatusCode)
@@ -164,7 +164,7 @@ namespace FrpGUI.Avalonia.DataProviders
                 message = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[0];
                 throw new Exception($"API请求失败（{response.StatusCode}）：{message}");
             }
-            return await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), AppConfig.JsonOptions);
+            return await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
         }
 
         private async Task PutAsync(string endpoint, object data)

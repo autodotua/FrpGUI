@@ -9,20 +9,12 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Text.Json.Nodes;
 using FrpGUI.Models;
+using FrpGUI.Configs;
 
 namespace FrpGUI.Configs
 {
     public class AppConfig
     {
-        public static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
-        {
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-            //TypeInfoResolver = AppConfigSourceGenerationContext.Default,
-            Converters = { new FrpConfigJsonConverter() },
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true,
-        };
-
         private static readonly object lockObj = new object();
         public static readonly string ConfigPath = "config.json";
         private static AppConfig instance;
@@ -42,7 +34,7 @@ namespace FrpGUI.Configs
         public bool ShowTrayIcon { get; set; } = true;
         public void Save()
         {
-            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, JsonOptions);
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, JsonHelper.GetJsonOptions(AppConfigSourceGenerationContext.Default));
             File.WriteAllBytes(Path.Combine(AppContext.BaseDirectory, ConfigPath), bytes);
         }
 
@@ -81,9 +73,35 @@ namespace FrpGUI.Configs
             JsonSerializer.Serialize(writer, value, value.GetType(), options);
         }
     }
+
     [JsonSourceGenerationOptions(WriteIndented = true)]
     [JsonSerializable(typeof(AppConfig))]
     internal partial class AppConfigSourceGenerationContext : JsonSerializerContext
     {
+    }
+}
+
+public static class JsonHelper
+{
+    public static JsonSerializerOptions GetJsonOptions(JsonSerializerContext typeInfoResolver) 
+    {
+        return new JsonSerializerOptions()
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            TypeInfoResolver = typeInfoResolver,
+            Converters = { new FrpConfigJsonConverter() },
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+        };
+    }
+    public static JsonSerializerOptions GetJsonOptions( )
+    {
+        return new JsonSerializerOptions()
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            Converters = { new FrpConfigJsonConverter() },
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+        };
     }
 }

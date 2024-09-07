@@ -5,17 +5,19 @@
     <LangVersion>latest</LangVersion>
     <BaseOutputPath>../Generation/bin</BaseOutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(Temp)\$(SolutionName)\$(Configuration)\$(AssemblyName)</OutputPath>
+    <BaseIntermediateOutputPath>$(Temp)\$(SolutionName)\obj\$(Configuration)\$(AssemblyName)</BaseIntermediateOutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <AvaloniaXaml Remove="obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
-    <None Remove="Assets\WRYH.ttf" />
-    <None Remove="Assets\WRYH_Bold.ttf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ using Serilog;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
 internal class Program
@@ -13,7 +14,7 @@ internal class Program
     private static bool swagger = true;
 
     private static WebApplication app;
-
+    private static string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
     private static void Main(string[] args)
     {
@@ -34,7 +35,8 @@ internal class Program
         {
             try
             {
-                config = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(AppConfig.ConfigPath), AppConfig.JsonOptions);
+                config = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(AppConfig.ConfigPath), 
+                    JsonHelper.GetJsonOptions(AppConfigSourceGenerationContext.Default));
             }
             catch (Exception ex)
             {
@@ -76,7 +78,16 @@ internal class Program
         builder.Services.AddSingleton<FrpGUI.Logger>();
         builder.Services.AddSingleton<FrpProcessService>();
         builder.Services.AddHostedService<AppLifetimeService>();
-
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                              policy =>
+                              {
+                                  policy.AllowAnyMethod()
+                                  .AllowAnyHeader()
+                                  .AllowAnyOrigin();
+                              });
+        });
         builder.Host.UseSerilog();
 
         builder.Host.UseWindowsService(c =>
@@ -98,8 +109,14 @@ internal class Program
         }
         //app.UseWebSockets();
         app.UseHttpsRedirection();
-        app.UseCors(o => o.AllowAnyOrigin());
+        app.UseCors(MyAllowSpecificOrigins);
         //app.UseAuthorization();
         app.MapControllers();
     }
+}
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(AppConfig))]
+internal partial class AppConfigSourceGenerationContext : JsonSerializerContext
+{
 }

@@ -32,6 +32,19 @@ namespace FrpGUI.Models
         public string Exception { get; set; }
         public DateTime ProcessStartTime { get; set; } = CurrentProcessStartTime;
 
-        public static DateTime CurrentProcessStartTime { get; } = Process.GetCurrentProcess().StartTime;
+        public static DateTime CurrentProcessStartTime { get; } 
+
+        static LogEntity()
+        {
+            //wasm不支持Process
+            try
+            {
+                CurrentProcessStartTime = Process.GetCurrentProcess().StartTime;
+            }
+            catch
+            {
+
+            }
+        }
     }
 }
