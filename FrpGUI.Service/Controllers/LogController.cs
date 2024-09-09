@@ -1,4 +1,5 @@
 ﻿using FrpGUI.Models;
+using FrpGUI.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,4 +30,3 @@ public class LogController : ControllerBase
         return logs;
     }
 }
-

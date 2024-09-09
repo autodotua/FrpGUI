@@ -1,11 +1,8 @@
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
-using FrpGUI.Service.Models;
-using Microsoft.AspNetCore.Http.Json;
+using FrpGUI.Service.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Text.Json;
 
 namespace FrpGUI.Service.Controllers;
 
@@ -13,17 +10,12 @@ namespace FrpGUI.Service.Controllers;
 [Route("[controller]")]
 public class ProcessController : FrpControllerBase
 {
-    private readonly AppConfig config;
-    private readonly Logger logger;
     private readonly FrpProcessService processes;
 
     public ProcessController(AppConfig config, Logger logger, FrpProcessService processes) : base(config, logger)
     {
-        this.config = config;
-        this.logger = logger;
         this.processes = processes;
     }
-
 
     [HttpGet("Status")]
     public IList<IFrpProcess> GetFrpProcessList()
@@ -31,23 +23,28 @@ public class ProcessController : FrpControllerBase
         return processes.GetAll();
     }
 
-
     [HttpPost("Start/{id}")]
     public Task StartAsync(string id)
     {
-        return processes.GetOrCreateProcess(id).StartAsync();
+        var frp = processes.GetOrCreateProcess(id);
+        logger.Info($"指令：启动", frp.Config);
+        return frp.StartAsync();
     }
 
     [HttpPost("Stop/{id}")]
     public Task StopAsync(string id)
     {
-        return processes.GetOrCreateProcess(id).StopAsync();
+        var frp = processes.GetOrCreateProcess(id);
+        logger.Info($"指令：停止", frp.Config);
+        return frp.StopAsync();
     }
 
     [HttpPost("Restart/{id}")]
     public Task RestartAsync(string id)
     {
-        return processes.GetOrCreateProcess(id).RestartAsync();
+        var frp = processes.GetOrCreateProcess(id);
+        logger.Info($"指令：重启", frp.Config);
+        return frp.RestartAsync();
     }
 
     [HttpGet("Status/{id}")]
@@ -56,4 +53,3 @@ public class ProcessController : FrpControllerBase
         return processes.GetOrCreateProcess(id).ProcessStatus;
     }
 }
-

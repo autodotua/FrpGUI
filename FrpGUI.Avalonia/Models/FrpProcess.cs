@@ -2,11 +2,9 @@
 using FrpGUI.Enums;
 using FrpGUI.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -56,15 +54,4 @@ public partial class FrpProcess : IFrpProcess, INotifyPropertyChanged
     {
         throw new NotImplementedException();
     }
-}
-
-
-[JsonSourceGenerationOptions(WriteIndented = true)]
-[JsonSerializable(typeof(FrpProcess))]
-[JsonSerializable(typeof(AppConfig))]
-[JsonSerializable(typeof(LogEntity))]
-[JsonSerializable(typeof(List<LogEntity>))]
-[JsonSerializable(typeof(IList<FrpProcess>))]
-internal partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
-{
 }

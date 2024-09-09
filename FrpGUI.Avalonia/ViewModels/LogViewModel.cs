@@ -11,32 +11,18 @@ using System;
 using FrpGUI.Avalonia.DataProviders;
 using System.Threading;
 using FrpGUI.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
 public partial class LogViewModel : ViewModelBase
 {
+    [ObservableProperty]
+    private LogInfo selectedLog;
+
     public LogViewModel(IDataProvider provider) : base(provider)
     {
         StartTimer();
-    }
-
-    private async void StartTimer()
-    {
-        var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
-        DateTime lastRequestTime = DateTime.MinValue;
-        while (await timer.WaitForNextTickAsync())
-        {
-            var logs = await DataProvider.GetLogsAsync(lastRequestTime);
-            if (logs.Count > 0)
-            {
-                lastRequestTime = logs[^1].Time;
-                foreach (var log in logs)
-                {
-                    AddLog(log);
-                }
-            }
-        }
     }
 
     public ObservableCollection<LogInfo> Logs { get; } = new ObservableCollection<LogInfo>();
@@ -69,11 +55,30 @@ public partial class LogViewModel : ViewModelBase
             TypeBrush = brush,
         };
         Logs.Add(log);
+        SelectedLog = log;
     }
 
     [RelayCommand]
     private void CopyLog(LogInfo log)
     {
         SendMessage(new GetClipboardMessage()).Clipboard.SetTextAsync(log.Message);
+    }
+
+    private async void StartTimer()
+    {
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
+        DateTime lastRequestTime = DateTime.MinValue;
+        while (await timer.WaitForNextTickAsync())
+        {
+            var logs = await DataProvider.GetLogsAsync(lastRequestTime);
+            if (logs.Count > 0)
+            {
+                lastRequestTime = logs[^1].Time;
+                foreach (var log in logs)
+                {
+                    AddLog(log);
+                }
+            }
+        }
     }
 }

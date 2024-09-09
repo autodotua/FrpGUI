@@ -1,18 +1,16 @@
 ﻿using FrpGUI.Configs;
-using FrpGUI.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrpGUI.Service.Controllers;
 
 public abstract class FrpControllerBase : ControllerBase
 {
-    private AppConfig config;
-    private Logger logger;
+    protected AppConfig configs;
+    protected Logger logger;
 
-    public FrpControllerBase(AppConfig config, Logger logger)
+    public FrpControllerBase(AppConfig configs, Logger logger)
     {
-        this.config = config;
+        this.configs = configs;
         this.logger = logger;
     }
 }
-

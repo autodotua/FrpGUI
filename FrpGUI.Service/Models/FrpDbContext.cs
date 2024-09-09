@@ -1,18 +1,18 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using FrpGUI.Models;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace FrpGUI.Models
+namespace FrpGUI.Service.Models
 {
     public class FrpDbContext : DbContext
     {
+        private static readonly string connectionString;
+
         static FrpDbContext()
         {
           
             connectionString = $"Data Source=logs.db";
         }
-
-        private static readonly string connectionString;
-
         public FrpDbContext()
         {
             Database.EnsureCreated();
@@ -24,7 +24,5 @@ namespace FrpGUI.Models
         {
             optionsBuilder.UseSqlite(connectionString);
         }
-
-
     }
 }

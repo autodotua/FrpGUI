@@ -14,7 +14,10 @@
         x:Name="lbx"
         AutoScrollToSelectedItem="True"
         Background="Transparent"
-        ItemsSource="{Binding Logs}">
+        ItemsSource="{Binding Logs}"
+        ScrollViewer.AllowAutoHide="False"
+        ScrollViewer.BringIntoViewOnFocusChange="True"
+        SelectedItem="{Binding SelectedLog}">
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="ContextMenu">

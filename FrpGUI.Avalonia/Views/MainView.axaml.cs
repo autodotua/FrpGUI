@@ -30,7 +30,11 @@ public partial class MainView : UserControl
     {
         if (e.PropertyName == nameof(MainViewModel.CurrentFrpProcess))
         {
-            if ((DataContext as MainViewModel).CurrentFrpProcess.Config is ServerConfig)
+            if ((DataContext as MainViewModel).CurrentFrpProcess == null)
+            {
+                mainPanel.Content = null;
+            }
+            else if ((DataContext as MainViewModel).CurrentFrpProcess.Config is ServerConfig)
             {
                 mainPanel.Content = new ServerPanel();
             }

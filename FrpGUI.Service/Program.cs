@@ -1,6 +1,8 @@
 using FrpGUI.Configs;
 using FrpGUI.Models;
 using FrpGUI.Service;
+using FrpGUI.Service.Models;
+using FrpGUI.Service.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 using System.IO;
@@ -75,7 +77,7 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<FrpDbContext>(ServiceLifetime.Transient);
-        builder.Services.AddSingleton<FrpGUI.Logger>();
+        builder.Services.AddSingleton<Logger>();
         builder.Services.AddSingleton<FrpProcessService>();
         builder.Services.AddHostedService<AppLifetimeService>();
         builder.Services.AddCors(options =>
@@ -88,7 +90,6 @@ internal class Program
                                   .AllowAnyOrigin();
                               });
         });
-        builder.Host.UseSerilog();
 
         builder.Host.UseWindowsService(c =>
         {
@@ -101,7 +102,7 @@ internal class Program
 
     private static void SettingApp(WebApplication app)
     {
-        app.Services.GetRequiredService<FrpGUI.Logger>().Info("服务启动");
+        app.Services.GetRequiredService<Logger>().Info("服务启动");
         if (swagger || app.Environment.IsDevelopment())
         {
             app.UseSwagger();

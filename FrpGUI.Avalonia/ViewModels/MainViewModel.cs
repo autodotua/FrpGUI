@@ -52,10 +52,17 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddClientAsync()
     {
-        var newConfig = await DataProvider.AddClientAsync();
-        var fp = new FrpProcess(newConfig);
-        FrpProcesses.Add(fp);
-        CurrentFrpProcess = fp;
+        try
+        {
+            var newConfig = await DataProvider.AddClientAsync();
+            var fp = new FrpProcess(newConfig);
+            FrpProcesses.Add(fp);
+            CurrentFrpProcess = fp;
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex, "新增客户端失败");
+        }
     }
 
     [RelayCommand]
@@ -67,19 +74,54 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddServerAsync()
     {
-        var newConfig = await DataProvider.AddServerAsync();
-        var fp = new FrpProcess(newConfig);
-        FrpProcesses.Add(fp);
-        CurrentFrpProcess = fp;
+        try
+        {
+            var newConfig = await DataProvider.AddServerAsync();
+            var fp = new FrpProcess(newConfig);
+            FrpProcesses.Add(fp);
+            CurrentFrpProcess = fp;
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex, "新增客户端失败");
+        }
     }
 
     [RelayCommand]
-    private void CreateCopy(FrpConfigBase config)
+    private async Task CreateCopyAsync(IFrpProcess fp)
     {
         //var newConfig = config.Clone() as FrpConfigBase;
         //newConfig.Name = newConfig.Name + "（复制）";
         //FrpConfigs.Add(newConfig);
         //CurrentFrpProcess = newConfig;
+        try
+        {
+            FrpConfigBase serverConfig;
+            //在服务器只是新增获取一个ID号，在本地克隆替换ID号提交到服务器
+            if (fp.Config is ClientConfig)
+            {
+                serverConfig = await DataProvider.AddClientAsync();
+            }
+            else if (fp.Config is ServerConfig)
+            {
+                serverConfig = await DataProvider.AddServerAsync();
+            }
+            else
+            {
+                throw new Exception("未知的当前选择的配置类型");
+            }
+            var newConfig = fp.Config.Clone() as FrpConfigBase;
+            newConfig.ID = serverConfig.ID;
+            await DataProvider.ModifyConfigAsync(newConfig);
+
+            var newFp = new FrpProcess(newConfig);
+            FrpProcesses.Add(newFp);
+            CurrentFrpProcess = newFp;
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex, "创建副本失败");
+        }
     }
 
     [RelayCommand]
@@ -93,8 +135,15 @@ public partial class MainViewModel : ViewModelBase
         });
         if (true.Equals(await message.Task))
         {
-            FrpProcesses.Remove(fp);
-            await DataProvider.DeleteFrpConfigAsync(fp.Config.ID);
+            try
+            {
+                await DataProvider.DeleteFrpConfigAsync(fp.Config.ID);
+                FrpProcesses.Remove(fp);
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorAsync(ex, "删除失败");
+            }
         }
     }
 
@@ -140,12 +189,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await SendMessage(new CommonDialogMessage()
-            {
-                Type = CommonDialogType.Error,
-                Title = "启动失败",
-                Exception = ex
-            }).Task;
+            await ShowErrorAsync(ex, "启动失败");
         }
     }
 
@@ -185,7 +229,7 @@ public partial class MainViewModel : ViewModelBase
 
     partial void OnCurrentFrpProcessChanging(IFrpProcess oldValue, IFrpProcess newValue)
     {
-        if (oldValue != null)
+        if (oldValue != null && FrpProcesses.Contains(oldValue))
         {
             DataProvider.ModifyConfigAsync(oldValue.Config);
         }
@@ -202,12 +246,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await SendMessage(new CommonDialogMessage()
-            {
-                Type = CommonDialogType.Error,
-                Title = "重启失败",
-                Exception = ex
-            }).Task;
+            await ShowErrorAsync(ex, "重启失败");
         }
     }
 
@@ -228,12 +267,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await SendMessage(new CommonDialogMessage()
-            {
-                Type = CommonDialogType.Error,
-                Title = "启动失败",
-                Exception = ex
-            }).Task;
+            await ShowErrorAsync(ex, "启动失败");
         }
     }
 
@@ -247,12 +281,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await SendMessage(new CommonDialogMessage()
-            {
-                Type = CommonDialogType.Error,
-                Title = "停止失败",
-                Exception = ex
-            }).Task;
+            await ShowErrorAsync(ex, "停止失败");
         }
     }
 

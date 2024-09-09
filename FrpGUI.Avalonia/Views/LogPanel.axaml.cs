@@ -25,29 +25,4 @@ public partial class LogPanel : UserControl
         DataContext = App.Services.GetRequiredService<LogViewModel>();
         InitializeComponent();
     }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-
-        lstScrollViewer = lbx.GetVisualChildren().First().GetVisualChildren().First() as ScrollViewer;
-        (DataContext as LogViewModel).Logs.CollectionChanged += Logs_CollectionChanged;
-    }
-    private async void Logs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        await Task.Delay(10); //不然视觉树还未形成，无法滚动到最下面
-        try
-        {
-            Dispatcher.UIThread.Invoke(lstScrollViewer.ScrollToEnd);
-        }
-        catch (TaskCanceledException)
-        {
-
-        }
-        catch (Exception ex)
-        {
-
-        }
-    }
-
 }

@@ -34,7 +34,7 @@ public partial class FrpConfigViewModel(IDataProvider provider, IServiceProvider
     public void LoadConfig(IFrpProcess frp)
     {
         Frp = frp;
-        if (frp.Config is ClientConfig cc)
+        if (frp?.Config is ClientConfig cc)
         {
             Rules = new ObservableCollection<Rule>(cc.Rules);
             Rules.CollectionChanged += (s, e) => cc.Rules = [.. Rules];

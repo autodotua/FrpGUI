@@ -2,7 +2,7 @@
 using FrpGUI.Models;
 using FrpGUI.Service.Models;
 
-namespace FrpGUI.Service
+namespace FrpGUI.Service.Services
 {
     public class FrpProcessService(AppConfig config, Logger logger) : Dictionary<string, FrpProcess>
     {

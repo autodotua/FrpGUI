@@ -1,5 +1,6 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Models;
+using FrpGUI.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FrpGUI
+namespace FrpGUI.Service
 {
     public class Logger
     {

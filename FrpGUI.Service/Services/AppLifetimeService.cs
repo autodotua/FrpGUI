@@ -1,7 +1,7 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Service.Models;
 
-namespace FrpGUI.Service
+namespace FrpGUI.Service.Services
 {
     public class AppLifetimeService(AppConfig config, Logger logger, FrpProcessService processes) : IHostedService
     {

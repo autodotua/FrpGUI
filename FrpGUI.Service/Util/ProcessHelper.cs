@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Service.Util
 {
-    public class ProcessHelper(FrpConfigBase frpConfig,FrpGUI.Logger logger)
+    public class ProcessHelper(FrpConfigBase frpConfig,Logger logger)
     {
         public bool IsRunning { get; set; }
 

@@ -1,5 +1,4 @@
 ﻿using FrpGUI.Configs;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 

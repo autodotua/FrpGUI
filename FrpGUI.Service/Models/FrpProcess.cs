@@ -19,12 +19,20 @@ namespace FrpGUI.Service.Models
             Process.Exited += Process_Exited;
         }
 
-        [JsonIgnore]
-        public ProcessHelper Process { get; protected set; }
+        public event EventHandler StatusChanged;
 
         public FrpConfigBase Config { get; }
 
+        [JsonIgnore]
+        public ProcessHelper Process { get; protected set; }
         public ProcessStatus ProcessStatus { get; set; }
+
+        public void ChangeStatus(ProcessStatus status)
+        {
+            logger.Info("进程状态改变：" + status.ToString(), Config);
+            ProcessStatus = status;
+            StatusChanged?.Invoke(this, new EventArgs());
+        }
 
         public async Task RestartAsync()
         {
@@ -64,14 +72,6 @@ namespace FrpGUI.Service.Models
             }
             return Task.CompletedTask;
         }
-
-        public void ChangeStatus(ProcessStatus status)
-        {
-            logger.Info("进程状态改变：" + status.ToString(), Config);
-            ProcessStatus = status;
-            StatusChanged?.Invoke(this, new EventArgs());
-        }
-
         public async Task StopAsync()
         {
             if (ProcessStatus == ProcessStatus.Stopped)
@@ -82,13 +82,9 @@ namespace FrpGUI.Service.Models
             await Process.StopAsync();
             ChangeStatus(ProcessStatus.Stopped);
         }
-
         private void Process_Exited(object sender, EventArgs e)
         {
             ChangeStatus(ProcessStatus.Stopped);
         }
-
-
-        public event EventHandler StatusChanged;
     }
 }
