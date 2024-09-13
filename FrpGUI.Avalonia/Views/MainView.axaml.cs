@@ -2,6 +2,7 @@
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.Messaging;
+using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FzLib.Avalonia;
@@ -45,11 +46,29 @@ public partial class MainView : UserControl
         }
     }
 
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+
+    }
+
     private void RegisterMessages()
     {
         this.RegisterCommonDialogMessage();
         this.RegisterDialogHostMessage();
         this.RegisterGetClipboardMessage();
         this.RegisterGetStorageProviderMessage();
+        WeakReferenceMessenger.Default.Register<InputDialogMessage>(this, async (_, m) =>
+        {
+            try
+            {
+                var result = await this.ShowInputTextDialogAsync(m.Title, m.Message, m.DefaultText, m.Watermark);
+                m.SetResult(result);
+            }
+            catch (Exception exception)
+            {
+                m.SetException(exception);
+            }
+        });
     }
 }

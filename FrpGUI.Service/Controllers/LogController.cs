@@ -1,15 +1,16 @@
 ﻿using FrpGUI.Models;
 using FrpGUI.Service.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FrpGUI.Service.Controllers;
 
+[NeedToken]
 [ApiController]
 [Route("[controller]")]
 public class LogController : ControllerBase
 {
-    //private const string lastGetLogsTimeKey = "lastGetLogsTime";
     private readonly FrpDbContext db;
 
     public LogController(FrpDbContext db)

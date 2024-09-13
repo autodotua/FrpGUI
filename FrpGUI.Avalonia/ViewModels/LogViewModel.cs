@@ -12,6 +12,7 @@ using FrpGUI.Avalonia.DataProviders;
 using System.Threading;
 using FrpGUI.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -70,14 +71,21 @@ public partial class LogViewModel : ViewModelBase
         DateTime lastRequestTime = DateTime.MinValue;
         while (await timer.WaitForNextTickAsync())
         {
-            var logs = await DataProvider.GetLogsAsync(lastRequestTime);
-            if (logs.Count > 0)
+            try
             {
-                lastRequestTime = logs[^1].Time;
-                foreach (var log in logs)
+                var logs = await DataProvider.GetLogsAsync(lastRequestTime);
+                if (logs.Count > 0)
                 {
-                    AddLog(log);
+                    lastRequestTime = logs[^1].Time;
+                    foreach (var log in logs)
+                    {
+                        AddLog(log);
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                await Task.Delay(1000);
             }
         }
     }

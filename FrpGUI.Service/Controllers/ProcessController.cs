@@ -2,10 +2,12 @@ using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
 using FrpGUI.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrpGUI.Service.Controllers;
 
+[NeedToken]
 [ApiController]
 [Route("[controller]")]
 public class ProcessController : FrpControllerBase

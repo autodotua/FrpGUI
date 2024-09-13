@@ -3,11 +3,12 @@ using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
+using FzLib.Avalonia.Controls;
 using System.Linq;
 
 namespace FrpGUI.Avalonia.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : ExtendedWindow
 {
     public MainWindow( )
     {

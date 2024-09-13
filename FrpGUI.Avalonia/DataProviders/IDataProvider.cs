@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrpGUI.Avalonia.Models;
 using FrpGUI.Configs;
+using FrpGUI.Enums;
 using FrpGUI.Models;
 
 namespace FrpGUI.Avalonia.DataProviders
@@ -18,7 +19,10 @@ namespace FrpGUI.Avalonia.DataProviders
         Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter);
         Task ModifyConfigAsync(FrpConfigBase config);
         Task RestartFrpAsync(string id);
+        Task SetTokenAsync(string oldToken, string newToken);
         Task StartFrpAsync(string id);
         Task StopFrpAsync(string id);
+        Task<TokenVerification> VerifyTokenAsync();
+        void ReplaceToken(string newToken);
     }
 }

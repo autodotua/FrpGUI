@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -48,6 +49,9 @@
     </Compile>
     <Compile Update="Views\ControlBar.axaml.cs">
       <DependentUpon>ControlBar.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ProgressRingOverlay.axaml.cs">
+      <DependentUpon>ProgressRingOverlay.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SettingsWindow.axaml.cs">
       <DependentUpon>SettingsWindow.axaml</DependentUpon>

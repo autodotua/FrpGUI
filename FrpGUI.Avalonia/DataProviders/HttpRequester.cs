@@ -5,12 +5,25 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http;
 using FrpGUI.Avalonia.Models;
+using System.Net.Http.Headers;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
     public class HttpRequester
     {
+        public string Token { get; private set; }
+
         private readonly HttpClient httpClient = new HttpClient();
+
+        public void ReplaceToken(string newToken)
+        {
+            if (httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            {
+                httpClient.DefaultRequestHeaders.Remove("Authorization");
+            }
+            httpClient.DefaultRequestHeaders.Add("Authorization", newToken);
+
+        }
 
         protected string BaseApiUrl { get; set; } = "http://localhost:5113";
 
@@ -23,7 +36,7 @@ namespace FrpGUI.Avalonia.DataProviders
         {
             if (!response.IsSuccessStatusCode)
             {
-                if(response==null)
+                if (response == null)
                 {
                     throw new Exception($"API请求失败（{(int)response.StatusCode}{response.StatusCode}）");
                 }
@@ -59,7 +72,7 @@ namespace FrpGUI.Avalonia.DataProviders
             return GetObjectAsync<T>(endpoint + "?" + string.Join('&', querys));
         }
 
-        protected async Task<T> GetObjectAsync<T>(string endpoint) where T : class
+        protected async Task<T> GetObjectAsync<T>(string endpoint)
         {
             using var responseStream = await (await GetAsync(endpoint)).ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(responseStream, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));

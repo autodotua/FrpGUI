@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
+using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.Models;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
@@ -30,6 +31,9 @@ public partial class MainViewModel : ViewModelBase
     private readonly IDataProvider provider;
 
     private readonly IServiceProvider services;
+
+    [ObservableProperty]
+    private bool activeProgressRingOverlay = true;
 
     [ObservableProperty]
     private IFrpProcess currentFrpProcess;
@@ -193,8 +197,55 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    private async Task CheckNetworkAndToken()
+    {
+    start:
+        try
+        {
+            var result = await DataProvider.VerifyTokenAsync();
+            string token;
+            switch (result)
+            {
+                case TokenVerification.OK:
+                    return;
+
+                case TokenVerification.NotEqual:
+                    do
+                    {
+                        token = await SendMessage(new InputDialogMessage()
+                        {
+                            Title = "验证密码",
+                            Message = "密码不正确，请重新输入密码",
+                        }).Task as string;
+                        DataProvider.ReplaceToken(token);
+                    } while (await DataProvider.VerifyTokenAsync() != TokenVerification.OK);
+                    break;
+
+                case TokenVerification.NeedSet:
+                    do
+                    {
+                        token = await SendMessage(new InputDialogMessage()
+                        {
+                            Title = "设置密码",
+                            Message = "当前密码为空，需要先设置密码",
+                        }).Task as string;
+                    } while (string.IsNullOrWhiteSpace(token));
+                    await DataProvider.SetTokenAsync(token);
+                    DataProvider.ReplaceToken(token);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex, "网络错误，无法连接到FrpGUI服务端");
+            goto start;
+        }
+    }
+
     private async void InitializeDataAndStartTimer()
     {
+        await CheckNetworkAndToken();
+        ActiveProgressRingOverlay = false;
         try
         {
             FrpProcesses = new ObservableCollection<IFrpProcess>(await DataProvider.GetFrpStatusesAsync());

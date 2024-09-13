@@ -24,11 +24,9 @@ namespace FrpGUI.Configs
         /// </summary>
 
         public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();
-        public string RemoteControlAddress { get; set; } = "127.0.0.1";
-        public bool RemoteControlEnable { get; set; } = true;
-        public string RemoteControlPassword { get; set; } = "1234";
-        public int RemoteControlPort { get; set; } = 12345;
-        public bool ShowTrayIcon { get; set; } = true;
+
+        public string Token { get; set; }
+
         public void Save()
         {
             var bytes = JsonSerializer.SerializeToUtf8Bytes(this, JsonHelper.GetJsonOptions(AppConfigSourceGenerationContext.Default));

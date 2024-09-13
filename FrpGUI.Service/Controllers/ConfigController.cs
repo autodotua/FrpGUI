@@ -1,10 +1,12 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Service.Services;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrpGUI.Service.Controllers;
 
+[NeedToken]
 [ApiController]
 [Route("[controller]")]
 public class ConfigController : FrpControllerBase

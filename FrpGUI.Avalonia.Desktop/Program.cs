@@ -24,10 +24,15 @@ class Program
     {
         Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
         InitializeLogs();
+#if !DEBUG
+        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
         try
         {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+#endif
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+#if !DEBUG
         }
         catch (Exception ex)
         {
@@ -37,8 +42,7 @@ class Program
         {
             //singleRunningApp.Dispose();
         }
-        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
     }
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

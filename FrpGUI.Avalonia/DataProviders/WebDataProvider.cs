@@ -8,6 +8,8 @@ using FrpGUI.Models;
 using System.Dynamic;
 using FrpGUI.Avalonia.Models;
 using System.Text.Json.Nodes;
+using FrpGUI.Enums;
+using System.Net;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -23,6 +25,17 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string RestartFrpEndpoint = "Process/Restart";
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
+        private const string TokenEndpoint = "Token";
+        public Task<TokenVerification> VerifyTokenAsync()
+        {
+            return GetObjectAsync<TokenVerification>(TokenEndpoint);
+        }
+
+        public Task SetTokenAsync(string oldToken, string newToken)
+        {
+            return PostAsync<TokenVerification>($"{TokenEndpoint}?oldToken={WebUtility.UrlEncode(oldToken)}&newToken={WebUtility.UrlEncode(newToken)}");
+        }
+
         public Task<ClientConfig> AddClientAsync()
         {
             return PostAsync<ClientConfig>(AddClientEndpoint);
