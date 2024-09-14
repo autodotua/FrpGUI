@@ -6,23 +6,45 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using FrpGUI.Avalonia.Models;
 using System.Net.Http.Headers;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
-    public class HttpRequester
+    public class HttpRequester(AppConfig config)
     {
         public string Token { get; private set; }
 
         private readonly HttpClient httpClient = new HttpClient();
+        private const string AuthorizationKey = "Authorization";
 
-        public void ReplaceToken(string newToken)
+        public void WriteAuthorizationHeader()
         {
-            if (httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            if (string.IsNullOrWhiteSpace(config.Token))
             {
-                httpClient.DefaultRequestHeaders.Remove("Authorization");
+                return;
             }
-            httpClient.DefaultRequestHeaders.Add("Authorization", newToken);
-
+            if (httpClient.DefaultRequestHeaders.TryGetValues(AuthorizationKey, out IEnumerable<string> values))
+            {
+                var count = values.Count();
+                if (count >= 1)
+                {
+                    if (values.First() == config.Token)
+                    {
+                        return;
+                    }
+                    httpClient.DefaultRequestHeaders.Remove(AuthorizationKey);
+                    httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.Token);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.Token);
+            }
         }
 
         protected string BaseApiUrl { get; set; } = "http://localhost:5113";
@@ -52,6 +74,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         protected async Task<HttpContent> GetAsync(string endpoint)
         {
+            WriteAuthorizationHeader();
             var response = await httpClient.GetAsync($"{BaseApiUrl}/{endpoint}");
 
             if (response.IsSuccessStatusCode)
@@ -80,6 +103,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         protected async Task PostAsync(string endpoint, object data = null)
         {
+            WriteAuthorizationHeader();
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
             await ProcessError(response);
@@ -87,6 +111,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         protected async Task<T> PostAsync<T>(string endpoint, object data = null)
         {
+            WriteAuthorizationHeader();
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
 

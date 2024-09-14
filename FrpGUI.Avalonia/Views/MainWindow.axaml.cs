@@ -4,6 +4,7 @@ using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FzLib.Avalonia.Controls;
+using System;
 using System.Linq;
 
 namespace FrpGUI.Avalonia.Views;
@@ -13,6 +14,12 @@ public partial class MainWindow : ExtendedWindow
     public MainWindow( )
     {
         InitializeComponent();
+        if(OperatingSystem.IsWindows()
+               && Environment.OSVersion.Version.Major == 10
+               && Environment.OSVersion.Version.Build < 22000)
+        {
+            grid.Children.Add(new WindowButtons());
+        }
     }
 
     public MainViewModel GetDataContext()

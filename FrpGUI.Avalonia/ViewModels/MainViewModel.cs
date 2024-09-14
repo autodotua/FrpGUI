@@ -29,7 +29,7 @@ namespace FrpGUI.Avalonia.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IDataProvider provider;
-
+    private readonly AppConfig config;
     private readonly IServiceProvider services;
 
     [ObservableProperty]
@@ -45,9 +45,11 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<IFrpProcess> frpProcesses = new ObservableCollection<IFrpProcess>();
 
     public MainViewModel(IDataProvider provider,
+                         AppConfig config,
                          IServiceProvider services,
                          FrpConfigViewModel frpConfigViewModel) : base(provider)
     {
+        this.config = config;
         this.services = services;
         InitializeDataAndStartTimer();
         CurrentPanelViewModel = frpConfigViewModel;
@@ -217,7 +219,8 @@ public partial class MainViewModel : ViewModelBase
                             Title = "验证密码",
                             Message = "密码不正确，请重新输入密码",
                         }).Task as string;
-                        DataProvider.ReplaceToken(token);
+                        config.Token = token;
+                        config.Save();
                     } while (await DataProvider.VerifyTokenAsync() != TokenVerification.OK);
                     break;
 
@@ -230,8 +233,9 @@ public partial class MainViewModel : ViewModelBase
                             Message = "当前密码为空，需要先设置密码",
                         }).Task as string;
                     } while (string.IsNullOrWhiteSpace(token));
-                    await DataProvider.SetTokenAsync(token);
-                    DataProvider.ReplaceToken(token);
+                    await DataProvider.SetTokenAsync("", token);
+                    config.Token = token;
+                    config.Save();
                     break;
             }
         }

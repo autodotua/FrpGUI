@@ -23,6 +23,5 @@ namespace FrpGUI.Avalonia.DataProviders
         Task StartFrpAsync(string id);
         Task StopFrpAsync(string id);
         Task<TokenVerification> VerifyTokenAsync();
-        void ReplaceToken(string newToken);
     }
 }

@@ -9,7 +9,6 @@ using FrpGUI.Avalonia.Views;
 using FzLib.Avalonia.Dialogs;
 using System;
 using System.IO.Pipes;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using Avalonia.Threading;
@@ -18,8 +17,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using FrpGUI.Enums;
 using FrpGUI.Avalonia.DataProviders;
-using FrpGUI.Configs;
 using static FrpGUI.Avalonia.Models.FrpProcess;
+using FrpGUI.Configs;
+using System.Text.Json;
+using System.IO;
+using FrpGUI.Avalonia.Models;
 
 namespace FrpGUI.Avalonia;
 
@@ -61,9 +63,30 @@ public partial class App : Application
         builder.Services.AddTransient<LogPanel>();
         builder.Services.AddTransient<LogViewModel>();
 
+        AddConfigService(builder);
+
         var host = builder.Build();
         Services = host.Services;
         host.Start();
+    }
+
+    private static void AddConfigService(HostApplicationBuilder builder)
+    {
+        AppConfig config = new AppConfig();
+
+        if (File.Exists(Path.Combine(AppContext.BaseDirectory, AppConfig.ConfigPath)))
+        {
+            try
+            {
+                config = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(AppConfig.ConfigPath),
+                    JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
+            }
+            catch (Exception ex)
+            {
+                config = new AppConfig();
+            }
+        }
+        builder.Services.AddSingleton(config);
     }
 
     public override void OnFrameworkInitializationCompleted()

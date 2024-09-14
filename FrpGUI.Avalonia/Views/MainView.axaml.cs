@@ -49,6 +49,13 @@ public partial class MainView : UserControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
+        if (TopLevel.GetTopLevel(this) is Window win)
+        {
+            tbkLogo.PointerPressed += (s, e) =>
+              {
+                  win.BeginMoveDrag(e);
+              };
+        }
 
     }
 

@@ -28,10 +28,15 @@ public partial class ControlBar : UserControl
         InitializeComponent();
     }
 
-    //protected override void OnLoaded(RoutedEventArgs e)
-    //{
-    //    base.OnLoaded(e);
-    //    viewModel = (this.GetVisualAncestors().OfType<MainView>().FirstOrDefault() ?? throw new System.Exception("ÕÒ²»µ½MainView"))
-    //      .DataContext as MainViewModel;
-    //}
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        if (TopLevel.GetTopLevel(this) is Window win)
+        {
+            PointerPressed += (s, e) =>
+            {
+                win.BeginMoveDrag(e);
+            };
+        }
+    }
 }

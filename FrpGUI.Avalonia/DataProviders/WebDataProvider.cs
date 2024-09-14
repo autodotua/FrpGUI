@@ -13,7 +13,7 @@ using System.Net;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
-    public class WebDataProvider : HttpRequester, IDataProvider
+    public class WebDataProvider(AppConfig config) : HttpRequester(config), IDataProvider
     {
         private const string AddClientEndpoint = "Config/FrpConfigs/Add/Client";
         private const string AddServerEndpoint = "Config/FrpConfigs/Add/Server";
@@ -26,6 +26,8 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
         private const string TokenEndpoint = "Token";
+        private readonly AppConfig config = config;
+
         public Task<TokenVerification> VerifyTokenAsync()
         {
             return GetObjectAsync<TokenVerification>(TokenEndpoint);
