@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Views;
 
-public partial class SettingsWindow : DialogHost
+public partial class SettingsDialog : DialogHost
 {
-    public SettingsWindow(SettingViewModel viewModel)
+    public SettingsDialog(SettingViewModel viewModel)
     {
         DataContext = viewModel;
         InitializeComponent();

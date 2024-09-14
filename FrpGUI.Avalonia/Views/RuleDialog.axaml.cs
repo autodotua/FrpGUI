@@ -7,9 +7,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace FrpGUI.Avalonia.Views;
 
-public partial class RuleWindow : DialogHost
+public partial class RuleDialog : DialogHost
 {
-    public RuleWindow(RuleViewModel viewModel)
+    public RuleDialog(RuleViewModel viewModel)
     {
         DataContext = viewModel;
         InitializeComponent();

@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
     <AvaloniaVersion>11.1.3</AvaloniaVersion>
-    <FzLibVersion>2.1.5</FzLibVersion>
+    <FzLibVersion>2.1.7</FzLibVersion>
   </PropertyGroup>
 </Project>

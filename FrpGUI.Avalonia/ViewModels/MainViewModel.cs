@@ -45,9 +45,9 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<IFrpProcess> frpProcesses = new ObservableCollection<IFrpProcess>();
 
     public MainViewModel(IDataProvider provider,
-                         AppConfig config,
-                         IServiceProvider services,
-                         FrpConfigViewModel frpConfigViewModel) : base(provider)
+        AppConfig config,
+        IServiceProvider services,
+        FrpConfigViewModel frpConfigViewModel) : base(provider)
     {
         this.config = config;
         this.services = services;
@@ -116,6 +116,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 throw new Exception("未知的当前选择的配置类型");
             }
+
             var newConfig = fp.Config.Clone() as FrpConfigBase;
             newConfig.ID = serverConfig.ID;
             await DataProvider.ModifyConfigAsync(newConfig);
@@ -177,12 +178,13 @@ public partial class MainViewModel : ViewModelBase
 
             if (true.Equals(await message.Task))
             {
-                var file = await SendMessage(new GetStorageProviderMessage()).StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-                {
-                    FileTypeChoices = [filter],
-                    SuggestedFileName = CurrentFrpProcess.Config.Name,
-                    DefaultExtension = filter.Patterns[0].Split('.')[1]
-                });
+                var file = await SendMessage(new GetStorageProviderMessage()).StorageProvider.SaveFilePickerAsync(
+                    new FilePickerSaveOptions
+                    {
+                        FileTypeChoices = [filter],
+                        SuggestedFileName = CurrentFrpProcess.Config.Name,
+                        DefaultExtension = filter.Patterns[0].Split('.')[1]
+                    });
                 if (file != null)
                 {
                     string path = file.TryGetLocalPath();
@@ -201,7 +203,12 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task CheckNetworkAndToken()
     {
-    start:
+        start:
+        if (config.RunningMode == RunningMode.Singleton)
+        {
+            return;
+        }
+
         try
         {
             var result = await DataProvider.VerifyTokenAsync();
@@ -212,36 +219,20 @@ public partial class MainViewModel : ViewModelBase
                     return;
 
                 case TokenVerification.NotEqual:
-                    do
-                    {
-                        token = await SendMessage(new InputDialogMessage()
-                        {
-                            Title = "验证密码",
-                            Message = "密码不正确，请重新输入密码",
-                        }).Task as string;
-                        config.Token = token;
-                        config.Save();
-                    } while (await DataProvider.VerifyTokenAsync() != TokenVerification.OK);
-                    break;
+                    await ShowErrorAsync("密码不正确，请重新设置密码", "验证密码错误");
+                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
+                    goto start;
 
                 case TokenVerification.NeedSet:
-                    do
-                    {
-                        token = await SendMessage(new InputDialogMessage()
-                        {
-                            Title = "设置密码",
-                            Message = "当前密码为空，需要先设置密码",
-                        }).Task as string;
-                    } while (string.IsNullOrWhiteSpace(token));
-                    await DataProvider.SetTokenAsync("", token);
-                    config.Token = token;
-                    config.Save();
-                    break;
+                    await ShowErrorAsync("服务端密码为空，请先设置密码", "密码为空");
+                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
+                    goto start;
             }
         }
         catch (Exception ex)
         {
             await ShowErrorAsync(ex, "网络错误，无法连接到FrpGUI服务端");
+            await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
             goto start;
         }
     }
@@ -263,6 +254,7 @@ public partial class MainViewModel : ViewModelBase
                 Exception = ex
             });
         }
+
         var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
         while (await timer.WaitForNextTickAsync())
         {
@@ -272,7 +264,6 @@ public partial class MainViewModel : ViewModelBase
             }
             catch (Exception ex)
             {
-
             }
         }
     }
@@ -289,6 +280,7 @@ public partial class MainViewModel : ViewModelBase
             DataProvider.ModifyConfigAsync(oldValue.Config);
         }
     }
+
     [RelayCommand]
     private async Task RestartAsync()
     {
@@ -308,7 +300,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task SettingsAsync()
     {
-        await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsWindow>())).Task;
+        await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
     }
 
     [RelayCommand]
@@ -341,17 +333,20 @@ public partial class MainViewModel : ViewModelBase
     }
 
     TaskCompletionSource tcsUpdate;
+
     public Task WaitForNextUpdate()
     {
         tcsUpdate = new TaskCompletionSource();
         return tcsUpdate.Task;
     }
+
     private async Task UpdateStatusAsync(bool force)
     {
         if (!force && (DateTime.Now - lastUpdateStatusTime).TotalSeconds < 1)
         {
             return;
         }
+
         lastUpdateStatusTime = DateTime.Now;
         var fps = await DataProvider.GetFrpStatusesAsync();
         var local = FrpProcesses.ToDictionary(p => p.Config.ID);
@@ -362,6 +357,7 @@ public partial class MainViewModel : ViewModelBase
                 localFp.ProcessStatus = fp.ProcessStatus;
             }
         }
+
         if (tcsUpdate != null)
         {
             tcsUpdate.SetResult();

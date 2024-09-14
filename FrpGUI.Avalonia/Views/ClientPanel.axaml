@@ -16,8 +16,6 @@
     mc:Ignorable="d">
     <v:ConfigPanelBase.Resources>
         <system:Double x:Key="RuleWidth">200</system:Double>
-    </v:ConfigPanelBase.Resources>
-    <v:ConfigPanelBase.Resources>
         <PathGeometry x:Key="IconMore">
             M522.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
             M266.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z

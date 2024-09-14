@@ -1,5 +1,5 @@
 <dialog:DialogHost
-    x:Class="FrpGUI.Avalonia.Views.RuleWindow"
+    x:Class="FrpGUI.Avalonia.Views.RuleDialog"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
@@ -21,9 +21,7 @@
     PrimaryButtonEnable="True"
     Theme="{StaticResource DialogHostTheme}"
     mc:Ignorable="d">
-    <Design.DataContext>
-        <vm:RuleWindowViewModel />
-    </Design.DataContext>
+
     <dialog:DialogHost.Resources>
         <c:RuleParameterEnableConverter x:Key="RuleParameterEnableConverter" />
     </dialog:DialogHost.Resources>

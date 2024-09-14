@@ -24,6 +24,7 @@
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" />
+    <PackageReference Include="BinToss.GroupBox.Avalonia" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -38,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Update="Views\RuleWindow.axaml">
+    <AvaloniaXaml Update="Views\RuleDialog.axaml">
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
@@ -53,12 +54,12 @@
     <Compile Update="Views\ProgressRingOverlay.axaml.cs">
       <DependentUpon>ProgressRingOverlay.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\SettingsWindow.axaml.cs">
-      <DependentUpon>SettingsWindow.axaml</DependentUpon>
+    <Compile Update="Views\SettingsDialog.axaml.cs">
+      <DependentUpon>SettingsDialog.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\RuleWindow.axaml.cs">
+    <Compile Update="Views\RuleDialog.axaml.cs">
       <SubType>Code</SubType>
-      <DependentUpon>RuleWindow.axaml</DependentUpon>
+      <DependentUpon>RuleDialog.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

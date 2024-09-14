@@ -54,10 +54,10 @@ public partial class App : Application
         builder.Services.AddTransient<ServerPanel>();
         builder.Services.AddTransient<FrpConfigViewModel>();
 
-        builder.Services.AddTransient<RuleWindow>();
+        builder.Services.AddTransient<RuleDialog>();
         builder.Services.AddTransient<RuleViewModel>();
 
-        builder.Services.AddTransient<SettingsWindow>();
+        builder.Services.AddTransient<SettingsDialog>();
         builder.Services.AddTransient<SettingViewModel>();
 
         builder.Services.AddTransient<LogPanel>();

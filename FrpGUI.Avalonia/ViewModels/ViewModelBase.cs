@@ -32,4 +32,13 @@ public class ViewModelBase : ObservableObject
             Exception = ex
         }).Task;
     }
+    protected Task ShowErrorAsync(string message, string title)
+    {
+        return SendMessage(new CommonDialogMessage()
+        {
+            Type = CommonDialogType.Error,
+            Title = title,
+            Message = message
+        }).Task;
+    }
 }

@@ -22,7 +22,7 @@ public partial class FrpConfigViewModel(IDataProvider provider, IServiceProvider
 
     public async Task AddRuleAsync()
     {
-        var dialog = services.GetRequiredService<RuleWindow>();
+        var dialog = services.GetRequiredService<RuleDialog>();
         var message = SendMessage(new DialogHostMessage(dialog));
         var result = await message.Task;
         if (result is Rule newRule)
@@ -56,7 +56,7 @@ public partial class FrpConfigViewModel(IDataProvider provider, IServiceProvider
     [RelayCommand]
     private async Task ModifyRuleAsync(Rule rule)
     {
-        var dialog = services.GetRequiredService<RuleWindow>();
+        var dialog = services.GetRequiredService<RuleDialog>();
         dialog.SetRule(rule);
         var message = SendMessage(new DialogHostMessage(dialog));
         var result = await message.Task;
