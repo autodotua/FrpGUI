@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
+using FrpGUI.Models;
 using FzLib.Avalonia;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;

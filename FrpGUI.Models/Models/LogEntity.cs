@@ -1,6 +1,6 @@
-﻿using FrpGUI.Configs;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using FrpGUI.Models;
 
 namespace FrpGUI.Models
 {
@@ -31,7 +31,7 @@ namespace FrpGUI.Models
         public string Exception { get; set; }
         public DateTime ProcessStartTime { get; set; } = CurrentProcessStartTime;
 
-        public static DateTime CurrentProcessStartTime { get; } 
+        public static DateTime CurrentProcessStartTime { get; }
 
         static LogEntity()
         {

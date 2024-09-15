@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FzLib;
 using System.Text;
 
-namespace FrpGUI.Configs
+namespace FrpGUI.Models
 {
     public partial class ServerConfig : FrpConfigBase
     {

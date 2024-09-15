@@ -1,6 +1,5 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Models;
-using FrpGUI.Service.Services;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

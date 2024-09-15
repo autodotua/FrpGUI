@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using FrpGUI.Enums;
 using FrpGUI.Avalonia.DataProviders;
+using FrpGUI.Models;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -14,6 +15,7 @@ public partial class RuleViewModel(IDataProvider provider) : ViewModelBase(provi
 {
     [ObservableProperty]
     public Rule rule = new Rule();
+
     [ObservableProperty]
     public string errorMessage;
 

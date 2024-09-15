@@ -2,6 +2,7 @@
 using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
+using FrpGUI.Models;
 using FzLib.Avalonia.Dialogs;
 using System.Diagnostics.CodeAnalysis;
 

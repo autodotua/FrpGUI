@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using static FzLib.Program.Runtime.SimplePipe;
 
@@ -16,14 +17,14 @@ namespace FrpGUI.Avalonia.DataProviders
 {
     public class LocalDataProvider : IDataProvider
     {
-        private FrpProcessCollection processes;
-        private AppConfig configs;
-        private Logger logger = new Logger();
-
-        public LocalDataProvider()
+        private readonly AppConfig configs;
+        private readonly LoggerBase logger;
+        private readonly FrpProcessCollection processes;
+        public LocalDataProvider(AppConfig configs, FrpProcessCollection processes, LoggerBase logger)
         {
-            configs = AppConfigBase<AppConfig>.Get();
-            processes = new FrpProcessCollection(configs, logger);
+            this.configs = configs;
+            this.processes = processes;
+            this.logger = logger;
         }
 
         public Task<ClientConfig> AddClientAsync()
@@ -65,13 +66,12 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
-            return Task.FromResult(logger.GetLogs());
+            return Task.FromResult((logger as Logger).GetLogs());
         }
 
         public Task ModifyConfigAsync(FrpConfigBase config)
         {
             var p = processes.GetOrCreateProcess(config.ID);
-            logger.Info($"指令：应用配置", p.Config);
             if (p.Config.GetType() != config.GetType())
             {
                 throw new ArgumentException("提供的配置与已有配置类型不同");

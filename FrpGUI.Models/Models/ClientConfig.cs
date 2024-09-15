@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FzLib;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FrpGUI.Configs
+namespace FrpGUI.Models
 {
     public partial class ClientConfig : FrpConfigBase
     {

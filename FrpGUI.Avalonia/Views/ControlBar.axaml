@@ -2,10 +2,10 @@
     x:Class="FrpGUI.Avalonia.Views.ControlBar"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cf="clr-namespace:FrpGUI.Configs;assembly=FrpGUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:e="using:FrpGUI.Enums"
-    xmlns:f="clr-namespace:FrpGUI;assembly=FrpGUI"
+    xmlns:f="clr-namespace:FrpGUI;assembly=FrpGUI.Core"
+    xmlns:m="using:FrpGUI.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
@@ -116,7 +116,7 @@
             <Button
                 Width="88"
                 Command="{Binding AddRuleCommand}"
-                IsVisible="{Binding CurrentFrpProcess.Config, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type cf:ClientConfig}}">
+                IsVisible="{Binding CurrentFrpProcess.Config, Converter={StaticResource EqualConverter}, ConverterParameter={x:Type m:ClientConfig}}">
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4">

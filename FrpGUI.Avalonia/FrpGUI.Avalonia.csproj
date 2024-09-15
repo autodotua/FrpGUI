@@ -36,7 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
+    <ProjectReference Include="..\FrpGUI.Models\FrpGUI.Data.csproj" />
+    <ProjectReference Include="..\FrpGUI.Core\FrpGUI.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

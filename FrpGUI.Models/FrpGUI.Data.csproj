@@ -8,6 +8,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>$(Temp)\$(SolutionName)\$(Configuration)\$(AssemblyName)</OutputPath>
     <BaseIntermediateOutputPath>$(Temp)\$(SolutionName)\obj\$(Configuration)\$(AssemblyName)</BaseIntermediateOutputPath>
+    <RootNamespace>FzLib</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,8 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="FzLib" />
-    <PackageReference Include="Serilog" />
   </ItemGroup>
 
 </Project>

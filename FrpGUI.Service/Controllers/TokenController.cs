@@ -1,7 +1,6 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Service.Models;
-using FrpGUI.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrpGUI.Service.Controllers;

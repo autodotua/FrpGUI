@@ -20,6 +20,8 @@ using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Configs;
 using System.Text.Json;
 using System.IO;
+using FzLib.Services;
+using FrpGUI.Models;
 
 namespace FrpGUI.Avalonia;
 
@@ -27,7 +29,7 @@ public partial class App : Application
 {
     public App()
     {
-
+        
     }
     public static IServiceProvider Services { get; private set; }
     public override void Initialize()
@@ -47,6 +49,10 @@ public partial class App : Application
         {
             case RunningMode.Singleton:
                 builder.Services.AddSingleton<IDataProvider, LocalDataProvider>();
+                builder.Services.AddHostedService<AppLifetimeService>();
+                builder.Services.AddSingleton<FrpProcessCollection>();
+                builder.Services.AddSingleton<LoggerBase, Logger>();
+                builder.Services.AddSingleton(AppConfigBase<AppConfig>.Get());
                 break;
             case RunningMode.Service:
                 builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
@@ -72,10 +78,14 @@ public partial class App : Application
 
         builder.Services.AddSingleton(AppConfigBase<UIConfig>.Get());
 
-        var host = builder.Build();
+         host = builder.Build();
+
         Services = host.Services;
         host.Start();
+
+
     }
+    IHost host;
 
     public override void OnFrameworkInitializationCompleted()
     {
@@ -86,12 +96,12 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.RemoveAt(0);
             desktop.MainWindow = new MainWindow();
+            desktop.Exit += (s, e) => host.StopAsync();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime s)
         {
             s.MainView = new MainView();
         }
-
 
         base.OnFrameworkInitializationCompleted();
 

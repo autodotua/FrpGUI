@@ -1,13 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FrpGUI.Enums;
-using FzLib;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FrpGUI.Configs
+namespace FrpGUI.Models
 {
     [JsonDerivedType(typeof(ClientConfig))]
     [JsonDerivedType(typeof(ServerConfig))]

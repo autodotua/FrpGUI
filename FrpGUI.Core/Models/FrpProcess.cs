@@ -1,5 +1,6 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Enums;
+using FrpGUI.Models;
 using FrpGUI.Utils;
 using System;
 using System.Text.Json.Serialization;
@@ -15,7 +16,7 @@ public class FrpProcess : IFrpProcess
     {
         Config = config;
         this.logger = logger;
-        Process = new ProcessHelper(Config, logger);
+        Process = new ProcessService(Config, logger);
         Process.Exited += Process_Exited;
     }
 
@@ -24,7 +25,7 @@ public class FrpProcess : IFrpProcess
     public FrpConfigBase Config { get; }
 
     [JsonIgnore]
-    public ProcessHelper Process { get; protected set; }
+    public ProcessService Process { get; protected set; }
     public ProcessStatus ProcessStatus { get; set; }
 
     public void ChangeStatus(ProcessStatus status)

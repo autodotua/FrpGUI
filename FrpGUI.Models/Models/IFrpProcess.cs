@@ -1,5 +1,5 @@
-﻿using FrpGUI.Configs;
-using FrpGUI.Enums;
+﻿using FrpGUI.Enums;
+using FrpGUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using FrpGUI.Models;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace FrpGUI.Configs

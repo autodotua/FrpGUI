@@ -1,12 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FrpGUI.Enums;
-using FzLib;
 using System;
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace FrpGUI.Configs
+namespace FrpGUI.Models
 {
     public partial class Rule : ObservableObject, IToFrpConfig, ICloneable
     {

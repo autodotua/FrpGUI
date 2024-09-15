@@ -1,4 +1,5 @@
 ﻿using FrpGUI.Configs;
+using FrpGUI.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Utils
 {
-    public class ProcessHelper(FrpConfigBase frpConfig, LoggerBase logger)
+    public class ProcessService(FrpConfigBase frpConfig, LoggerBase logger)
     {
         public bool IsRunning { get; set; }
 

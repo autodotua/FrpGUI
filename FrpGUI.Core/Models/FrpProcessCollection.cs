@@ -1,5 +1,6 @@
 ﻿using FrpGUI.Configs;
 using FrpGUI.Enums;
+using FrpGUI.Models;
 using System.Diagnostics;
 
 namespace FrpGUI.Models;

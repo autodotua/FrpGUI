@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace FrpGUI.Configs
+namespace FrpGUI.Models
 {
     public interface IToFrpConfig
     {

@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace FrpGUI.Configs
 {
-    public abstract class AppConfigBase<T> where T:AppConfigBase<T>,new()
+    public abstract class AppConfigBase<T> where T : AppConfigBase<T>, new()
     {
         public abstract string ConfigPath { get; }
 
         protected abstract JsonSerializerContext JsonSerializerContext { get; }
 
-        public static T Get() 
+        public static T Get()
         {
             T config = new T();
 
@@ -31,8 +31,7 @@ namespace FrpGUI.Configs
 
         public virtual void Save()
         {
-            无法保存子类属性
-            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, JsonHelper.GetJsonOptions(JsonSerializerContext));
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, typeof(T), JsonHelper.GetJsonOptions(JsonSerializerContext));
             File.WriteAllBytes(ConfigPath, bytes);
         }
 

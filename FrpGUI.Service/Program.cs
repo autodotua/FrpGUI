@@ -1,7 +1,6 @@
 using FrpGUI.Configs;
 using FrpGUI.Service;
 using FrpGUI.Service.Models;
-using FrpGUI.Service.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 using System.IO;
@@ -13,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using FrpGUI.Models;
 using FrpGUI;
+using FzLib.Services;
 
 internal class Program
 {
