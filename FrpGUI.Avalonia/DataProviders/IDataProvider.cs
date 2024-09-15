@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrpGUI.Avalonia.Models;
+using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
@@ -14,8 +15,8 @@ namespace FrpGUI.Avalonia.DataProviders
         Task<ServerConfig> AddServerAsync();
         Task DeleteFrpConfigAsync(string id);
         Task<List<FrpConfigBase>> GetFrpConfigsAsync();
-        Task GetFrpStatusAsync(string id);
-        Task<IList<WebFrpProcess>> GetFrpStatusesAsync();
+        Task<FrpStatusInfo> GetFrpStatusAsync(string id);
+        Task<IList<FrpStatusInfo>> GetFrpStatusesAsync();
         Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter);
         Task ModifyConfigAsync(FrpConfigBase config);
         Task RestartFrpAsync(string id);

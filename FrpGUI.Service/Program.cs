@@ -125,9 +125,3 @@ internal class Program
         app.MapControllers();
     }
 }
-
-[JsonSourceGenerationOptions(WriteIndented = true)]
-[JsonSerializable(typeof(AppConfig))]
-internal partial class AppConfigSourceGenerationContext : JsonSerializerContext
-{
-}

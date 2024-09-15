@@ -31,6 +31,7 @@ namespace FrpGUI.Configs
 
         public virtual void Save()
         {
+            无法保存子类属性
             var bytes = JsonSerializer.SerializeToUtf8Bytes(this, JsonHelper.GetJsonOptions(JsonSerializerContext));
             File.WriteAllBytes(ConfigPath, bytes);
         }

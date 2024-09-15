@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using FrpGUI.Configs;
 using FrpGUI.Models;
 using System.Dynamic;
-using FrpGUI.Avalonia.Models;
 using System.Text.Json.Nodes;
 using FrpGUI.Enums;
 using System.Net;
+using System.Linq;
+using FrpGUI.Avalonia.ViewModels;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -59,25 +60,14 @@ namespace FrpGUI.Avalonia.DataProviders
             return GetObjectAsync<List<FrpConfigBase>>(FrpConfigsEndpoint);
         }
 
-        public Task GetFrpStatusAsync(string id)
+        public Task<FrpStatusInfo> GetFrpStatusAsync(string id)
         {
-            return PostAsync($"{FrpStatusEndpoint}/{id}");
+            return PostAsync<FrpStatusInfo>($"{FrpStatusEndpoint}/{id}");
         }
 
-        public async Task<IList<WebFrpProcess>> GetFrpStatusesAsync()
+        public async Task<IList<FrpStatusInfo>> GetFrpStatusesAsync()
         {
-            return await GetObjectAsync<IList<WebFrpProcess>>(FrpStatusEndpoint);
-            //var content=await GetAsync(FrpStatusEndpoint);
-            //var jarray = JsonNode.Parse(await content.ReadAsStreamAsync()) as JsonArray;
-            //List<FrpProcess> fps = new List<FrpProcess>();
-            //foreach (var jfp in jarray)
-            //{
-            //    var jconfig = jfp["config"] as JsonObject;
-            //    if (jconfig["type"])
-            //    FrpProcess fp = new FrpProcess();
-            //}
-
-            //return null;
+            return await GetObjectAsync<IList<FrpStatusInfo>>(FrpStatusEndpoint);
         }
 
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)

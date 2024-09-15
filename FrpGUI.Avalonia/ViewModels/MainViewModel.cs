@@ -61,7 +61,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             var newConfig = await DataProvider.AddClientAsync();
-            var fp = new WebFrpProcess(newConfig);
+            var fp = new FrpStatusInfo(newConfig);
             FrpProcesses.Add(fp);
             CurrentFrpProcess = fp;
         }
@@ -83,7 +83,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             var newConfig = await DataProvider.AddServerAsync();
-            var fp = new WebFrpProcess(newConfig);
+            var fp = new FrpStatusInfo(newConfig);
             FrpProcesses.Add(fp);
             CurrentFrpProcess = fp;
         }
@@ -121,7 +121,7 @@ public partial class MainViewModel : ViewModelBase
             newConfig.ID = serverConfig.ID;
             await DataProvider.ModifyConfigAsync(newConfig);
 
-            var newFp = new WebFrpProcess(newConfig);
+            var newFp = new FrpStatusInfo(newConfig);
             FrpProcesses.Add(newFp);
             CurrentFrpProcess = newFp;
         }

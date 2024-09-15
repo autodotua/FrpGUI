@@ -1,4 +1,5 @@
 ﻿using FrpGUI.Avalonia.Models;
+using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
@@ -49,22 +50,22 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task<List<FrpConfigBase>> GetFrpConfigsAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(configs.FrpConfigs);
         }
 
-        public Task GetFrpStatusAsync(string id)
+        public Task<FrpStatusInfo> GetFrpStatusAsync(string id)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new FrpStatusInfo(processes.GetOrCreateProcess(id)));
         }
 
-        public Task<IList<WebFrpProcess>> GetFrpStatusesAsync()
+        public Task<IList<FrpStatusInfo>> GetFrpStatusesAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(processes.GetAll().Select(p => new FrpStatusInfo(p)).ToList() as IList<FrpStatusInfo>);
         }
 
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(logger.GetLogs());
         }
 
         public Task ModifyConfigAsync(FrpConfigBase config)
@@ -82,6 +83,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task RestartFrpAsync(string id)
         {
+            configs.Save();
             return processes.GetOrCreateProcess(id).RestartAsync();
         }
 
@@ -92,6 +94,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task StartFrpAsync(string id)
         {
+            configs.Save();
             return processes.GetOrCreateProcess(id).StartAsync();
         }
 

@@ -17,7 +17,7 @@ namespace FrpGUI.Avalonia
             logs.Add(logEntity);
         }
 
-        public IList<LogEntity> GetLogs()
+        public List<LogEntity> GetLogs()
         {
             try
             {

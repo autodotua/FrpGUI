@@ -17,11 +17,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using FrpGUI.Enums;
 using FrpGUI.Avalonia.DataProviders;
-using static FrpGUI.Avalonia.Models.WebFrpProcess;
 using FrpGUI.Configs;
 using System.Text.Json;
 using System.IO;
-using FrpGUI.Avalonia.Models;
 
 namespace FrpGUI.Avalonia;
 
