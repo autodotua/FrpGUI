@@ -10,7 +10,7 @@ namespace FrpGUI.Service.Controllers;
 [Route("[controller]")]
 public class TokenController : FrpControllerBase
 {
-    public TokenController(AppConfig config, Logger logger) : base(config, logger)
+    public TokenController(AppConfig config, LoggerBase logger) : base(config, logger)
     {
     }
 

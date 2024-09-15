@@ -20,12 +20,12 @@ namespace FrpGUI.Avalonia.ViewModels
         [ObservableProperty]
         private ObservableCollection<Process> processes;
 
-        public SettingViewModel(IDataProvider provider,AppConfig config) : base(provider)
+        public SettingViewModel(IDataProvider provider,UIConfig config) : base(provider)
         {
             Config = config;
         }
 
-        public AppConfig Config { get; }
+        public UIConfig Config { get; }
 
         [RelayCommand]
         private async Task KillProcessAsync(Process p)

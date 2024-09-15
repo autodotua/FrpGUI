@@ -6,9 +6,9 @@ namespace FrpGUI.Service.Controllers;
 public abstract class FrpControllerBase : ControllerBase
 {
     protected AppConfig configs;
-    protected Logger logger;
+    protected LoggerBase logger;
 
-    public FrpControllerBase(AppConfig configs, Logger logger)
+    public FrpControllerBase(AppConfig configs, LoggerBase logger)
     {
         this.configs = configs;
         this.logger = logger;

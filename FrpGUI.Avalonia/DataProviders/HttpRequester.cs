@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
-    public class HttpRequester(AppConfig config)
+    public class HttpRequester(UIConfig config)
     {
         public string Token { get; private set; }
 

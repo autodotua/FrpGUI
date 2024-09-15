@@ -6,9 +6,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FrpGUI.Service.Util
+namespace FrpGUI.Utils
 {
-    public class ProcessHelper(FrpConfigBase frpConfig,Logger logger)
+    public class ProcessHelper(FrpConfigBase frpConfig, LoggerBase logger)
     {
         public bool IsRunning { get; set; }
 
@@ -16,7 +16,7 @@ namespace FrpGUI.Service.Util
 
         private Process frpProcess;
 
-        public void Start( )
+        public void Start()
         {
             if (FrpConfig.Type is not ('c' or 's'))
             {

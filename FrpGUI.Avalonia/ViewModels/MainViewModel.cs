@@ -29,7 +29,7 @@ namespace FrpGUI.Avalonia.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IDataProvider provider;
-    private readonly AppConfig config;
+    private readonly UIConfig config;
     private readonly IServiceProvider services;
 
     [ObservableProperty]
@@ -45,7 +45,7 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<IFrpProcess> frpProcesses = new ObservableCollection<IFrpProcess>();
 
     public MainViewModel(IDataProvider provider,
-        AppConfig config,
+        UIConfig config,
         IServiceProvider services,
         FrpConfigViewModel frpConfigViewModel) : base(provider)
     {
@@ -61,7 +61,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             var newConfig = await DataProvider.AddClientAsync();
-            var fp = new FrpProcess(newConfig);
+            var fp = new WebFrpProcess(newConfig);
             FrpProcesses.Add(fp);
             CurrentFrpProcess = fp;
         }
@@ -83,7 +83,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             var newConfig = await DataProvider.AddServerAsync();
-            var fp = new FrpProcess(newConfig);
+            var fp = new WebFrpProcess(newConfig);
             FrpProcesses.Add(fp);
             CurrentFrpProcess = fp;
         }
@@ -121,7 +121,7 @@ public partial class MainViewModel : ViewModelBase
             newConfig.ID = serverConfig.ID;
             await DataProvider.ModifyConfigAsync(newConfig);
 
-            var newFp = new FrpProcess(newConfig);
+            var newFp = new WebFrpProcess(newConfig);
             FrpProcesses.Add(newFp);
             CurrentFrpProcess = newFp;
         }

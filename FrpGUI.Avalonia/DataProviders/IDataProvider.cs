@@ -15,7 +15,7 @@ namespace FrpGUI.Avalonia.DataProviders
         Task DeleteFrpConfigAsync(string id);
         Task<List<FrpConfigBase>> GetFrpConfigsAsync();
         Task GetFrpStatusAsync(string id);
-        Task<IList<FrpProcess>> GetFrpStatusesAsync();
+        Task<IList<WebFrpProcess>> GetFrpStatusesAsync();
         Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter);
         Task ModifyConfigAsync(FrpConfigBase config);
         Task RestartFrpAsync(string id);

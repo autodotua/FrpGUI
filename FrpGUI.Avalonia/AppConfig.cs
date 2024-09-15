@@ -5,28 +5,36 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json;
 using FrpGUI.Avalonia.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json.Serialization;
+using FzLib;
 
 namespace FrpGUI.Avalonia;
 
-public class AppConfig
+public class UIConfig : AppConfigBase<UIConfig>, INotifyPropertyChanged
 {
-    public static readonly string ConfigPath = "uiconfig.json";
+    private RunningMode runningMode;
 
-    public AppConfig() : base()
+    public UIConfig() : base()
     {
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public override string ConfigPath => Path.Combine(AppContext.BaseDirectory, "uiconfig.json");
+    public RunningMode RunningMode
+    {
+        get => runningMode;
+        set => this.SetValueAndNotify(ref runningMode, value, nameof(RunningMode));
     }
 
     public string Token { get; set; }
-    public RunningMode RunningMode { get; set; } = RunningMode.Singleton;改成observable
-    public string ServerIP { get; set; }
-    public string ServerToken { get; set; }
+    protected override JsonSerializerContext JsonSerializerContext => FrpAvaloniaSourceGenerationContext.Default;
+    private string ServerIP { get; set; } = "localhost";
 
-    public void Save()
-    {
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(this,
-            JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
-        File.WriteAllBytes(Path.Combine(AppContext.BaseDirectory, ConfigPath), bytes);
-    }
+    private short ServerPort { get; set; } = 5113;
+
+    private string ServerToken { get; set; } = "";
 }
 
 public enum RunningMode

@@ -14,9 +14,7 @@ public partial class MainWindow : ExtendedWindow
     public MainWindow( )
     {
         InitializeComponent();
-        if(OperatingSystem.IsWindows()
-               && Environment.OSVersion.Version.Major == 10
-               && Environment.OSVersion.Version.Build < 22000)
+        if(OperatingSystem.IsWindows())
         {
             grid.Children.Add(new WindowButtons());
         }

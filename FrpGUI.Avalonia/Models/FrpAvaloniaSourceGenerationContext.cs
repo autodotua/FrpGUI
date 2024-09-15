@@ -7,12 +7,12 @@ using System.Text.Json.Serialization;
 namespace FrpGUI.Avalonia.Models;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
-[JsonSerializable(typeof(FrpProcess))]
-[JsonSerializable(typeof(AppConfig))]
+[JsonSerializable(typeof(WebFrpProcess))]
+[JsonSerializable(typeof(UIConfig))]
 [JsonSerializable(typeof(LogEntity))]
 [JsonSerializable(typeof(TokenVerification))]
 [JsonSerializable(typeof(List<LogEntity>))]
-[JsonSerializable(typeof(IList<FrpProcess>))]
+[JsonSerializable(typeof(IList<WebFrpProcess>))]
 internal partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
 {
 }

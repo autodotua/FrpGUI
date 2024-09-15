@@ -1,11 +1,11 @@
 ﻿using FrpGUI.Configs;
+using FrpGUI.Models;
 using FrpGUI.Service.Models;
 
 namespace FrpGUI.Service.Services
 {
-    public class AppLifetimeService(AppConfig config, Logger logger, FrpProcessService processes) : IHostedService
+    public class AppLifetimeService(AppConfig config, LoggerBase logger, FrpProcessCollection processes) : IHostedService
     {
-
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             foreach (var frpConfig in processes.Values)

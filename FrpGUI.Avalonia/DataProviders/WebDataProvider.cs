@@ -13,7 +13,7 @@ using System.Net;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
-    public class WebDataProvider(AppConfig config) : HttpRequester(config), IDataProvider
+    public class WebDataProvider(UIConfig config) : HttpRequester(config), IDataProvider
     {
         private const string AddClientEndpoint = "Config/FrpConfigs/Add/Client";
         private const string AddServerEndpoint = "Config/FrpConfigs/Add/Server";
@@ -26,7 +26,7 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
         private const string TokenEndpoint = "Token";
-        private readonly AppConfig config = config;
+        private readonly UIConfig config = config;
 
         public Task<TokenVerification> VerifyTokenAsync()
         {
@@ -64,9 +64,9 @@ namespace FrpGUI.Avalonia.DataProviders
             return PostAsync($"{FrpStatusEndpoint}/{id}");
         }
 
-        public async Task<IList<FrpProcess>> GetFrpStatusesAsync()
+        public async Task<IList<WebFrpProcess>> GetFrpStatusesAsync()
         {
-            return await GetObjectAsync<IList<FrpProcess>>(FrpStatusEndpoint);
+            return await GetObjectAsync<IList<WebFrpProcess>>(FrpStatusEndpoint);
             //var content=await GetAsync(FrpStatusEndpoint);
             //var jarray = JsonNode.Parse(await content.ReadAsStreamAsync()) as JsonArray;
             //List<FrpProcess> fps = new List<FrpProcess>();

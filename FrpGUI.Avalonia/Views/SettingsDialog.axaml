@@ -51,8 +51,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                  
-                    <ctrl:StackFormItemGroup>
+
+                    <ctrl:StackFormItemGroup LabelWidth="128">
                         <ctrl:StackFormItemGroup.IsVisible>
                             <Binding
                                 Converter="{StaticResource EqualConverter}"
@@ -62,9 +62,19 @@
                                 </Binding.ConverterParameter>
                             </Binding>
                         </ctrl:StackFormItemGroup.IsVisible>
-                      
-                        <ctrl:FormItem Label="服务IP">
-                            <TextBox Text="{Binding Config.ServerIP}" />
+
+                        <ctrl:FormItem Label="服务IP:端口">
+                            <Grid ColumnDefinitions="3*,24,*">
+                                <TextBox Text="{Binding Config.ServerIP}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text=":" />
+                                <TextBox
+                                    Grid.Column="2"
+                                    Text="{Binding Config.ServerPort}" />
+                            </Grid>
                         </ctrl:FormItem>
                         <ctrl:FormItem Label="连接密钥">
                             <TextBox Text="{Binding Config.ServerToken}" />

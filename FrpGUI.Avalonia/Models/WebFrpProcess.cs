@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Models;
 
-public partial class FrpProcess : IFrpProcess, INotifyPropertyChanged
+public partial class WebFrpProcess : IFrpProcess, INotifyPropertyChanged
 {
     private ProcessStatus processStatus;
 
-    public FrpProcess()
+    public WebFrpProcess()
     {
 
     }
-    public FrpProcess(FrpConfigBase config)
+    public WebFrpProcess(FrpConfigBase config)
     {
         Config = config;
         ProcessStatus = ProcessStatus.Stopped;

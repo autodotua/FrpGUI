@@ -1,4 +1,5 @@
 ﻿using FrpGUI.Configs;
+using FrpGUI.Models;
 using FrpGUI.Service.Services;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -11,9 +12,9 @@ namespace FrpGUI.Service.Controllers;
 [Route("[controller]")]
 public class ConfigController : FrpControllerBase
 {
-    private readonly FrpProcessService processes;
+    private readonly FrpProcessCollection processes;
 
-    public ConfigController(AppConfig configs, Logger logger, FrpProcessService processes) : base(configs, logger)
+    public ConfigController(AppConfig configs, LoggerBase logger, FrpProcessCollection processes) : base(configs, logger)
     {
         this.processes = processes;
     }
@@ -27,15 +28,8 @@ public class ConfigController : FrpControllerBase
     [HttpPost("FrpConfigs/Delete/{id}")]
     public async Task DeleteFrpConfigAsync(string id)
     {
-        var frp = processes.GetOrCreateProcess(id);
-        logger.Info($"指令：删除配置", frp.Config);
-        if (frp.ProcessStatus == Enums.ProcessStatus.Running)
-        {
-            await frp.StopAsync();
-        }
-        configs.FrpConfigs.Remove(frp.Config);
-        processes.Remove(frp.Config.ID);
-        configs.Save();
+        var frp=await processes.RemoveFrpAsync(id);
+        logger.Info($"指令：删除配置", frp);
     }
 
     [HttpPost("FrpConfigs/Add/Client")]

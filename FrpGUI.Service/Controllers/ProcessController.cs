@@ -12,9 +12,9 @@ namespace FrpGUI.Service.Controllers;
 [Route("[controller]")]
 public class ProcessController : FrpControllerBase
 {
-    private readonly FrpProcessService processes;
+    private readonly FrpProcessCollection processes;
 
-    public ProcessController(AppConfig config, Logger logger, FrpProcessService processes) : base(config, logger)
+    public ProcessController(AppConfig config, LoggerBase logger, FrpProcessCollection processes) : base(config, logger)
     {
         this.processes = processes;
     }

@@ -17,7 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using FrpGUI.Enums;
 using FrpGUI.Avalonia.DataProviders;
-using static FrpGUI.Avalonia.Models.FrpProcess;
+using static FrpGUI.Avalonia.Models.WebFrpProcess;
 using FrpGUI.Configs;
 using System.Text.Json;
 using System.IO;
@@ -44,7 +44,16 @@ public partial class App : Application
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
         }
         var builder = Host.CreateApplicationBuilder();
-        builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
+        var tempConfig = AppConfigBase<UIConfig>.Get();
+        switch (tempConfig.RunningMode)
+        {
+            case RunningMode.Singleton:
+                builder.Services.AddSingleton<IDataProvider, LocalDataProvider>();
+                break;
+            case RunningMode.Service:
+                builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
+                break;
+        }
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<MainView>();
@@ -63,30 +72,11 @@ public partial class App : Application
         builder.Services.AddTransient<LogPanel>();
         builder.Services.AddTransient<LogViewModel>();
 
-        AddConfigService(builder);
+        builder.Services.AddSingleton(AppConfigBase<UIConfig>.Get());
 
         var host = builder.Build();
         Services = host.Services;
         host.Start();
-    }
-
-    private static void AddConfigService(HostApplicationBuilder builder)
-    {
-        AppConfig config = new AppConfig();
-
-        if (File.Exists(Path.Combine(AppContext.BaseDirectory, AppConfig.ConfigPath)))
-        {
-            try
-            {
-                config = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(AppConfig.ConfigPath),
-                    JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
-            }
-            catch (Exception ex)
-            {
-                config = new AppConfig();
-            }
-        }
-        builder.Services.AddSingleton(config);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -94,12 +84,12 @@ public partial class App : Application
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
 
-        if (ApplicationLifetime is  IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             BindingPlugins.DataValidators.RemoveAt(0);
             desktop.MainWindow = new MainWindow();
         }
-        else if(ApplicationLifetime is ISingleViewApplicationLifetime s)
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime s)
         {
             s.MainView = new MainView();
         }

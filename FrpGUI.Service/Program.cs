@@ -1,5 +1,4 @@
 using FrpGUI.Configs;
-using FrpGUI.Models;
 using FrpGUI.Service;
 using FrpGUI.Service.Models;
 using FrpGUI.Service.Services;
@@ -12,6 +11,8 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using FrpGUI.Models;
+using FrpGUI;
 
 internal class Program
 {
@@ -29,30 +30,6 @@ internal class Program
         SettingApp(app);
 
         app.Run();
-    }
-
-    private static void AddConfigService(WebApplicationBuilder builder)
-    {
-        AppConfig config = new AppConfig();
-
-        if (File.Exists(Path.Combine(AppContext.BaseDirectory, AppConfig.ConfigPath)))
-        {
-            try
-            {
-                config = JsonSerializer.Deserialize<AppConfig>(File.ReadAllBytes(AppConfig.ConfigPath),
-                    JsonHelper.GetJsonOptions(AppConfigSourceGenerationContext.Default));
-            }
-            catch (Exception ex)
-            {
-                config = new AppConfig();
-            }
-        }
-        if (config.FrpConfigs.Count == 0)
-        {
-            config.FrpConfigs.Add(new ServerConfig());
-            config.FrpConfigs.Add(new ClientConfig());
-        }
-        builder.Services.AddSingleton(config);
     }
 
     private static WebApplicationBuilder CreateBuilder(string[] args)
@@ -107,8 +84,8 @@ internal class Program
             p.AddSecurityRequirement(requirement);
         });
         builder.Services.AddDbContext<FrpDbContext>(ServiceLifetime.Transient);
-        builder.Services.AddSingleton<Logger>();
-        builder.Services.AddSingleton<FrpProcessService>();
+        builder.Services.AddSingleton<LoggerBase, Logger>();
+        builder.Services.AddSingleton<FrpProcessCollection>();
         builder.Services.AddHostedService<AppLifetimeService>();
         builder.Services.AddCors(options =>
         {
@@ -126,13 +103,16 @@ internal class Program
             c.ServiceName = "FrpGUI";
         });
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-        AddConfigService(builder);
+
+        AppConfig config = AppConfigBase<AppConfig>.Get();
+        builder.Services.AddSingleton(config);
+
         return builder;
     }
 
     private static void SettingApp(WebApplication app)
     {
-        app.Services.GetRequiredService<Logger>().Info("服务启动");
+        app.Services.GetRequiredService<LoggerBase>().Info("服务启动");
         if (swagger || app.Environment.IsDevelopment())
         {
             app.UseSwagger();
