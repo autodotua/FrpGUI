@@ -10,7 +10,6 @@ using FzLib.Avalonia.Dialogs;
 using System;
 using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using Avalonia.Threading;
 using Avalonia.Media;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +21,7 @@ using System.Text.Json;
 using System.IO;
 using FzLib.Services;
 using FrpGUI.Models;
+using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia;
 
@@ -29,7 +29,7 @@ public partial class App : Application
 {
     public App()
     {
-        
+
     }
     public static IServiceProvider Services { get; private set; }
     public override void Initialize()
@@ -49,15 +49,17 @@ public partial class App : Application
         {
             case RunningMode.Singleton:
                 builder.Services.AddSingleton<IDataProvider, LocalDataProvider>();
-                builder.Services.AddHostedService<AppLifetimeService>();
+                builder.Services.AddHostedService<LocalAppLifetimeService>();
                 builder.Services.AddSingleton<FrpProcessCollection>();
-                builder.Services.AddSingleton<LoggerBase, Logger>();
                 builder.Services.AddSingleton(AppConfigBase<AppConfig>.Get());
                 break;
             case RunningMode.Service:
                 builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
                 break;
         }
+        var logger = new LocalLogger();
+        builder.Services.AddSingleton<LoggerBase>(logger);
+        builder.Services.AddSingleton<LocalLogger>(logger);
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<MainView>();
@@ -78,7 +80,7 @@ public partial class App : Application
 
         builder.Services.AddSingleton(AppConfigBase<UIConfig>.Get());
 
-         host = builder.Build();
+        host = builder.Build();
 
         Services = host.Services;
         host.Start();
@@ -166,5 +168,11 @@ public partial class App : Application
         {
             throw new PlatformNotSupportedException();
         }
+    }
+
+    public async Task ShutdownAsync()
+    {
+        await host.StopAsync();
+        Environment.Exit(0);
     }
 }

@@ -8,7 +8,7 @@ namespace FzLib.Services
 {
     public class AppLifetimeService(AppConfig config, LoggerBase logger, FrpProcessCollection processes) : IHostedService
     {
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public virtual async Task StartAsync(CancellationToken cancellationToken)
         {
             foreach (var fp in processes.GetAll())
             {
@@ -27,7 +27,7 @@ namespace FzLib.Services
             }
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public virtual async Task StopAsync(CancellationToken cancellationToken)
         {
             config.Save();
             foreach (FrpProcess fp in processes.Values)

@@ -18,15 +18,13 @@ namespace FrpGUI.Avalonia.DataProviders
     public class LocalDataProvider : IDataProvider
     {
         private readonly AppConfig configs;
-        private readonly LoggerBase logger;
+        private readonly LocalLogger logger;
         private readonly FrpProcessCollection processes;
-        public LocalDataProvider(AppConfig configs, FrpProcessCollection processes, LoggerBase logger)
+        public LocalDataProvider(AppConfig configs, FrpProcessCollection processes)
         {
             this.configs = configs;
             this.processes = processes;
-            this.logger = logger;
         }
-
         public Task<ClientConfig> AddClientAsync()
         {
             ClientConfig client = new ClientConfig();
@@ -66,7 +64,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
-            return Task.FromResult((logger as Logger).GetLogs());
+            throw new NotSupportedException();
         }
 
         public Task ModifyConfigAsync(FrpConfigBase config)
@@ -105,7 +103,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public Task<TokenVerification> VerifyTokenAsync()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

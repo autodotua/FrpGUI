@@ -18,11 +18,20 @@ namespace FrpGUI.Avalonia.ViewModels
     public partial class SettingViewModel : ViewModelBase
     {
         [ObservableProperty]
+        private string newToken;
+
+        [ObservableProperty]
+        private string oldToken;
+
+        [ObservableProperty]
         private ObservableCollection<Process> processes;
 
-        public SettingViewModel(IDataProvider provider,UIConfig config) : base(provider)
+        [ObservableProperty]
+        private string serverAddress;
+        public SettingViewModel(IDataProvider provider, UIConfig config) : base(provider)
         {
             Config = config;
+            ServerAddress = config.ServerAddress;
         }
 
         public UIConfig Config { get; }
@@ -44,6 +53,46 @@ namespace FrpGUI.Avalonia.ViewModels
                     Title = "停止进程失败",
                     Exception = ex,
                 }).Task;
+            }
+        }
+
+        [RelayCommand]
+        private Task RestartAsync()
+        {
+            Config.ServerAddress = ServerAddress;
+            if (!string.IsNullOrEmpty(NewToken))
+            {
+                Config.ServerToken = NewToken;
+            }
+            Config.Save();
+            string exePath = Environment.ProcessPath;
+            Process.Start(new ProcessStartInfo(exePath)
+            {
+                UseShellExecute = true
+            });
+            return (App.Current as App).ShutdownAsync();
+        }
+
+
+        [RelayCommand]
+        private async Task SetTokenAsync()
+        {
+            try
+            {
+                Config.ServerAddress = ServerAddress;
+                await DataProvider.SetTokenAsync(OldToken, NewToken);
+                Config.ServerToken = NewToken;
+                Config.Save();
+                await SendMessage(new CommonDialogMessage()
+                {
+                    Type = CommonDialogMessage.CommonDialogType.Ok,
+                    Title = "修改密码",
+                    Message = "修改密码成功"
+                }).Task;
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorAsync(ex, "修改密码失败");
             }
         }
     }

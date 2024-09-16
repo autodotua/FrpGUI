@@ -18,7 +18,7 @@ namespace FrpGUI.Configs
                 try
                 {
                     config = JsonSerializer.Deserialize<T>(File.ReadAllBytes(config.ConfigPath),
-                        JsonHelper.GetJsonOptions(AppConfigSourceGenerationContext.Default));
+                        JsonHelper.GetJsonOptions(config.JsonSerializerContext));
                 }
                 catch (Exception ex)
                 {

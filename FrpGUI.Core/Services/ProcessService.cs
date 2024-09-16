@@ -169,7 +169,7 @@ namespace FrpGUI.Utils
 
         private void P_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data == null)
+            if (string.IsNullOrWhiteSpace(e.Data))
             {
                 return;
             }

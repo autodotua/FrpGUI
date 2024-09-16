@@ -20,7 +20,7 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public void WriteAuthorizationHeader()
         {
-            if (string.IsNullOrWhiteSpace(config.Token))
+            if (string.IsNullOrWhiteSpace(config.ServerToken))
             {
                 return;
             }
@@ -29,12 +29,12 @@ namespace FrpGUI.Avalonia.DataProviders
                 var count = values.Count();
                 if (count >= 1)
                 {
-                    if (values.First() == config.Token)
+                    if (values.First() == config.ServerToken)
                     {
                         return;
                     }
                     httpClient.DefaultRequestHeaders.Remove(AuthorizationKey);
-                    httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.Token);
+                    httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.ServerToken);
                 }
                 else
                 {
@@ -43,11 +43,11 @@ namespace FrpGUI.Avalonia.DataProviders
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.Token);
+                httpClient.DefaultRequestHeaders.Add(AuthorizationKey, config.ServerToken);
             }
         }
 
-        protected string BaseApiUrl { get; set; } = "http://localhost:5113";
+        protected string BaseApiUrl => config.ServerAddress;
 
         public void Dispose()
         {
@@ -116,6 +116,10 @@ namespace FrpGUI.Avalonia.DataProviders
             var response = await httpClient.PostAsync($"{BaseApiUrl}/{endpoint}", jsonContent);
 
             await ProcessError(response);
+            if (response.Content.Headers.ContentLength == 0)
+            {
+                return default;
+            }
             return await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
         }
     }

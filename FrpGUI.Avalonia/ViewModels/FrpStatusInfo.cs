@@ -13,11 +13,10 @@ namespace FrpGUI.Avalonia.ViewModels;
 
 public partial class FrpStatusInfo : ObservableObject, IFrpProcess
 {
-    [ObservableProperty]
     private FrpConfigBase config;
 
-    [ObservableProperty]
     private ProcessStatus processStatus;
+
     public FrpStatusInfo()
     {
 
@@ -25,17 +24,27 @@ public partial class FrpStatusInfo : ObservableObject, IFrpProcess
 
     public FrpStatusInfo(FrpConfigBase config)
     {
-        this.config = config;
+        Config = config;
     }
 
     public FrpStatusInfo(IFrpProcess fp)
     {
-        config = fp.Config;
+        Config = fp.Config;
         ProcessStatus = fp.ProcessStatus;
     }
 
     public event EventHandler StatusChanged;
 
+    public FrpConfigBase Config
+    {
+        get => config;
+        set => SetProperty(ref config, value, nameof(Config));
+    }
+    public ProcessStatus ProcessStatus
+    {
+        get => processStatus;
+        set => SetProperty(ref processStatus, value, nameof(ProcessStatus));
+    }
     public Task RestartAsync()
     {
         throw new NotImplementedException();

@@ -9,12 +9,14 @@ namespace FrpGUI.Avalonia.Models;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(FrpStatusInfo))]
+[JsonSerializable(typeof(FrpProcess))]
 [JsonSerializable(typeof(UIConfig))]
 [JsonSerializable(typeof(AppConfigBase<UIConfig>))]
 [JsonSerializable(typeof(LogEntity))]
 [JsonSerializable(typeof(TokenVerification))]
 [JsonSerializable(typeof(List<LogEntity>))]
 [JsonSerializable(typeof(IList<FrpStatusInfo>))]
+[JsonSerializable(typeof(List<FrpProcess>))]
 internal partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
 {
 }

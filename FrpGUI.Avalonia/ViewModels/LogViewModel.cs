@@ -19,12 +19,14 @@ namespace FrpGUI.Avalonia.ViewModels;
 public partial class LogViewModel : ViewModelBase
 {
     private readonly UIConfig config;
+    private readonly LocalLogger logger;
     [ObservableProperty]
     private LogInfo selectedLog;
 
-    public LogViewModel(IDataProvider provider, UIConfig config) : base(provider)
+    public LogViewModel(IDataProvider provider, UIConfig config,LocalLogger logger) : base(provider)
     {
         this.config = config;
+        this.logger = logger;
         StartTimer();
     }
 
@@ -69,13 +71,10 @@ public partial class LogViewModel : ViewModelBase
 
     private async void StartTimer()
     {
-        var timer = new PeriodicTimer(
-            config.RunningMode == RunningMode.Singleton ? 
-            TimeSpan.FromSeconds(0.5) : TimeSpan.FromSeconds(2));
-        DateTime lastRequestTime = DateTime.MinValue;
-        while (await timer.WaitForNextTickAsync())
+        if (DataProvider is WebDataProvider webDataProvider)
         {
-            try
+            DateTime lastRequestTime = DateTime.MinValue;
+            webDataProvider.AddTimerTask("获取日志", async () =>
             {
                 var logs = await DataProvider.GetLogsAsync(lastRequestTime);
                 if (logs.Count > 0)
@@ -86,11 +85,9 @@ public partial class LogViewModel : ViewModelBase
                         AddLog(log);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                await Task.Delay(2000);
-            }
+            });
         }
+        logger.NewLog += (s, e) => AddLog(e.Log);
+
     }
 }

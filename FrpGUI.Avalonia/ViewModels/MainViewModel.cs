@@ -203,7 +203,7 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task CheckNetworkAndToken()
     {
-        start:
+    start:
         if (config.RunningMode == RunningMode.Singleton)
         {
             return;
@@ -255,17 +255,11 @@ public partial class MainViewModel : ViewModelBase
             });
         }
 
-        var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-        while (await timer.WaitForNextTickAsync())
+        if (DataProvider is WebDataProvider webDataProvider)
         {
-            try
-            {
-                await UpdateStatusAsync(false);
-            }
-            catch (Exception ex)
-            {
-            }
+            webDataProvider.AddTimerTask("更新状态", () => UpdateStatusAsync(false));
         }
+
     }
 
     partial void OnCurrentFrpProcessChanged(IFrpProcess value)

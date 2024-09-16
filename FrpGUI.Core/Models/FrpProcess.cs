@@ -12,6 +12,7 @@ public class FrpProcess : IFrpProcess
 {
     private readonly LoggerBase logger;
 
+    public FrpProcess() { }
     public FrpProcess(FrpConfigBase config, LoggerBase logger)
     {
         Config = config;

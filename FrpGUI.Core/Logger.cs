@@ -38,6 +38,10 @@ namespace FrpGUI
             {
                 type = errorMessages.Any(p => message.Contains(p)) ? 'E' : 'I';
             }
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
             Log(message, type, config, true);
         }
 

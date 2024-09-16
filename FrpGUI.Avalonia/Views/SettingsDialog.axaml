@@ -15,7 +15,7 @@
     xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     Title="设置"
-    Width="640"
+    Width="720"
     Height="540"
     Padding="4"
     x:DataType="vm:SettingViewModel"
@@ -63,23 +63,30 @@
                             </Binding>
                         </ctrl:StackFormItemGroup.IsVisible>
 
-                        <ctrl:FormItem Label="服务IP:端口">
-                            <Grid ColumnDefinitions="3*,24,*">
-                                <TextBox Text="{Binding Config.ServerIP}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text=":" />
-                                <TextBox
-                                    Grid.Column="2"
-                                    Text="{Binding Config.ServerPort}" />
-                            </Grid>
+                        <ctrl:FormItem Label="服务器地址">
+                            <TextBox
+                                Text="{Binding ServerAddress}"
+                                Watermark="服务器连接地址" />
                         </ctrl:FormItem>
                         <ctrl:FormItem Label="连接密钥">
-                            <TextBox Text="{Binding Config.ServerToken}" />
+                            <Grid ColumnDefinitions="*,8,*,8,Auto">
+                                <TextBox
+                                    Text="{Binding OldToken}"
+                                    Watermark="旧密码" />
+                                <TextBox
+                                    Grid.Column="2"
+                                    Text="{Binding NewToken}"
+                                    Watermark="新密码（不修改请留空）" />
+                                <Button
+                                    Grid.Column="4"
+                                    Command="{Binding SetTokenCommand}"
+                                    Content="设置服务端密码" />
+                            </Grid>
                         </ctrl:FormItem>
                     </ctrl:StackFormItemGroup>
+                    <Button
+                        Command="{Binding RestartCommand}"
+                        Content="应用并重启程序" />
                 </StackPanel>
             </gb:GroupBox>
             <gb:GroupBox Header="正在运行的进程">

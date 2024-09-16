@@ -11,10 +11,11 @@ using FrpGUI.Enums;
 using System.Net;
 using System.Linq;
 using FrpGUI.Avalonia.ViewModels;
+using System.Threading;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
-    public class WebDataProvider(UIConfig config) : HttpRequester(config), IDataProvider
+    public class WebDataProvider : HttpRequester, IDataProvider
     {
         private const string AddClientEndpoint = "Config/FrpConfigs/Add/Client";
         private const string AddServerEndpoint = "Config/FrpConfigs/Add/Server";
@@ -27,16 +28,17 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
         private const string TokenEndpoint = "Token";
-        private readonly UIConfig config = config;
+        private readonly UIConfig config;
+        private readonly LocalLogger logger;
+        private PeriodicTimer timer;
 
-        public Task<TokenVerification> VerifyTokenAsync()
-        {
-            return GetObjectAsync<TokenVerification>(TokenEndpoint);
-        }
+        private List<(string Name, Func<Task> task)> timerTasks = new List<(string Name, Func<Task> task)>();
 
-        public Task SetTokenAsync(string oldToken, string newToken)
+        public WebDataProvider(UIConfig config, LocalLogger logger) : base(config)
         {
-            return PostAsync<TokenVerification>($"{TokenEndpoint}?oldToken={WebUtility.UrlEncode(oldToken)}&newToken={WebUtility.UrlEncode(newToken)}");
+            this.config = config;
+            this.logger = logger;
+            StartTimer();
         }
 
         public Task<ClientConfig> AddClientAsync()
@@ -49,11 +51,17 @@ namespace FrpGUI.Avalonia.DataProviders
             return PostAsync<ServerConfig>(AddServerEndpoint);
         }
 
+        public void AddTimerTask(string name, Func<Task> task)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(task, nameof(task));
+            timerTasks.Add((name, task));
+        }
+
         public Task DeleteFrpConfigAsync(string id)
         {
             return PostAsync($"{DeleteFrpConfigsEndpoint}/{id}");
         }
-
 
         public Task<List<FrpConfigBase>> GetFrpConfigsAsync()
         {
@@ -67,7 +75,8 @@ namespace FrpGUI.Avalonia.DataProviders
 
         public async Task<IList<FrpStatusInfo>> GetFrpStatusesAsync()
         {
-            return await GetObjectAsync<IList<FrpStatusInfo>>(FrpStatusEndpoint);
+            var result = await GetObjectAsync<IList<FrpStatusInfo>>(FrpStatusEndpoint);
+            return result;//.Select(p => new FrpStatusInfo(p)).ToList();
         }
 
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
@@ -85,6 +94,11 @@ namespace FrpGUI.Avalonia.DataProviders
             return PostAsync($"{RestartFrpEndpoint}/{id}");
         }
 
+        public Task SetTokenAsync(string oldToken, string newToken)
+        {
+            return PostAsync<TokenVerification>($"{TokenEndpoint}?oldToken={WebUtility.UrlEncode(oldToken)}&newToken={WebUtility.UrlEncode(newToken)}");
+        }
+
         public Task StartFrpAsync(string id)
         {
             return PostAsync($"{StartFrpEndpoint}/{id}");
@@ -95,6 +109,28 @@ namespace FrpGUI.Avalonia.DataProviders
             return PostAsync($"{StopFrpEndpoint}/{id}");
         }
 
+        public Task<TokenVerification> VerifyTokenAsync()
+        {
+            return GetObjectAsync<TokenVerification>(TokenEndpoint);
+        }
 
+        private async void StartTimer()
+        {
+            var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
+            while (await timer.WaitForNextTickAsync())
+            {
+                foreach (var (name, task) in timerTasks)
+                {
+                    try
+                    {
+                        await task.Invoke();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error($"执行定时任务“{name}”失败", null, ex);
+                    }
+                }
+            }
+        }
     }
 }
