@@ -6,6 +6,13 @@ using FrpGUI.Avalonia.Models;
 using System.Text.Json.Serialization;
 using FzLib;
 using System.Text.Json;
+using FrpGUI.Avalonia.DataProviders;
+using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
+using static FzLib.Program.Runtime.SimplePipe;
+using System.Text;
 
 namespace FrpGUI.Avalonia;
 
@@ -40,14 +47,21 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
                 var json = JsInterop.GetLocalStorage("config");
                 if (string.IsNullOrEmpty(json))
                 {
-                    return new UIConfig() as T;
+                    if (DefaultConfig != null)
+                    {
+                        return DefaultConfig as T; //优先级2：默认配置。由于HttpClient不支持同步，所以DefaultConfig在Browser项目中进行了赋值
+                    }
+
+                    return new UIConfig() as T; //优先级3：新配置
                 }
+
+                //优先级1：LocalStorage配置
                 return JsonSerializer.Deserialize<T>(JsInterop.GetLocalStorage("config"),
                                   JsonHelper.GetJsonOptions(JsonSerializerContext));
             }
             catch (Exception ex)
             {
-                JsInterop.Alert("读取配置文件错误：" + ex.Message);
+                JsInterop.Alert("读取配置文件错误：" + ex.ToString());
                 throw;
             }
         }
@@ -68,4 +82,6 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
             base.Save();
         }
     }
+
+    public static UIConfig DefaultConfig { get; set; }
 }

@@ -26,6 +26,7 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="ModernWpfUI" Version="0.9.6" />
+    <PackageVersion Include="PieroDeTomi.DotNet.WebUtils" Version="1.0.0" />
     <PackageVersion Include="Serilog" Version="4.0.1" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.2" />
     <PackageVersion Include="Serilog.Sinks.SQLite" Version="6.0.0" />

@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Avalonia\FrpGUI.Avalonia.csproj" />
-    <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

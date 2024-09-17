@@ -14,7 +14,7 @@ namespace FrpGUI.Configs
             T config = new T();
 
             if (OperatingSystem.IsBrowser() 
-                || File.Exists(Path.Combine(AppContext.BaseDirectory, config.ConfigPath)))
+                || File.Exists(config.ConfigPath))
             {
                 try
                 {

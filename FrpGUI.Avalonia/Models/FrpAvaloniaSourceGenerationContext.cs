@@ -16,6 +16,6 @@ namespace FrpGUI.Avalonia.Models;
 [JsonSerializable(typeof(List<LogEntity>))]
 [JsonSerializable(typeof(IList<FrpStatusInfo>))]
 [JsonSerializable(typeof(List<FrpProcess>))]
-internal partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
+public partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
 {
 }

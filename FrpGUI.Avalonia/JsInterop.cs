@@ -16,5 +16,8 @@ public partial class JsInterop
     public static partial string Alert(string message);
 
     [JSImport("reload", "utils.js")]
-    public static partial string Reload();
+    public static partial void Reload();
+
+    [JSImport("getCurrentUrl", "utils.js")]
+    public static partial string GetCurrentUrl();
 }

@@ -72,7 +72,7 @@ namespace FrpGUI.Avalonia.DataProviders
             }
         }
 
-        protected async Task<HttpContent> GetAsync(string endpoint)
+        public async Task<HttpContent> GetAsync(string endpoint)
         {
             WriteAuthorizationHeader();
             var response = await httpClient.GetAsync($"{BaseApiUrl}/{endpoint}");
@@ -89,19 +89,19 @@ namespace FrpGUI.Avalonia.DataProviders
             throw new Exception();
         }
 
-        protected Task<T> GetObjectAsync<T>(string endpoint, params (string Key, string Value)[] query) where T : class
+        public Task<T> GetObjectAsync<T>(string endpoint, params (string Key, string Value)[] query) where T : class
         {
             var querys = query.Select(p => $"{p.Key}={p.Value}");
             return GetObjectAsync<T>(endpoint + "?" + string.Join('&', querys));
         }
 
-        protected async Task<T> GetObjectAsync<T>(string endpoint)
+        public async Task<T> GetObjectAsync<T>(string endpoint)
         {
             using var responseStream = await (await GetAsync(endpoint)).ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(responseStream, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default));
         }
 
-        protected async Task PostAsync(string endpoint, object data = null)
+        public async Task PostAsync(string endpoint, object data = null)
         {
             WriteAuthorizationHeader();
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");
@@ -109,7 +109,7 @@ namespace FrpGUI.Avalonia.DataProviders
             await ProcessError(response);
         }
 
-        protected async Task<T> PostAsync<T>(string endpoint, object data = null)
+        public async Task<T> PostAsync<T>(string endpoint, object data = null)
         {
             WriteAuthorizationHeader();
             var jsonContent = data == null ? null : new StringContent(JsonSerializer.Serialize(data, JsonHelper.GetJsonOptions(FrpAvaloniaSourceGenerationContext.Default)), Encoding.UTF8, "application/json");

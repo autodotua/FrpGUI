@@ -60,7 +60,15 @@ public class ConfigController : FrpControllerBase
         {
             throw new ArgumentException("提供的配置与已有配置类型不同");
         }
-        configs.Adapt(p.Config);
+        //需要指定实际的类型，不然只会Adapt基类属性
+        if(config is ClientConfig c)
+        {
+            c.Adapt(p.Config as ClientConfig);
+        }
+        else if(config is ServerConfig s)
+        {
+            s.Adapt(p.Config as ServerConfig);
+        }
         configs.Save();
     }
 }

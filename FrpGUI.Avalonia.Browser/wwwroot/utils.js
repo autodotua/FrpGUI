@@ -13,3 +13,7 @@ export function showAlert(message) {
 export function reload() {
     location.reload(true)
 }
+
+export function getCurrentUrl() {
+    return window.location.href
+}

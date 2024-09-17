@@ -36,12 +36,7 @@ namespace FrpGUI.Utils
                 {
 
                 }
-                string tempDir = Path.Combine(FzLib.Program.App.ProgramDirectoryPath, "temp");
-                if (!Directory.Exists(tempDir))
-                {
-                    Directory.CreateDirectory(tempDir);
-                }
-                string configFile = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".toml");
+                string configFile = Path.GetTempFileName() + ".toml";
                 File.WriteAllText(configFile, FrpConfig.ToToml(), new UTF8Encoding(false));
 
                 logger.Info("配置文件地址：" + configFile, FrpConfig);
