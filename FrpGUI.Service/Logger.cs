@@ -19,6 +19,7 @@ public class Logger : LoggerBase
     protected override void AddLog(LogEntity logEntity)
     {
         db.Logs.Add(logEntity);
+        Console.WriteLine($"{logEntity.Time}\t{logEntity.Type}\t{logEntity.InstanceName??"  "}\t{logEntity.Message}");
     }
 
     private async void StartTimer()

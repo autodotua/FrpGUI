@@ -1,4 +1,5 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -8,10 +9,10 @@ using FrpGUI.Avalonia;
 [assembly: SupportedOSPlatform("browser")]
 internal sealed partial class Program
 {
-    private static Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        return BuildAvaloniaApp()
-            .StartBrowserAppAsync("out");
+        await JSHost.ImportAsync("utils.js", "../utils.js");
+        await BuildAvaloniaApp().StartBrowserAppAsync("out");
     }
 
     public static AppBuilder BuildAvaloniaApp()

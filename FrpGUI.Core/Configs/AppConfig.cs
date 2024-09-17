@@ -9,7 +9,7 @@ using FrpGUI.Models;
 
 namespace FrpGUI.Configs
 {
-    public class AppConfig : AppConfigBase<AppConfig>
+    public class AppConfig : AppConfigBase
     {
         public override string ConfigPath => Path.Combine(AppContext.BaseDirectory, "config.json");
         public List<FrpConfigBase> FrpConfigs { get; set; } = new List<FrpConfigBase>();

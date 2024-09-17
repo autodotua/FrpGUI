@@ -22,6 +22,7 @@ using System.IO;
 using FzLib.Services;
 using FrpGUI.Models;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace FrpGUI.Avalonia;
 
@@ -44,14 +45,22 @@ public partial class App : Application
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
         }
         var builder = Host.CreateApplicationBuilder();
-        var tempConfig = AppConfigBase<UIConfig>.Get();
-        switch (tempConfig.RunningMode)
+        var uiconfig = AppConfigBase.Get<UIConfig>();
+        if (OperatingSystem.IsBrowser())
+        {
+            if (uiconfig.RunningMode == RunningMode.Singleton)
+            {
+                uiconfig.RunningMode = RunningMode.Service;
+            }
+        }
+
+        switch (uiconfig.RunningMode)
         {
             case RunningMode.Singleton:
                 builder.Services.AddSingleton<IDataProvider, LocalDataProvider>();
                 builder.Services.AddHostedService<LocalAppLifetimeService>();
                 builder.Services.AddSingleton<FrpProcessCollection>();
-                builder.Services.AddSingleton(AppConfigBase<AppConfig>.Get());
+                builder.Services.AddSingleton(AppConfigBase.Get<AppConfig>());
                 break;
             case RunningMode.Service:
                 builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
@@ -78,16 +87,16 @@ public partial class App : Application
         builder.Services.AddTransient<LogPanel>();
         builder.Services.AddTransient<LogViewModel>();
 
-        builder.Services.AddSingleton(AppConfigBase<UIConfig>.Get());
+        builder.Services.AddSingleton(uiconfig);
 
-        host = builder.Build();
+        AppHost = builder.Build();
 
-        Services = host.Services;
-        host.Start();
+        Services = AppHost.Services;
+        AppHost.Start();
 
 
     }
-    IHost host;
+    public IHost AppHost { get; private set; }
 
     public override void OnFrameworkInitializationCompleted()
     {
@@ -98,7 +107,7 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.RemoveAt(0);
             desktop.MainWindow = new MainWindow();
-            desktop.Exit += (s, e) => host.StopAsync();
+            desktop.Exit += (s, e) => AppHost.StopAsync();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime s)
         {
@@ -172,7 +181,7 @@ public partial class App : Application
 
     public async Task ShutdownAsync()
     {
-        await host.StopAsync();
+        await AppHost.StopAsync();
         Environment.Exit(0);
     }
 }

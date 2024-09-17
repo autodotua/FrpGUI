@@ -3,22 +3,22 @@ using System.Text.Json.Serialization;
 
 namespace FrpGUI.Configs
 {
-    public abstract class AppConfigBase<T> where T : AppConfigBase<T>, new()
+    public abstract class AppConfigBase
     {
         public abstract string ConfigPath { get; }
 
         protected abstract JsonSerializerContext JsonSerializerContext { get; }
 
-        public static T Get()
+        public static T Get<T>() where T : AppConfigBase, new()
         {
             T config = new T();
 
-            if (File.Exists(Path.Combine(AppContext.BaseDirectory, config.ConfigPath)))
+            if (OperatingSystem.IsBrowser() 
+                || File.Exists(Path.Combine(AppContext.BaseDirectory, config.ConfigPath)))
             {
                 try
                 {
-                    config = JsonSerializer.Deserialize<T>(File.ReadAllBytes(config.ConfigPath),
-                        JsonHelper.GetJsonOptions(config.JsonSerializerContext));
+                    config = config.GetImpl<T>();
                 }
                 catch (Exception ex)
                 {
@@ -29,21 +29,21 @@ namespace FrpGUI.Configs
             return config;
         }
 
+        protected virtual T GetImpl<T>() where T : AppConfigBase
+        {
+            return JsonSerializer.Deserialize<T>(File.ReadAllBytes(ConfigPath),
+                            JsonHelper.GetJsonOptions(JsonSerializerContext));
+        }
+
         public virtual void Save()
         {
-            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, typeof(T), JsonHelper.GetJsonOptions(JsonSerializerContext));
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(this, GetType(), JsonHelper.GetJsonOptions(JsonSerializerContext));
             File.WriteAllBytes(ConfigPath, bytes);
         }
 
         protected virtual void OnLoaded()
         {
 
-        }
-
-        public void DoAndSave(Action<T> action)
-        {
-            action(this as T);
-            Save();
         }
     }
 }

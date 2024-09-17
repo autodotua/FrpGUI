@@ -43,6 +43,8 @@
                     </TextBlock>
                     <ComboBox
                         Width="180"
+                        IsEnabled="{OnPlatform Default=True,
+                                               Browser=False}"
                         ItemsSource="{me:EnumValues r:RunningMode}"
                         SelectedItem="{Binding Config.RunningMode}">
                         <ComboBox.ItemTemplate>

@@ -57,7 +57,7 @@ namespace FrpGUI.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private Task RestartAsync()
+        private async Task RestartAsync()
         {
             Config.ServerAddress = ServerAddress;
             if (!string.IsNullOrEmpty(NewToken))
@@ -65,12 +65,20 @@ namespace FrpGUI.Avalonia.ViewModels
                 Config.ServerToken = NewToken;
             }
             Config.Save();
-            string exePath = Environment.ProcessPath;
-            Process.Start(new ProcessStartInfo(exePath)
+
+            if (OperatingSystem.IsBrowser())
             {
-                UseShellExecute = true
-            });
-            return (App.Current as App).ShutdownAsync();
+                JsInterop.Reload();
+            }
+            else
+            {
+                string exePath = Environment.ProcessPath;
+                Process.Start(new ProcessStartInfo(exePath)
+                {
+                    UseShellExecute = true
+                });
+                await (App.Current as App).ShutdownAsync();
+            }
         }
 
 
