@@ -1,12 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FrpGUI.Configs;
+
 using FrpGUI.Enums;
 using FrpGUI.Models;
 using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels;
@@ -19,7 +15,6 @@ public partial class FrpStatusInfo : ObservableObject, IFrpProcess
 
     public FrpStatusInfo()
     {
-
     }
 
     public FrpStatusInfo(FrpConfigBase config)
@@ -40,11 +35,13 @@ public partial class FrpStatusInfo : ObservableObject, IFrpProcess
         get => config;
         set => SetProperty(ref config, value, nameof(Config));
     }
+
     public ProcessStatus ProcessStatus
     {
         get => processStatus;
         set => SetProperty(ref processStatus, value, nameof(ProcessStatus));
     }
+
     public Task RestartAsync()
     {
         throw new NotImplementedException();

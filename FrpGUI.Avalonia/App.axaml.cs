@@ -3,26 +3,17 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-
+using Avalonia.Media;
+using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
-using FzLib.Avalonia.Dialogs;
-using System;
-using System.IO.Pipes;
-using System.Linq;
-using Avalonia.Threading;
-using Avalonia.Media;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using FrpGUI.Enums;
-using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Configs;
-using System.Text.Json;
-using System.IO;
-using FzLib.Services;
 using FrpGUI.Models;
+using FrpGUI.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace FrpGUI.Avalonia;
 
@@ -30,9 +21,10 @@ public partial class App : Application
 {
     public App()
     {
-
     }
+
     public static IServiceProvider Services { get; private set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -62,6 +54,7 @@ public partial class App : Application
                 builder.Services.AddSingleton<FrpProcessCollection>();
                 builder.Services.AddSingleton(AppConfigBase.Get<AppConfig>());
                 break;
+
             case RunningMode.Service:
                 builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
                 break;
@@ -93,9 +86,8 @@ public partial class App : Application
 
         Services = AppHost.Services;
         AppHost.Start();
-
-
     }
+
     public IHost AppHost { get; private set; }
 
     public override void OnFrameworkInitializationCompleted()
@@ -115,9 +107,7 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-
     }
-
 
     private void ExitMenuItem_Click(object sender, EventArgs e)
     {
@@ -166,6 +156,7 @@ public partial class App : Application
             throw new PlatformNotSupportedException();
         }
     }
+
     private void TrayIcon_Clicked(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

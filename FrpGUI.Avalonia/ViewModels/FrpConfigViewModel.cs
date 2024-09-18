@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Configs;
+
 using FrpGUI.Models;
 using FzLib.Avalonia.Messages;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels;
+
 public partial class FrpConfigViewModel(IDataProvider provider, IServiceProvider services) : ViewModelBase(provider)
 {
     [ObservableProperty]

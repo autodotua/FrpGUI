@@ -1,19 +1,18 @@
-﻿using System.Net;
+﻿using Avalonia;
+using Avalonia.Browser;
+using FrpGUI.Avalonia;
+using FrpGUI.Avalonia.Models;
+using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using Avalonia;
-using Avalonia.Browser;
-
-using FrpGUI.Avalonia;
-using System.IO;
-using System;
-using FrpGUI.Avalonia.Models;
 [assembly: SupportedOSPlatform("browser")]
+
 internal sealed partial class Program
 {
     private static async Task Main(string[] args)

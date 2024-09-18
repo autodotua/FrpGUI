@@ -1,10 +1,7 @@
-﻿using Avalonia.Controls;
-using Avalonia.Interactivity;
-using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Configs;
+﻿using FrpGUI.Avalonia.ViewModels;
+
 using FrpGUI.Models;
 using FzLib.Avalonia.Dialogs;
-using System.Diagnostics.CodeAnalysis;
 
 namespace FrpGUI.Avalonia.Views;
 
@@ -20,6 +17,7 @@ public partial class RuleDialog : DialogHost
     {
         (DataContext as RuleViewModel).Rule = rule.Clone() as Rule;
     }
+
     protected override void OnPrimaryButtonClick()
     {
         var vm = DataContext as RuleViewModel;

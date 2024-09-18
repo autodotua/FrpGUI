@@ -1,18 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using FrpGUI.Avalonia.Models;
 using FrpGUI.Configs;
-using System.ComponentModel;
-using FrpGUI.Avalonia.Models;
-using System.Text.Json.Serialization;
+using FrpGUI.Utils;
 using FzLib;
+using System;
+using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
-using FrpGUI.Avalonia.DataProviders;
-using System.Net.Http;
-using System.Net;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
-using static FzLib.Program.Runtime.SimplePipe;
-using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FrpGUI.Avalonia;
 
@@ -38,6 +32,7 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
     public string ServerAddress { get; set; } = "http://localhost:5113";
     public string ServerToken { get; set; } = "";
     protected override JsonSerializerContext JsonSerializerContext => FrpAvaloniaSourceGenerationContext.Default;
+
     protected override T GetImpl<T>()
     {
         if (OperatingSystem.IsBrowser())
@@ -70,6 +65,7 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
             return base.GetImpl<T>();
         }
     }
+
     public override void Save()
     {
         if (OperatingSystem.IsBrowser())

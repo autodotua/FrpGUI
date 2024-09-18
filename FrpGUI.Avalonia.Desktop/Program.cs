@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
+﻿using Avalonia;
 using log4net;
-using log4net.Appender;
-using log4net.Layout;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
 
 namespace FrpGUI.Avalonia.Desktop;
 
-class Program
+internal class Program
 {
     [STAThread]
     public static void Main(string[] args)
@@ -55,7 +46,6 @@ class Program
         Log.Fatal("未捕获的TaskScheduler异常", e.Exception);
     }
 
-
     //private static void Logger_NewLog(object sender, LogEventArgs e)
     //{
     //    switch (e.Type)
@@ -86,6 +76,7 @@ class Program
             .LogToTrace();
 
     public static ILog Log { get; private set; }
+
     /// <summary>
     /// 初始化日志系统
     /// </summary>

@@ -17,13 +17,13 @@
         background: white;
     }
 
-    .avalonia-splash h2 {
-        color: #1b2a4e;
-    }
+        .avalonia-splash h2 {
+            color: #1b2a4e;
+        }
 
-    .avalonia-splash a {
-        color: #0D6EFD;
-    }
+        .avalonia-splash a {
+            color: #0D6EFD;
+        }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,13 +31,13 @@
         background: #1b2a4e;
     }
 
-    .avalonia-splash h2 {
-        color: white;
-    }
+        .avalonia-splash h2 {
+            color: white;
+        }
 
-    .avalonia-splash a {
-        color: white;
-    }
+        .avalonia-splash a {
+            color: white;
+        }
 }
 
 .avalonia-splash h2 {
@@ -48,7 +48,7 @@
 .avalonia-splash a {
     text-decoration: none;
     font-size: 2.5rem;
-    display: block;   
+    display: block;
 }
 
 .avalonia-splash.splash-close {

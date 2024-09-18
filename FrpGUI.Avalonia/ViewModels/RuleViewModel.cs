@@ -1,13 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FrpGUI.Configs;
-using System.Collections.Generic;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Linq;
-using FrpGUI.Enums;
 using FrpGUI.Avalonia.DataProviders;
+using FrpGUI.Enums;
 using FrpGUI.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -59,7 +56,6 @@ public partial class RuleViewModel(IDataProvider provider) : ViewModelBase(provi
             {
                 T("范围解析错误");
             }
-
         }
         return ports.ToArray();
         void Add(ushort p)
@@ -73,10 +69,12 @@ public partial class RuleViewModel(IDataProvider provider) : ViewModelBase(provi
             }
         }
     }
+
     private void T(string message)
     {
         throw new ArgumentException(message);
     }
+
     public bool Check()
     {
         try
@@ -114,6 +112,7 @@ public partial class RuleViewModel(IDataProvider provider) : ViewModelBase(provi
                         T("本地端口和远程端口数量不同");
                     }
                     break;
+
                 case NetType.HTTP:
                 case NetType.HTTPS:
                 case NetType.STCP:

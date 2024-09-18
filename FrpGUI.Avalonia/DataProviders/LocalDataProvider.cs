@@ -1,16 +1,12 @@
-﻿using FrpGUI.Avalonia.Models;
-using FrpGUI.Avalonia.ViewModels;
+﻿using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
-using FzLib.Models;
+
 using Mapster;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.DataProviders
@@ -20,11 +16,13 @@ namespace FrpGUI.Avalonia.DataProviders
         private readonly AppConfig configs;
         private readonly LocalLogger logger;
         private readonly FrpProcessCollection processes;
+
         public LocalDataProvider(AppConfig configs, FrpProcessCollection processes)
         {
             this.configs = configs;
             this.processes = processes;
         }
+
         public Task<ClientConfig> AddClientAsync()
         {
             ClientConfig client = new ClientConfig();

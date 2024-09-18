@@ -1,13 +1,12 @@
-﻿using System;
+﻿using FrpGUI.Avalonia.Models;
+using FrpGUI.Utils;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Net.Http;
-using FrpGUI.Avalonia.Models;
-using System.Net.Http.Headers;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace FrpGUI.Avalonia.DataProviders
 {

@@ -1,17 +1,12 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
-using FrpGUI.Configs;
+using FrpGUI.Models;
 using FzLib.Avalonia.Messages;
-using FzLib.Models;
+
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.ViewModels
@@ -29,6 +24,7 @@ namespace FrpGUI.Avalonia.ViewModels
 
         [ObservableProperty]
         private string serverAddress;
+
         public SettingViewModel(IDataProvider provider, UIConfig config) : base(provider)
         {
             Config = config;
@@ -92,7 +88,6 @@ namespace FrpGUI.Avalonia.ViewModels
                 await (App.Current as App).ShutdownAsync();
             }
         }
-
 
         [RelayCommand]
         private async Task SetTokenAsync()

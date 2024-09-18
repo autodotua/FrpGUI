@@ -1,20 +1,17 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Configs;
-using FrpGUI.Enums;
 using FzLib.Avalonia.Controls;
 using System;
-using System.Linq;
 
 namespace FrpGUI.Avalonia.Views;
 
 public partial class MainWindow : ExtendedWindow
 {
-    public MainWindow( )
+    public MainWindow()
     {
         InitializeComponent();
-        if(OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows())
         {
             grid.Children.Add(new WindowButtons());
         }
@@ -24,6 +21,7 @@ public partial class MainWindow : ExtendedWindow
     {
         return mainView?.DataContext as MainViewModel;
     }
+
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         //Config.AppConfig.Instance.Save();

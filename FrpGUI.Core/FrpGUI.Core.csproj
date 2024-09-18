@@ -20,13 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="FzLib" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Serilog" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FrpGUI.Models\FrpGUI.Data.csproj" />
   </ItemGroup>
 
 </Project>

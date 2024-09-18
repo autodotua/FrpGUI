@@ -1,8 +1,8 @@
 ﻿using Avalonia.Media;
-using System.Diagnostics;
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FrpGUI.Models;
+using System;
+using System.Diagnostics;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -30,5 +30,6 @@ public partial class LogInfo(LogEntity e) : ObservableObject
 
     [ObservableProperty]
     private IBrush typeBrush;
+
     public bool HasUpdated => UpdateTimes > 0;
 }

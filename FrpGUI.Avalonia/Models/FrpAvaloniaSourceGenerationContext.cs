@@ -1,8 +1,6 @@
 ﻿using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
-using FzLib.Models;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 

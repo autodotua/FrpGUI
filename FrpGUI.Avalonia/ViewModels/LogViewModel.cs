@@ -1,18 +1,11 @@
 ﻿using Avalonia.Media;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using FrpGUI.Avalonia.Views;
-using FzLib;
-using Avalonia.Threading;
-using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FrpGUI.Avalonia.DataProviders;
+using FrpGUI.Models;
 using FzLib.Avalonia.Messages;
 using System;
-using FrpGUI.Avalonia.DataProviders;
-using System.Threading;
-using FrpGUI.Models;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
@@ -20,10 +13,11 @@ public partial class LogViewModel : ViewModelBase
 {
     private readonly UIConfig config;
     private readonly LocalLogger logger;
+
     [ObservableProperty]
     private LogInfo selectedLog;
 
-    public LogViewModel(IDataProvider provider, UIConfig config,LocalLogger logger) : base(provider)
+    public LogViewModel(IDataProvider provider, UIConfig config, LocalLogger logger) : base(provider)
     {
         this.config = config;
         this.logger = logger;
@@ -88,6 +82,5 @@ public partial class LogViewModel : ViewModelBase
             });
         }
         logger.NewLog += (s, e) => AddLog(e.Log);
-
     }
 }

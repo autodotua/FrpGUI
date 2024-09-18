@@ -1,26 +1,18 @@
-﻿using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
+﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
-using FrpGUI.Avalonia.Messages;
-using FrpGUI.Avalonia.Models;
 using FrpGUI.Avalonia.Views;
-using FrpGUI.Configs;
+
 using FrpGUI.Enums;
 using FrpGUI.Models;
-using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using static FzLib.Avalonia.Messages.CommonDialogMessage;
 
@@ -259,7 +251,6 @@ public partial class MainViewModel : ViewModelBase
         {
             webDataProvider.AddTimerTask("更新状态", () => UpdateStatusAsync(false));
         }
-
     }
 
     partial void OnCurrentFrpProcessChanged(IFrpProcess value)
