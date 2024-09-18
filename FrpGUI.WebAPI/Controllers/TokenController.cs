@@ -35,7 +35,7 @@ public class TokenController : FrpControllerBase
         {
             if (!string.IsNullOrWhiteSpace(configs.Token) || !string.IsNullOrWhiteSpace(oldToken))
             {
-                throw new ArgumentException("旧密码错误", nameof(oldToken));
+                throw new StatusBasedException("旧密码错误", System.Net.HttpStatusCode.Unauthorized);
             }
         }
         ArgumentException.ThrowIfNullOrWhiteSpace(newToken, nameof(newToken));

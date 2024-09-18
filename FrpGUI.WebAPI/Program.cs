@@ -2,13 +2,13 @@ using FrpGUI.Configs;
 using FrpGUI.Models;
 using FrpGUI.Services;
 using FrpGUI.WebAPI.Models;
+using FrpGUI.WebAPI.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.OpenApi.Models;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 namespace FrpGUI.WebAPI;
-
 internal class Program
 {
     private static bool swagger = true;
@@ -78,7 +78,8 @@ internal class Program
         builder.Services.AddDbContext<FrpDbContext>(ServiceLifetime.Transient);
         builder.Services.AddSingleton<LoggerBase, Logger>();
         builder.Services.AddSingleton<FrpProcessCollection>();
-        builder.Services.AddHostedService<AppLifetimeService>();
+        builder.Services.AddTransient<WebConfigService>();
+        builder.Services.AddHostedService<WebAppLifetimeService>();
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: cors,

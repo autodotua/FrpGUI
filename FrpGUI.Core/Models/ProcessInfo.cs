@@ -32,11 +32,11 @@ namespace FrpGUI.Models
             }
             catch (ArgumentException)
             {
-                throw new KeyNotFoundException($"不存在ID为{id}的进程");
+                throw new StatusBasedException($"不存在ID为{id}的进程",System.Net.HttpStatusCode.NotFound);
             }
             if (process.ProcessName is not ("frps" or "frpc"))
             {
-                throw new Exception("指定的进程不是Frp进程");
+                throw new StatusBasedException("指定的进程不是Frp进程", System.Net.HttpStatusCode.Forbidden);
             }
 
             process.Kill();

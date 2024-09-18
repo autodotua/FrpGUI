@@ -2,6 +2,7 @@ using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
 using FrpGUI.Services;
+using FrpGUI.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrpGUI.WebAPI.Controllers;
@@ -12,10 +13,13 @@ namespace FrpGUI.WebAPI.Controllers;
 public class ProcessController : FrpControllerBase
 {
     private readonly FrpProcessCollection processes;
+    private readonly WebConfigService serverConfigService;
 
-    public ProcessController(AppConfig config, LoggerBase logger, FrpProcessCollection processes) : base(config, logger)
+    public ProcessController(AppConfig config, LoggerBase logger, FrpProcessCollection processes, WebConfigService serverConfigService)
+        : base(config, logger)
     {
         this.processes = processes;
+        this.serverConfigService = serverConfigService;
     }
 
     [HttpGet("Status")]
@@ -28,6 +32,10 @@ public class ProcessController : FrpControllerBase
     public Task StartAsync(string id)
     {
         var frp = processes.GetOrCreateProcess(id);
+        if (frp.Config is ClientConfig)
+        {
+            serverConfigService.ThrowIfServerOnly();
+        }
         logger.Info($"÷∏¡Ó£∫∆Ù∂Ø", frp.Config);
         return frp.StartAsync();
     }
