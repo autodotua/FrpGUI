@@ -1,8 +1,11 @@
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
+using FzLib.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Diagnostics;
 
 namespace FrpGUI.Service.Controllers;
 
@@ -52,5 +55,17 @@ public class ProcessController : FrpControllerBase
     public ProcessStatus GetStatusAsync(string id)
     {
         return processes.GetOrCreateProcess(id).ProcessStatus;
+    }
+
+    [HttpGet("All")]
+    public List<ProcessInfo> GetSystemFrpProcesses()
+    {
+        return ProcessInfo.GetFrpProcesses();
+    }
+
+    [HttpPost("Kill/{id}")]
+    public void KillProcess(int id)
+    {
+        ProcessInfo.KillProcess(id);
     }
 }

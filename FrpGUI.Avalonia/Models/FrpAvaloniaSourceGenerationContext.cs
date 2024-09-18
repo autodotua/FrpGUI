@@ -2,6 +2,7 @@
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
+using FzLib.Models;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -16,6 +17,7 @@ namespace FrpGUI.Avalonia.Models;
 [JsonSerializable(typeof(List<LogEntity>))]
 [JsonSerializable(typeof(IList<FrpStatusInfo>))]
 [JsonSerializable(typeof(List<FrpProcess>))]
+[JsonSerializable(typeof(List<ProcessInfo>))]
 public partial class FrpAvaloniaSourceGenerationContext : JsonSerializerContext
 {
 }

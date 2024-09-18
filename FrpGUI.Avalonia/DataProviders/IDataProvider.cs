@@ -6,6 +6,7 @@ using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
+using FzLib.Models;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -18,6 +19,8 @@ namespace FrpGUI.Avalonia.DataProviders
         Task<FrpStatusInfo> GetFrpStatusAsync(string id);
         Task<IList<FrpStatusInfo>> GetFrpStatusesAsync();
         Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter);
+        Task<List<ProcessInfo>> GetSystemProcesses();
+        Task KillProcess(int id);
         Task ModifyConfigAsync(FrpConfigBase config);
         Task RestartFrpAsync(string id);
         Task SetTokenAsync(string oldToken, string newToken);

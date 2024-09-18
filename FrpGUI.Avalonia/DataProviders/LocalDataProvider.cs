@@ -3,6 +3,7 @@ using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Configs;
 using FrpGUI.Enums;
 using FrpGUI.Models;
+using FzLib.Models;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,7 +12,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using static FzLib.Program.Runtime.SimplePipe;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -65,6 +65,17 @@ namespace FrpGUI.Avalonia.DataProviders
         public Task<List<LogEntity>> GetLogsAsync(DateTime timeAfter)
         {
             throw new NotSupportedException();
+        }
+
+        public Task<List<ProcessInfo>> GetSystemProcesses()
+        {
+            return Task.FromResult(ProcessInfo.GetFrpProcesses());
+        }
+
+        public Task KillProcess(int id)
+        {
+            ProcessInfo.KillProcess(id);
+            return Task.CompletedTask;
         }
 
         public Task ModifyConfigAsync(FrpConfigBase config)

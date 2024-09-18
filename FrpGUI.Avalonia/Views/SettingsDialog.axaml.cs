@@ -26,31 +26,4 @@ public partial class SettingsDialog : DialogHost
     {
         Close();
     }
-
-    private void KillButton_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-
-    private async void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-        //IsEnabled = false;
-        //try
-        //{
-        //    List<Process> processes = null;
-        //    await Task.Run(() =>
-        //    {
-        //        processes = Process.GetProcesses()
-        //        .Where(p => p.ProcessName is "frps" or "frpc")
-        //        .ToList();
-        //    });
-        //    (DataContext as SettingViewModel).Processes =
-        //        new ObservableCollection<Process>(processes);
-        //}
-        //finally
-        //{
-        //    IsEnabled = true;
-        //}
-    }
 }

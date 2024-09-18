@@ -12,6 +12,7 @@ using System.Net;
 using System.Linq;
 using FrpGUI.Avalonia.ViewModels;
 using System.Threading;
+using FzLib.Models;
 
 namespace FrpGUI.Avalonia.DataProviders
 {
@@ -22,11 +23,13 @@ namespace FrpGUI.Avalonia.DataProviders
         private const string DeleteFrpConfigsEndpoint = "Config/FrpConfigs/Delete";
         private const string FrpConfigsEndpoint = "Config/FrpConfigs";
         private const string FrpStatusEndpoint = "Process/Status";
+        private const string KillProcessEndpoint = "Process/Kill";
         private const string LogsEndpoint = "Log/List";
         private const string ModifyConfigEndpoint = "Config/FrpConfigs/Modify";
         private const string RestartFrpEndpoint = "Process/Restart";
         private const string StartFrpEndpoint = "Process/Start";
         private const string StopFrpEndpoint = "Process/Stop";
+        private const string SystemProcessesEndpoint = "Process/All";
         private const string TokenEndpoint = "Token";
         private readonly UIConfig config;
         private readonly LocalLogger logger;
@@ -84,6 +87,16 @@ namespace FrpGUI.Avalonia.DataProviders
             return GetObjectAsync<List<LogEntity>>(LogsEndpoint, ("timeAfter", timeAfter.ToString("o")));
         }
 
+        public Task<List<ProcessInfo>> GetSystemProcesses()
+        {
+            return GetObjectAsync<List<ProcessInfo>>(SystemProcessesEndpoint);
+        }
+
+        public Task KillProcess(int id)
+        {
+            return PostAsync($"{KillProcessEndpoint}/{id}");
+        }
+
         public Task ModifyConfigAsync(FrpConfigBase config)
         {
             return PostAsync(ModifyConfigEndpoint, config);
@@ -119,7 +132,7 @@ namespace FrpGUI.Avalonia.DataProviders
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
             while (await timer.WaitForNextTickAsync())
             {
-                foreach (var (name, task) in timerTasks)
+                foreach (var (name, task) in timerTasks.ToList())
                 {
                     try
                     {

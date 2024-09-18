@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Configs;
 using FzLib.Avalonia.Messages;
+using FzLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,7 +25,7 @@ namespace FrpGUI.Avalonia.ViewModels
         private string oldToken;
 
         [ObservableProperty]
-        private ObservableCollection<Process> processes;
+        private ObservableCollection<ProcessInfo> processes;
 
         [ObservableProperty]
         private string serverAddress;
@@ -32,17 +33,28 @@ namespace FrpGUI.Avalonia.ViewModels
         {
             Config = config;
             ServerAddress = config.ServerAddress;
+            FillProcesses();
+        }
+
+        private async void FillProcesses()
+        {
+            try
+            {
+                Processes = new ObservableCollection<ProcessInfo>(await DataProvider.GetSystemProcesses());
+            }
+            catch (Exception ex)
+            { }
         }
 
         public UIConfig Config { get; }
 
         [RelayCommand]
-        private async Task KillProcessAsync(Process p)
+        private async Task KillProcessAsync(ProcessInfo p)
         {
             Debug.Assert(p != null);
             try
             {
-                p.Kill();
+                await DataProvider.KillProcess(p.Id);
                 Processes.Remove(p);
             }
             catch (Exception ex)
@@ -50,7 +62,7 @@ namespace FrpGUI.Avalonia.ViewModels
                 await SendMessage(new CommonDialogMessage()
                 {
                     Type = CommonDialogMessage.CommonDialogType.Error,
-                    Title = "停止进程失败",
+                    Title = "结束进程失败",
                     Exception = ex,
                 }).Task;
             }

@@ -20,7 +20,6 @@
     Padding="4"
     x:DataType="vm:SettingViewModel"
     CloseButtonContent="关闭"
-    Loaded="Window_Loaded"
     mc:Ignorable="d">
 
     <ScrollViewer
@@ -111,16 +110,15 @@
                                         Text="{Binding StartTime}" />
                                     <TextBlock
                                         Grid.Row="2"
-                                        Text="{Binding MainModule.FileName}"
+                                        Text="{Binding FileName}"
                                         TextTrimming="PrefixCharacterEllipsis" />
                                     <Button
                                         Grid.RowSpan="99"
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
-                                        Click="KillButton_Click"
                                         Command="{Binding $parent[ItemsControl].DataContext.KillProcessCommand}"
                                         CommandParameter="{Binding .}"
-                                        Content="停止进程" />
+                                        Content="结束" />
                                 </Grid>
                             </Border>
                         </DataTemplate>
