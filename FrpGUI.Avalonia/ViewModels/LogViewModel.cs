@@ -28,33 +28,47 @@ public partial class LogViewModel : ViewModelBase
 
     public void AddLog(LogEntity e)
     {
-        IBrush brush = Brushes.Transparent;
-        if (e.Type == 'W')
+        try
         {
-            brush = Brushes.Orange;
-        }
-        else if (e.Type == 'E')
-        {
-            brush = Brushes.Red;
-        }
-
-        if (Logs.Count >= 2)
-        {
-            for (int i = 1; i <= 2; i++)
+            //不知道为什么，加了内置浏览器后，Logs会报莫名其妙的错误，有时候Logs最后一个是null，
+            //但是CollectionChanged里也不触发。所以加了最后一个null的判断以及try-catch
+            while (Logs.Count > 0 && Logs[^1] == null)
             {
-                if (Logs[^i].Message == e.Message)
+                Logs.RemoveAt(Logs.Count - 1);
+            }
+            IBrush brush = Brushes.Transparent;
+            if (e.Type == 'W')
+            {
+                brush = Brushes.Orange;
+            }
+            else if (e.Type == 'E')
+            {
+                brush = Brushes.Red;
+            }
+
+            if (Logs.Count >= 2)
+            {
+                for (int i = 1; i <= 2; i++)
                 {
-                    Logs[^i].UpdateTimes++;
-                    return;
+                    if (Logs[^i].Message == e.Message)
+                    {
+                        Logs[^i].UpdateTimes++;
+                        return;
+                    }
                 }
             }
+            var log = new LogInfo(e)
+            {
+                TypeBrush = brush,
+            };
+
+            Logs.Add(log);
+            SelectedLog = log;
         }
-        var log = new LogInfo(e)
+        catch (Exception ex)
         {
-            TypeBrush = brush,
-        };
-        Logs.Add(log);
-        SelectedLog = log;
+
+        }
     }
 
     [RelayCommand]

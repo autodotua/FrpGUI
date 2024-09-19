@@ -353,14 +353,13 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private string GetDashboardUrl(FrpConfigBase frpConfig)
+    private string GetDashboardUrl(FrpConfigBase frpConfig,bool includeAuth)
     {
         string user = frpConfig.DashBoardUsername;
         string pswd = frpConfig.DashBoardPassword;
         string ip = config.RunningMode == RunningMode.Singleton ? "localhost" : config.ServerAddress;
         ushort port = frpConfig.DashBoardPort;
-        //return $"http://{user}:{pswd}@{ip}:{port}";
-        return $"http://{ip}:{port}";
+        return includeAuth? $"http://{user}:{pswd}@{ip}:{port}":         $"http://{ip}:{port}";
     }
     private void UpdateMainContent()
     {
@@ -369,12 +368,13 @@ public partial class MainViewModel : ViewModelBase
             CurrentMainContent = null;
             return;
         }
-        string url = GetDashboardUrl(CurrentFrpProcess.Config);
+        string url = GetDashboardUrl(CurrentFrpProcess.Config,true);
         if (CurrentFrpProcess.ProcessStatus == ProcessStatus.Running && !OperatingSystem.IsBrowser())
         {
             ShowWebview = true;
-            if (WebViewUrl?.AbsolutePath != url)
+            if (WebViewUrl?.OriginalString != url)
             {
+                WebViewUrl = new Uri("about:blank");
                 WebViewUrl = new Uri(url);
             }
         }
@@ -391,13 +391,23 @@ public partial class MainViewModel : ViewModelBase
                 CurrentMainContent = CurrentMainContent is ClientPanel c ? c : Dispatcher.UIThread.Invoke(() => new ClientPanel());
             }
         }
-        //httpClient.DefaultRequestHeaders.Authorization
-        //= new AuthenticationHeaderValue("Basic",
-        //Convert.ToBase64String(
-        //                  Encoding.UTF8.GetBytes($"{server.DashBoardUsername}:{server.DashBoardPassword}")));
-        //var fullUrl = new Uri($"http://localhost:{server.DashBoardPort}/api/{url}");
 
     }
+
+    [RelayCommand]
+    private void NavigationCompleted()
+    {
+        //用户名和密码通过Url形式传给frp后端，这样虽然可以登陆，但是数据请求不到。
+        //所以在加载完成后，再访问一下不带用户名密码的网址。
+        //此时认证信息会自动保留，所以能够变相实现自动登录。
+        //直接设置网址好像会认为是同一个网址导致不跳转，所以先访问一下about:blank。
+        if (WebViewUrl.OriginalString.Contains('@'))
+        {
+            WebViewUrl = new Uri("about:blank");
+            WebViewUrl = new Uri(GetDashboardUrl(CurrentFrpProcess.Config, false));
+        }
+    }
+
     private async Task UpdateStatusAsync(bool force)
     {
         if (!force && (DateTime.Now - lastUpdateStatusTime).TotalSeconds < 1

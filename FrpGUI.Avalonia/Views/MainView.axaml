@@ -128,7 +128,15 @@
                     <OnPlatform.Default>
                         <WebView
                             x:Name="web"
-                            Url="{Binding WebViewUrl}" />
+                            Url="{Binding WebViewUrl}">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior
+                                    EventName="NavigationCompleted"
+                                    SourceObject="web">
+                                    <InvokeCommandAction Command="{Binding NavigationCompletedCommand}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
+                        </WebView>
                     </OnPlatform.Default>
                 </OnPlatform>
             </ContentControl.Content>
