@@ -108,6 +108,7 @@
         </Grid>
 
         <v:ControlBar
+            x:Name="controlBar"
             Grid.Column="2"
             Grid.ColumnSpan="99" />
         <ContentControl

@@ -11,6 +11,7 @@ using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
 using FrpGUI.Models;
 using FrpGUI.Services;
+using FzLib.Avalonia.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -29,6 +30,7 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        DialogExtension.ContainerType=DialogContainerType.WindowPreferred;
         if (!OperatingSystem.IsBrowser())
         {
             AvaloniaWebViewBuilder.Initialize(default);

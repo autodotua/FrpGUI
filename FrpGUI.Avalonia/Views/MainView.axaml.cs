@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AvaloniaWebView;
 using CommunityToolkit.Mvvm.Messaging;
@@ -27,17 +28,40 @@ public partial class MainView : UserControl
         base.OnLoaded(e);
         if (TopLevel.GetTopLevel(this) is Window win)
         {
-            tbkLogo.PointerPressed += (s, e) =>
-              {
-                  win.BeginMoveDrag(e);
-              };
+            foreach (var control in new Control[] { controlBar, tbkLogo })
+            {
+
+                control.PointerPressed += (s, e) =>
+                {
+                    win.BeginMoveDrag(e);
+                };
+
+                control.DoubleTapped += (s, e) =>
+                {
+                    win.WindowState = win.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                };
+            }
         }
     }
 
+    private void RegisterDialogHostMessage()
+    {
+        WeakReferenceMessenger.Default.Register(this, async delegate (object _, DialogHostMessage m)
+        {
+            try
+            {
+                m.SetResult(await m.Dialog.ShowDialog<object>(DialogContainerType.WindowPreferred, TopLevel.GetTopLevel(this)));
+            }
+            catch (Exception exception)
+            {
+                m.SetException(exception);
+            }
+        });
+    }
     private void RegisterMessages()
     {
         this.RegisterCommonDialogMessage();
-        this.RegisterDialogHostMessage();
+        RegisterDialogHostMessage();
         this.RegisterGetClipboardMessage();
         this.RegisterGetStorageProviderMessage();
         WeakReferenceMessenger.Default.Register<InputDialogMessage>(this, async (_, m) =>

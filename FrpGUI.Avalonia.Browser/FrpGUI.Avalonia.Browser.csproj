@@ -21,6 +21,11 @@
 
   <ItemGroup>
     <Content Remove="web.config" />
+    <Content Remove="wwwroot\favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="wwwroot\favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>

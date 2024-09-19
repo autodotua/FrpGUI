@@ -11,16 +11,4 @@ public partial class ControlBar : UserControl
     {
         InitializeComponent();
     }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        if (TopLevel.GetTopLevel(this) is Window win)
-        {
-            PointerPressed += (s, e) =>
-            {
-                win.BeginMoveDrag(e);
-            };
-        }
-    }
 }
