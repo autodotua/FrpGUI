@@ -29,7 +29,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly UIConfig config;
     private readonly IDataProvider provider;
     private readonly IServiceProvider services;
-
+    private readonly LocalLogger logger;
     [ObservableProperty]
     private bool activeProgressRingOverlay = true;
 
@@ -57,12 +57,14 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(IDataProvider provider,
         UIConfig config,
         IServiceProvider services,
-        FrpConfigViewModel frpConfigViewModel) : base(provider)
+        FrpConfigViewModel frpConfigViewModel,
+        LocalLogger logger) : base(provider)
     {
         this.config = config;
         this.services = services;
         InitializeDataAndStartTimer();
         CurrentPanelViewModel = frpConfigViewModel;
+        this.logger = logger;
     }
 
 
@@ -149,10 +151,6 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task CreateCopyAsync(IFrpProcess fp)
     {
-        //var newConfig = config.Clone() as FrpConfigBase;
-        //newConfig.Name = newConfig.Name + "（复制）";
-        //FrpConfigs.Add(newConfig);
-        //CurrentFrpProcess = newConfig;
         try
         {
             FrpConfigBase serverConfig;
@@ -308,7 +306,6 @@ public partial class MainViewModel : ViewModelBase
         {
             await DataProvider.ModifyConfigAsync(CurrentFrpProcess.Config);
             await DataProvider.RestartFrpAsync(CurrentFrpProcess.Config.ID);
-            //await   WaitForNextUpdate();
             await UpdateStatusAsync(true);
         }
         catch (Exception ex)
@@ -353,13 +350,22 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private string GetDashboardUrl(FrpConfigBase frpConfig,bool includeAuth)
+    private string GetDashboardUrl(FrpConfigBase frpConfig, bool includeAuth)
     {
-        string user = frpConfig.DashBoardUsername;
-        string pswd = frpConfig.DashBoardPassword;
-        string ip = config.RunningMode == RunningMode.Singleton ? "localhost" : config.ServerAddress;
-        ushort port = frpConfig.DashBoardPort;
-        return includeAuth? $"http://{user}:{pswd}@{ip}:{port}":         $"http://{ip}:{port}";
+        try
+        {
+            string user = frpConfig.DashBoardUsername;
+            string pswd = frpConfig.DashBoardPassword;
+            string ip = config.RunningMode == RunningMode.Singleton ?
+                "localhost"
+                : new Uri(config.ServerAddress).Host;
+            ushort port = frpConfig.DashBoardPort;
+            return includeAuth ? $"http://{user}:{pswd}@{ip}:{port}" : $"http://{ip}:{port}";
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("尝试获取仪表盘地址失败");
+        }
     }
     private void UpdateMainContent()
     {
@@ -368,30 +374,34 @@ public partial class MainViewModel : ViewModelBase
             CurrentMainContent = null;
             return;
         }
-        string url = GetDashboardUrl(CurrentFrpProcess.Config,true);
-        if (CurrentFrpProcess.ProcessStatus == ProcessStatus.Running && !OperatingSystem.IsBrowser())
+
+        try
         {
-            ShowWebview = true;
-            if (WebViewUrl?.OriginalString != url)
+            string url = GetDashboardUrl(CurrentFrpProcess.Config, true);
+            if (CurrentFrpProcess.ProcessStatus == ProcessStatus.Running && !OperatingSystem.IsBrowser())
             {
+                ShowWebview = true;
                 WebViewUrl = new Uri("about:blank");
                 WebViewUrl = new Uri(url);
             }
-        }
-        else
-        {
-            ShowWebview = false;
-
-            if (CurrentFrpProcess.Config is ServerConfig)
-            {
-                CurrentMainContent = CurrentMainContent is ServerPanel s ? s : Dispatcher.UIThread.Invoke(() => new ServerPanel());
-            }
             else
             {
-                CurrentMainContent = CurrentMainContent is ClientPanel c ? c : Dispatcher.UIThread.Invoke(() => new ClientPanel());
+                ShowWebview = false;
+
+                if (CurrentFrpProcess.Config is ServerConfig)
+                {
+                    CurrentMainContent = CurrentMainContent is ServerPanel s ? s : Dispatcher.UIThread.Invoke(() => new ServerPanel());
+                }
+                else
+                {
+                    CurrentMainContent = CurrentMainContent is ClientPanel c ? c : Dispatcher.UIThread.Invoke(() => new ClientPanel());
+                }
             }
         }
-
+        catch (Exception ex)
+        {
+            logger.Error("更新主界面内容失败", null, ex);
+        }
     }
 
     [RelayCommand]
@@ -415,24 +425,36 @@ public partial class MainViewModel : ViewModelBase
         {
             return;
         }
-
-        lastUpdateStatusTime = DateTime.Now;
-        var fps = await DataProvider.GetFrpStatusesAsync();
-        var local = FrpProcesses.ToDictionary(p => p.Config.ID);
-        foreach (var fp in fps)
+        try
         {
-            if (local.TryGetValue(fp.Config.ID, out var localFp))
+            lastUpdateStatusTime = DateTime.Now;
+            var fps = await DataProvider.GetFrpStatusesAsync();
+            var local = FrpProcesses.ToDictionary(p => p.Config.ID);
+            foreach (var fp in fps)
             {
-                localFp.ProcessStatus = fp.ProcessStatus;
+                if (local.TryGetValue(fp.Config.ID, out var localFp))
+                {
+                    if (localFp.ProcessStatus != fp.ProcessStatus)
+                    {
+                        localFp.ProcessStatus = fp.ProcessStatus;
+                        if (localFp == CurrentFrpProcess)
+                        {
+                            UpdateMainContent();
+                        }
+                    }
+                }
+            }
+
+
+            if (tcsUpdate != null)
+            {
+                tcsUpdate.SetResult();
+                tcsUpdate = null;
             }
         }
-
-        UpdateMainContent();
-
-        if (tcsUpdate != null)
+        catch (Exception ex)
         {
-            tcsUpdate.SetResult();
-            tcsUpdate = null;
+            logger.Error("更新frp进程状态失败", null, ex);
         }
     }
 }
