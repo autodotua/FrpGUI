@@ -6,15 +6,6 @@ namespace FrpGUI.Models
     public partial class ServerConfig : FrpConfigBase
     {
         [ObservableProperty]
-        private string dashBoardPassword = "admin";
-
-        [ObservableProperty]
-        private ushort dashBoardPort = 7500;
-
-        [ObservableProperty]
-        private string dashBoardUsername = "admin";
-
-        [ObservableProperty]
         private ushort? httpPort;
 
         [ObservableProperty]

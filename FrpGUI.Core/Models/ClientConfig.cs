@@ -6,18 +6,6 @@ namespace FrpGUI.Models
     public partial class ClientConfig : FrpConfigBase
     {
         [ObservableProperty]
-        private string adminAddress = "localhost";
-
-        [ObservableProperty]
-        private string adminPassword = "admin";
-
-        [ObservableProperty]
-        private ushort adminPort = 7400;
-
-        [ObservableProperty]
-        private string adminUsername = "admin";
-
-        [ObservableProperty]
         private bool enableTls;
 
         [ObservableProperty]
@@ -56,10 +44,10 @@ namespace FrpGUI.Models
             str.Append("serverPort = ").Append(ServerPort).AppendLine();
             str.Append("loginFailExit = ").Append(LoginFailExit.ToString().ToLower()).AppendLine();
 
-            str.Append("webServer.addr = ").Append('"').Append(AdminAddress).Append('"').AppendLine();
-            str.Append("webServer.port = ").Append(AdminPort).AppendLine();
-            str.Append("webServer.user = ").Append('"').Append(AdminUsername).Append('"').AppendLine();
-            str.Append("webServer.password  = ").Append('"').Append(AdminPassword).Append('"').AppendLine();
+            str.Append("webServer.addr = ").Append('"').Append(DashBoardAddress).Append('"').AppendLine();
+            str.Append("webServer.port = ").Append(DashBoardPort).AppendLine();
+            str.Append("webServer.user = ").Append('"').Append(DashBoardUsername).Append('"').AppendLine();
+            str.Append("webServer.password  = ").Append('"').Append(DashBoardPassword).Append('"').AppendLine();
             if (!string.IsNullOrWhiteSpace(Token))
             {
                 str.Append("auth.token = ").Append('"').Append(Token).Append('"').AppendLine();

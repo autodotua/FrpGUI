@@ -59,16 +59,16 @@
                 </ctrl:FormItem>
 
                 <ctrl:FormItem Label="管理面板地址">
-                    <TextBox Text="{Binding Frp.Config.AdminAddress}" />
+                    <TextBox Text="{Binding Frp.Config.DashBoardAddress}" />
                 </ctrl:FormItem>
                 <ctrl:FormItem Label="管理面板端口">
-                    <TextBox Text="{Binding Frp.Config.AdminPort}" />
+                    <TextBox Text="{Binding Frp.Config.DashBoardPort}" />
                 </ctrl:FormItem>
                 <ctrl:FormItem Label="管理面板用户名">
-                    <TextBox Text="{Binding Frp.Config.AdminUsername}" />
+                    <TextBox Text="{Binding Frp.Config.DashBoardUsername}" />
                 </ctrl:FormItem>
                 <ctrl:FormItem Label="管理面板密码">
-                    <TextBox Text="{Binding Frp.Config.AdminPassword}" />
+                    <TextBox Text="{Binding Frp.Config.DashBoardPassword}" />
                 </ctrl:FormItem>
             </ctrl:StackFormItemGroup>
         </ScrollViewer>

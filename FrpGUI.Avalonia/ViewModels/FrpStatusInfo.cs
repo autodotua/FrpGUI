@@ -26,6 +26,11 @@ public partial class FrpStatusInfo : ObservableObject, IFrpProcess
     {
         Config = fp.Config;
         ProcessStatus = fp.ProcessStatus;
+        fp.StatusChanged += (s, e) =>
+        {
+            ProcessStatus = (s as IFrpProcess).ProcessStatus;
+            StatusChanged.Invoke(s, e);
+        };
     }
 
     public event EventHandler StatusChanged;

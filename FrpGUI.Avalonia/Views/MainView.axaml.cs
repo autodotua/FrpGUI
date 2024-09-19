@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using AvaloniaWebView;
 using CommunityToolkit.Mvvm.Messaging;
 using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
@@ -19,26 +20,6 @@ public partial class MainView : UserControl
         DataContext = App.Services.GetRequiredService<MainViewModel>();
         InitializeComponent();
         RegisterMessages();
-        (DataContext as MainViewModel).PropertyChanged += MainView_PropertyChanged;
-    }
-
-    private void MainView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(MainViewModel.CurrentFrpProcess))
-        {
-            if ((DataContext as MainViewModel).CurrentFrpProcess == null)
-            {
-                mainPanel.Content = null;
-            }
-            else if ((DataContext as MainViewModel).CurrentFrpProcess.Config is ServerConfig)
-            {
-                mainPanel.Content = new ServerPanel();
-            }
-            else
-            {
-                mainPanel.Content = new ClientPanel();
-            }
-        }
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

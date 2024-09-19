@@ -115,9 +115,24 @@
             Grid.Row="1"
             Grid.Column="2"
             Margin="8"
+            Content="{Binding $parent[UserControl].DataContext.CurrentMainContent}"
             DataContext="{Binding CurrentPanelViewModel}" />
 
-
+        <ContentControl
+            x:Name="webContainer"
+            Grid.Row="1"
+            Grid.Column="2"
+            IsVisible="{Binding ShowWebview}">
+            <ContentControl.Content>
+                <OnPlatform Browser="{x:Null}">
+                    <OnPlatform.Default>
+                        <WebView
+                            x:Name="web"
+                            Url="{Binding WebViewUrl}" />
+                    </OnPlatform.Default>
+                </OnPlatform>
+            </ContentControl.Content>
+        </ContentControl>
         <v:LogPanel
             Grid.Row="1"
             Grid.Column="4" />

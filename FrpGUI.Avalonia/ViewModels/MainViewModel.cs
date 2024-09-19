@@ -1,4 +1,6 @@
 ﻿using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using AvaloniaWebView;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrpGUI.Avalonia.DataProviders;
@@ -12,16 +14,20 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static FzLib.Avalonia.Messages.CommonDialogMessage;
+using static FzLib.Program.Runtime.SimplePipe;
+using FrpGUI.Configs;
 
 namespace FrpGUI.Avalonia.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private readonly IDataProvider provider;
     private readonly UIConfig config;
+    private readonly IDataProvider provider;
     private readonly IServiceProvider services;
 
     [ObservableProperty]
@@ -31,11 +37,23 @@ public partial class MainViewModel : ViewModelBase
     private IFrpProcess currentFrpProcess;
 
     [ObservableProperty]
+    private object currentMainContent;
+
+    [ObservableProperty]
     private FrpConfigViewModel currentPanelViewModel;
 
     [ObservableProperty]
     private ObservableCollection<IFrpProcess> frpProcesses = new ObservableCollection<IFrpProcess>();
 
+    private DateTime lastUpdateStatusTime = DateTime.MinValue;
+
+    [ObservableProperty]
+    private bool showWebview;
+
+    TaskCompletionSource tcsUpdate;
+
+    [ObservableProperty]
+    private Uri webViewUrl;
     public MainViewModel(IDataProvider provider,
         UIConfig config,
         IServiceProvider services,
@@ -45,6 +63,13 @@ public partial class MainViewModel : ViewModelBase
         this.services = services;
         InitializeDataAndStartTimer();
         CurrentPanelViewModel = frpConfigViewModel;
+    }
+
+
+    public Task WaitForNextUpdate()
+    {
+        tcsUpdate = new TaskCompletionSource();
+        return tcsUpdate.Task;
     }
 
     [RelayCommand]
@@ -82,6 +107,42 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             await ShowErrorAsync(ex, "新增客户端失败");
+        }
+    }
+
+    private async Task CheckNetworkAndToken()
+    {
+    start:
+        if (config.RunningMode == RunningMode.Singleton)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await DataProvider.VerifyTokenAsync();
+            string token;
+            switch (result)
+            {
+                case TokenVerification.OK:
+                    return;
+
+                case TokenVerification.NotEqual:
+                    await ShowErrorAsync("密码不正确，请重新设置密码", "验证密码错误");
+                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
+                    goto start;
+
+                case TokenVerification.NeedSet:
+                    await ShowErrorAsync("服务端密码为空，请先设置密码", "密码为空");
+                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
+                    goto start;
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex, "网络错误，无法连接到FrpGUI服务端");
+            await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
+            goto start;
         }
     }
 
@@ -192,43 +253,6 @@ public partial class MainViewModel : ViewModelBase
             await ShowErrorAsync(ex, "启动失败");
         }
     }
-
-    private async Task CheckNetworkAndToken()
-    {
-    start:
-        if (config.RunningMode == RunningMode.Singleton)
-        {
-            return;
-        }
-
-        try
-        {
-            var result = await DataProvider.VerifyTokenAsync();
-            string token;
-            switch (result)
-            {
-                case TokenVerification.OK:
-                    return;
-
-                case TokenVerification.NotEqual:
-                    await ShowErrorAsync("密码不正确，请重新设置密码", "验证密码错误");
-                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
-                    goto start;
-
-                case TokenVerification.NeedSet:
-                    await ShowErrorAsync("服务端密码为空，请先设置密码", "密码为空");
-                    await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
-                    goto start;
-            }
-        }
-        catch (Exception ex)
-        {
-            await ShowErrorAsync(ex, "网络错误，无法连接到FrpGUI服务端");
-            await SendMessage(new DialogHostMessage(services.GetRequiredService<SettingsDialog>())).Task;
-            goto start;
-        }
-    }
-
     private async void InitializeDataAndStartTimer()
     {
         await CheckNetworkAndToken();
@@ -253,9 +277,19 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    partial void OnCurrentFrpProcessChanged(IFrpProcess value)
+    partial void OnCurrentFrpProcessChanged(IFrpProcess oldValue, IFrpProcess newValue)
     {
-        CurrentPanelViewModel.LoadConfig(value);
+        CurrentPanelViewModel.LoadConfig(newValue);
+        if (newValue != null)
+        {
+            newValue.StatusChanged += CurrentViewFrp_StatusChanged;
+        }
+        UpdateMainContent();
+    }
+
+    private void CurrentViewFrp_StatusChanged(object sender, EventArgs e)
+    {
+        UpdateMainContent();
     }
 
     partial void OnCurrentFrpProcessChanging(IFrpProcess oldValue, IFrpProcess newValue)
@@ -263,6 +297,7 @@ public partial class MainViewModel : ViewModelBase
         if (oldValue != null && FrpProcesses.Contains(oldValue))
         {
             DataProvider.ModifyConfigAsync(oldValue.Config);
+            oldValue.StatusChanged -= CurrentViewFrp_StatusChanged;
         }
     }
 
@@ -306,6 +341,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task StopAsync()
     {
+        ShowWebview = false;
         try
         {
             await DataProvider.StopFrpAsync(CurrentFrpProcess.Config.ID);
@@ -317,17 +353,55 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    TaskCompletionSource tcsUpdate;
-
-    public Task WaitForNextUpdate()
+    private string GetDashboardUrl(FrpConfigBase frpConfig)
     {
-        tcsUpdate = new TaskCompletionSource();
-        return tcsUpdate.Task;
+        string user = frpConfig.DashBoardUsername;
+        string pswd = frpConfig.DashBoardPassword;
+        string ip = config.RunningMode == RunningMode.Singleton ? "localhost" : config.ServerAddress;
+        ushort port = frpConfig.DashBoardPort;
+        //return $"http://{user}:{pswd}@{ip}:{port}";
+        return $"http://{ip}:{port}";
     }
+    private void UpdateMainContent()
+    {
+        if (CurrentFrpProcess == null)
+        {
+            CurrentMainContent = null;
+            return;
+        }
+        string url = GetDashboardUrl(CurrentFrpProcess.Config);
+        if (CurrentFrpProcess.ProcessStatus == ProcessStatus.Running && !OperatingSystem.IsBrowser())
+        {
+            ShowWebview = true;
+            if (WebViewUrl?.AbsolutePath != url)
+            {
+                WebViewUrl = new Uri(url);
+            }
+        }
+        else
+        {
+            ShowWebview = false;
 
+            if (CurrentFrpProcess.Config is ServerConfig)
+            {
+                CurrentMainContent = CurrentMainContent is ServerPanel s ? s : Dispatcher.UIThread.Invoke(() => new ServerPanel());
+            }
+            else
+            {
+                CurrentMainContent = CurrentMainContent is ClientPanel c ? c : Dispatcher.UIThread.Invoke(() => new ClientPanel());
+            }
+        }
+        //httpClient.DefaultRequestHeaders.Authorization
+        //= new AuthenticationHeaderValue("Basic",
+        //Convert.ToBase64String(
+        //                  Encoding.UTF8.GetBytes($"{server.DashBoardUsername}:{server.DashBoardPassword}")));
+        //var fullUrl = new Uri($"http://localhost:{server.DashBoardPort}/api/{url}");
+
+    }
     private async Task UpdateStatusAsync(bool force)
     {
-        if (!force && (DateTime.Now - lastUpdateStatusTime).TotalSeconds < 1)
+        if (!force && (DateTime.Now - lastUpdateStatusTime).TotalSeconds < 1
+            || config.RunningMode == RunningMode.Singleton)
         {
             return;
         }
@@ -343,12 +417,12 @@ public partial class MainViewModel : ViewModelBase
             }
         }
 
+        UpdateMainContent();
+
         if (tcsUpdate != null)
         {
             tcsUpdate.SetResult();
             tcsUpdate = null;
         }
     }
-
-    private DateTime lastUpdateStatusTime = DateTime.MinValue;
 }

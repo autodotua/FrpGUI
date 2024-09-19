@@ -11,11 +11,22 @@ namespace FrpGUI.Models
         private bool autoStart;
 
         [ObservableProperty]
+        private string dashBoardPassword = "admin";
+
+        [ObservableProperty]
+        private ushort dashBoardPort = 7500;
+
+        [ObservableProperty]
+        private string dashBoardUsername = "admin";
+
+        [ObservableProperty]
+        private string dashBoardAddress = "localhost";
+
+        [ObservableProperty]
         private string name;
 
         [ObservableProperty]
         private string token = "";
-
         public FrpConfigBase()
         {
         }

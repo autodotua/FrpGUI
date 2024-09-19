@@ -2,6 +2,7 @@
 using Avalonia.Browser;
 using FrpGUI.Avalonia;
 using FrpGUI.Avalonia.Models;
+using FrpGUI.Utils;
 using System;
 using System.IO;
 using System.Net;

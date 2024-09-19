@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.WebView.Desktop;
 using log4net;
 using System;
 using System.IO;
@@ -73,7 +74,8 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .LogToTrace();
+            .LogToTrace()
+            .UseDesktopWebView();
 
     public static ILog Log { get; private set; }
 

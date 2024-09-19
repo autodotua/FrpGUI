@@ -24,6 +24,7 @@
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="FzLib.Avalonia" />
     <PackageReference Include="log4net" />
+    <PackageReference Include="WebView.Avalonia.Desktop" />
   </ItemGroup>
 
   <ItemGroup>

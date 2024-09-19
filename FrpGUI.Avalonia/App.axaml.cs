@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using AvaloniaWebView;
 using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
@@ -28,6 +29,10 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        if (!OperatingSystem.IsBrowser())
+        {
+            AvaloniaWebViewBuilder.Initialize(default);
+        }
         if (OperatingSystem.IsWindows())
         {
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));

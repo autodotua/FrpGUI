@@ -34,6 +34,7 @@
     <PackageReference Include="FzLib.Avalonia" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="WebView.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
