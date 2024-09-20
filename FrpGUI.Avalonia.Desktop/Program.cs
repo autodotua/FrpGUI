@@ -14,7 +14,7 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         InitializeLogs();
 #if !DEBUG
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;

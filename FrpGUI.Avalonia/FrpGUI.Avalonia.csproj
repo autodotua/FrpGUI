@@ -31,12 +31,22 @@
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
-    <PackageReference Include="FzLib.Avalonia" />
+    <PackageReference Include="FzLib.Avalonia" Condition="'$(Configuration)' == 'Release' or '$(FzLocal)' == 'F'" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="WebView.Avalonia" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)' == 'Debug' and '$(FzLocal)' == 'T'">
+    <Reference Include="FzLib">
+      <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.dll</HintPath>
+    </Reference>
+    <Reference Include="FzLib.Avalonia">
+      <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.Avalonia.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Core\FrpGUI.Core.csproj" />
     <ProjectReference Include="..\FrpGUI.Service\FrpGUI.Service.csproj" />

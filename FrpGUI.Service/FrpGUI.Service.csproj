@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="FzLib" />
+    <PackageReference Include="FzLib" Condition="'$(Configuration)' == 'Release' or '$(FzLocal)' == 'F'" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
@@ -28,5 +28,12 @@
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Core\FrpGUI.Core.csproj" />
   </ItemGroup>
+  
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'  and '$(FzLocal)' == 'T'">
+    <Reference Include="FzLib">
+      <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>
