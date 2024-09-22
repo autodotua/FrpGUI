@@ -1,17 +1,16 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
+using AvaloniaWebView;
 using CommunityToolkit.Mvvm.Messaging;
+using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
-using FrpGUI.Config;
-using FzLib.Avalonia;
+
+using FrpGUI.Models;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia.Views;
 
@@ -19,47 +18,63 @@ public partial class MainView : UserControl
 {
     public MainView()
     {
-        DataContext = new MainViewModel();
+        DataContext = App.Services.GetRequiredService<MainViewModel>();
         InitializeComponent();
         RegisterMessages();
-        (DataContext as MainViewModel).PropertyChanged += MainView_PropertyChanged;
     }
 
-    private void MainView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        if (e.PropertyName == nameof(MainViewModel.CurrentFrpConfig))
+        base.OnLoaded(e);
+        if (TopLevel.GetTopLevel(this) is Window win)
         {
-            if ((DataContext as MainViewModel).CurrentFrpConfig is ServerConfig)
+            foreach (var control in new Control[] { controlBar, tbkLogo })
             {
-                mainPanel.Content = new ServerPanel();
-            }
-            else
-            {
-                mainPanel.Content = new ClientPanel();
+
+                control.PointerPressed += (s, e) =>
+                {
+                    win.BeginMoveDrag(e);
+                };
+
+                control.DoubleTapped += (s, e) =>
+                {
+                    win.WindowState = win.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                };
             }
         }
     }
 
-    private void RegisterMessages()
+    private void RegisterDialogHostMessage()
     {
-        this.RegisterCommonDialogMessage();
-        this.RegisterDialogHostMessage();
-        this.RegisterGetClipboardMessage();
-        this.RegisterGetStorageProviderMessage();
-    }
-
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        foreach (var config in (DataContext as MainViewModel).FrpConfigs.Where(p => p.AutoStart))
+        WeakReferenceMessenger.Default.Register(this, async delegate (object _, DialogHostMessage m)
         {
             try
             {
-                config.Start();
+                m.SetResult(await m.Dialog.ShowDialog<object>(DialogContainerType.WindowPreferred, TopLevel.GetTopLevel(this)));
             }
-            catch
+            catch (Exception exception)
             {
-
+                m.SetException(exception);
             }
-        }
+        });
+    }
+    private void RegisterMessages()
+    {
+        this.RegisterCommonDialogMessage();
+        RegisterDialogHostMessage();
+        this.RegisterGetClipboardMessage();
+        this.RegisterGetStorageProviderMessage();
+        WeakReferenceMessenger.Default.Register<InputDialogMessage>(this, async (_, m) =>
+        {
+            try
+            {
+                var result = await this.ShowInputTextDialogAsync(m.Title, m.Message, m.DefaultText, m.Watermark);
+                m.SetResult(result);
+            }
+            catch (Exception exception)
+            {
+                m.SetException(exception);
+            }
+        });
     }
 }

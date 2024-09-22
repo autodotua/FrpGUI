@@ -1,6 +1,17 @@
 <Project>
   <PropertyGroup>
-    <Nullable>enable</Nullable>
-    <AvaloniaVersion>11.0.2</AvaloniaVersion>
+    <!--App版本-->
+    <AppVersion>3.0.0</AppVersion>
+
+    <!--Avalonia库版本-->
+    <AvaloniaVersion>11.1.3</AvaloniaVersion>
+    <!--FzLib库版本-->
+    <FzLibVersion>2.2.1</FzLibVersion>
+    
+    <!--使用本地FzLib库。非作者使用时，应改为F-->
+    <FzLocal>T</FzLocal>
+    
+    <!--在非Windows上开发，设置临时文件夹目录-->
+    <!--<Temp>/home/username/temp</Temp>-->
   </PropertyGroup>
 </Project>

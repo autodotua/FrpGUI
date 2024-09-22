@@ -1,0 +1,48 @@
+<UserControl
+    x:Class="FrpGUI.Avalonia.Views.ProgressRingOverlay"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
+    xmlns:cf="clr-namespace:FrpGUI.Configs;assembly=FrpGUI.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialog="using:FzLib.Avalonia.Dialogs"
+    xmlns:f="clr-namespace:FrpGUI;assembly=FrpGUI.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="clr-namespace:FrpGUI.Avalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Panel Classes.Show="{Binding $parent[UserControl].IsActive}">
+        <Panel.Transitions>
+          <Transitions>
+            <DoubleTransition
+                Easing="CubicEaseInOut"
+                Property="Opacity"
+                Duration="0:0:0.5" />
+          </Transitions>
+        </Panel.Transitions>
+        <Panel.Styles>
+            <Style Selector="Panel">
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Opacity" Value="0" />
+
+                <Style Selector="^.Show">
+                    <Setter Property="IsHitTestVisible" Value="True" />
+                    <Setter Property="Opacity" Value="1" />
+                </Style>
+            </Style>
+        </Panel.Styles>
+        <!-- <Interaction.Behaviors> -->
+        <!--     <DataTriggerBehavior Binding="{Binding $parent[UserControl].IsActive}" /> -->
+        <!-- </Interaction.Behaviors> -->
+        <Border
+            Background="{DynamicResource Background0}"
+            Opacity="0.3" />
+        <dialog:ProgressRing
+            Width="48"
+            Height="48"
+            Foreground="{DynamicResource Foreground0}" />
+    </Panel>
+</UserControl>

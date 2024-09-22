@@ -10,17 +10,26 @@
     <BaseOutputPath>../Generation/bin</BaseOutputPath>
     <SatelliteResourceLanguages>zh-CN</SatelliteResourceLanguages>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(Temp)\$(SolutionName)\$(Configuration)\$(AssemblyName)</OutputPath>
+    <BaseIntermediateOutputPath>$(Temp)\$(SolutionName)\obj\$(Configuration)\$(AssemblyName)</BaseIntermediateOutputPath>
+    <ApplicationIcon>../FrpGUI.Avalonia/Assets/icon.ico</ApplicationIcon>
+    <Version>$(AppVersion)</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
-    <PackageReference Include="FzLib.Avalonia" />
     <PackageReference Include="log4net" />
+    <PackageReference Include="WebView.Avalonia.Desktop" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Avalonia\FrpGUI.Avalonia.csproj" />
-    <ProjectReference Include="..\FrpGUI\FrpGUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

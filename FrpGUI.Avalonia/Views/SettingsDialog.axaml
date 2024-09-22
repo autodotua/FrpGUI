@@ -1,0 +1,131 @@
+<dialog:DialogHost
+    x:Class="FrpGUI.Avalonia.Views.SettingsDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
+    xmlns:cf="clr-namespace:FrpGUI.Configs;assembly=FrpGUI.Core"
+    xmlns:ctrl="using:FzLib.Avalonia.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialog="using:FzLib.Avalonia.Dialogs"
+    xmlns:gb="using:GroupBox.Avalonia.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:me="using:FzLib.Avalonia.MarkupExtensions"
+    xmlns:r="using:FrpGUI.Avalonia"
+    xmlns:sys="using:System"
+    xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    Title="设置"
+    Width="720"
+    Height="540"
+    Padding="4"
+    x:DataType="vm:SettingViewModel"
+    CloseButtonContent="关闭"
+    mc:Ignorable="d">
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Auto">
+
+        <StackPanel
+            Orientation="Vertical"
+            Spacing="8">
+            <gb:GroupBox Header="运行模式">
+                <StackPanel
+                    Orientation="Vertical"
+                    Spacing="8">
+                    <TextBlock>
+                        <Run FontWeight="Bold">单机模式：</Run>
+                        <Run>客户端直接调用服务，适用于本机临时使用</Run>
+                        <LineBreak />
+                        <Run FontWeight="Bold">服务模式：</Run>
+                        <Run>需要单独的后台服务，适用于有远程调用的需求以及长期使用</Run>
+                    </TextBlock>
+                    <ComboBox
+                        Width="180"
+                        IsEnabled="{OnPlatform Default=True,
+                                               Browser=False}"
+                        ItemsSource="{me:EnumValues r:RunningMode}"
+                        SelectedItem="{Binding Config.RunningMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource DescriptionConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <ctrl:StackFormItemGroup LabelWidth="128">
+                        <ctrl:StackFormItemGroup.IsVisible>
+                            <Binding
+                                Converter="{StaticResource EqualConverter}"
+                                Path="Config.RunningMode">
+                                <Binding.ConverterParameter>
+                                    <r:RunningMode>Service</r:RunningMode>
+                                </Binding.ConverterParameter>
+                            </Binding>
+                        </ctrl:StackFormItemGroup.IsVisible>
+
+                        <ctrl:FormItem Label="服务器地址">
+                            <TextBox
+                                Text="{Binding ServerAddress}"
+                                Watermark="服务器连接地址" />
+                        </ctrl:FormItem>
+                        <ctrl:FormItem Label="连接密钥">
+                            <Grid ColumnDefinitions="*,8,*,8,Auto">
+                                <TextBox
+                                    Text="{Binding OldToken}"
+                                    Watermark="旧密码" />
+                                <TextBox
+                                    Grid.Column="2"
+                                    Text="{Binding NewToken}"
+                                    Watermark="新密码（不修改请留空）" />
+                                <Button
+                                    Grid.Column="4"
+                                    Command="{Binding SetTokenCommand}"
+                                    Content="设置服务端密码" />
+                            </Grid>
+                        </ctrl:FormItem>
+                    </ctrl:StackFormItemGroup>
+                    <Button
+                        Command="{Binding RestartCommand}"
+                        Content="应用并重启程序" />
+                </StackPanel>
+            </gb:GroupBox>
+            <gb:GroupBox Header="正在运行的进程">
+                <ItemsControl
+                    BorderBrush="Gray"
+                    BorderThickness="0,0.5,0,0.5"
+                    ItemsSource="{Binding Processes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BorderBrush="Gray"
+                                BorderThickness="0,0.5,0,0.5">
+                                <Grid
+                                    Margin="4"
+                                    ColumnDefinitions="*,8,Auto"
+                                    RowDefinitions="*,4,*">
+                                    <TextBlock Text="{Binding ProcessName}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        Text="{Binding StartTime}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Text="{Binding FileName}"
+                                        TextTrimming="PrefixCharacterEllipsis" />
+                                    <Button
+                                        Grid.RowSpan="99"
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding $parent[ItemsControl].DataContext.KillProcessCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Content="结束" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </gb:GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</dialog:DialogHost>

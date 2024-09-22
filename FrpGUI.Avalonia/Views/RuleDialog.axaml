@@ -1,0 +1,90 @@
+<dialog:DialogHost
+    x:Class="FrpGUI.Avalonia.Views.RuleDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FrpGUI.Avalonia.Converters"
+    xmlns:cf="clr-namespace:FrpGUI.Configs;assembly=FrpGUI.Core"
+    xmlns:ctrl="using:FzLib.Avalonia.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialog="using:FzLib.Avalonia.Dialogs"
+    xmlns:e="using:FrpGUI.Enums"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:FzLib.Avalonia.MarkupExtensions"
+    xmlns:views="clr-namespace:FrpGUI.Avalonia.Views"
+    xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
+    Title="客户端规则"
+    MinWidth="384"
+    Padding="4"
+    CloseButtonContent="取消"
+    CloseButtonEnable="True"
+    PrimaryButtonContent="保存"
+    PrimaryButtonEnable="True"
+    Theme="{StaticResource DialogHostTheme}"
+    mc:Ignorable="d">
+
+    <dialog:DialogHost.Resources>
+        <c:RuleParameterEnableConverter x:Key="RuleParameterEnableConverter" />
+    </dialog:DialogHost.Resources>
+    <Grid RowDefinitions="*,8,Auto">
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <ctrl:StackFormItemGroup Margin="8">
+                <ctrl:FormItem Label="名称">
+                    <TextBox Text="{Binding Rule.Name}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="类型">
+                    <ComboBox
+                        HorizontalAlignment="Stretch"
+                        ItemsSource="{r:EnumValues EnumType=e:NetType}"
+                        SelectedItem="{Binding Rule.Type}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="本地地址">
+                    <TextBox Text="{Binding Rule.LocalAddress}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="本地端口">
+                    <TextBox Text="{Binding Rule.LocalPort}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="远程端口">
+                    <TextBox
+                        IsEnabled="{Binding Rule.Type, ConverterParameter=RemotePort, Converter={StaticResource RuleParameterEnableConverter}}"
+                        Text="{Binding Rule.RemotePort}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="域名">
+                    <TextBox
+                        IsEnabled="{Binding Rule.Type, ConverterParameter=Domains, Converter={StaticResource RuleParameterEnableConverter}}"
+                        Text="{Binding Rule.Domains}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="STCP服务名">
+                    <TextBox
+                        IsEnabled="{Binding Rule.Type, ConverterParameter=StcpServerName, Converter={StaticResource RuleParameterEnableConverter}}"
+                        Text="{Binding Rule.StcpServerName}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="STCP密钥">
+                    <TextBox
+                        IsEnabled="{Binding Rule.Type, ConverterParameter=StcpKey, Converter={StaticResource RuleParameterEnableConverter}}"
+                        Text="{Binding Rule.StcpKey}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="带宽限制 (KB)">
+                    <TextBox
+                        IsEnabled="{Binding Rule.EnableBandwidthLimit}"
+                        Text="{Binding Rule.BandwidthLimitKB}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="选项">
+                    <ctrl:WrapFormItemGroup>
+                        <CheckBox
+                            Content="压缩"
+                            IsChecked="{Binding Rule.Compression}" />
+                        <CheckBox
+                            Content="加密"
+                            IsChecked="{Binding Rule.Encryption}" />
+                    </ctrl:WrapFormItemGroup>
+                </ctrl:FormItem>
+            </ctrl:StackFormItemGroup>
+        </ScrollViewer>
+        <TextBlock
+            Grid.Row="2"
+            Foreground="Red"
+            Text="{Binding ErrorMessage}" />
+    </Grid>
+</dialog:DialogHost>

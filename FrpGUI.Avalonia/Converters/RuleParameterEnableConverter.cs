@@ -1,5 +1,7 @@
 ﻿using Avalonia.Data.Converters;
-using FrpGUI.Config;
+
+using FrpGUI.Enums;
+using FrpGUI.Models;
 using System;
 using System.Globalization;
 

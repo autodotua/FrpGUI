@@ -1,42 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
+﻿using Avalonia;
+using Avalonia.WebView.Desktop;
 using log4net;
-using log4net.Appender;
-using log4net.Layout;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
 
 namespace FrpGUI.Avalonia.Desktop;
 
-class Program
+internal class Program
 {
-    private static SingleRunningAppHelper singleRunningApp = new SingleRunningAppHelper(nameof(FrpGUI));
-
     [STAThread]
     public static void Main(string[] args)
     {
-        Directory.SetCurrentDirectory(FzLib.Program.App.ProgramDirectoryPath);
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         InitializeLogs();
-        Logger.NewLog += Logger_NewLog;
-
-        if (singleRunningApp.Register())
-        {
-            Log.Info("存在已打开的实例，进行了通知");
-            return;
-        }
+#if !DEBUG
+        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
         try
         {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+#endif
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+#if !DEBUG
         }
         catch (Exception ex)
         {
@@ -44,10 +32,9 @@ class Program
         }
         finally
         {
-            singleRunningApp.Dispose();
+            //singleRunningApp.Dispose();
         }
-        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
     }
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -60,37 +47,38 @@ class Program
         Log.Fatal("未捕获的TaskScheduler异常", e.Exception);
     }
 
-
-    private static void Logger_NewLog(object sender, LogEventArgs e)
-    {
-        switch (e.Type)
-        {
-            case 'I':
-                Log.Info(e.Message);
-                break;
-            case 'E':
-                if (e.Exception == null)
-                {
-                    Log.Error(e.Message);
-                }
-                else
-                {
-                    Log.Error(e.Message, e.Exception);
-                }
-                break;
-            case 'W':
-                Log.Warn(e.Message);
-                break;
-        }
-    }
+    //private static void Logger_NewLog(object sender, LogEventArgs e)
+    //{
+    //    switch (e.Type)
+    //    {
+    //        case 'I':
+    //            Log.Info(e.Message);
+    //            break;
+    //        case 'E':
+    //            if (e.Exception == null)
+    //            {
+    //                Log.Error(e.Message);
+    //            }
+    //            else
+    //            {
+    //                Log.Error(e.Message, e.Exception);
+    //            }
+    //            break;
+    //        case 'W':
+    //            Log.Warn(e.Message);
+    //            break;
+    //    }
+    //}
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .LogToTrace();
+            .LogToTrace()
+            .UseDesktopWebView();
 
     public static ILog Log { get; private set; }
+
     /// <summary>
     /// 初始化日志系统
     /// </summary>

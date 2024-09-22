@@ -2,6 +2,7 @@
     x:Class="FrpGUI.Avalonia.Views.ClientPanel"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctrl="using:FzLib.Avalonia.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -10,13 +11,11 @@
     x:Name="root"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="vm:FrpConfigPanelViewModel"
+    x:DataType="vm:FrpConfigViewModel"
     SizeChanged="PanelBase_SizeChanged"
     mc:Ignorable="d">
     <v:ConfigPanelBase.Resources>
         <system:Double x:Key="RuleWidth">200</system:Double>
-    </v:ConfigPanelBase.Resources>
-    <v:ConfigPanelBase.Resources>
         <PathGeometry x:Key="IconMore">
             M522.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
             M266.666667 522.666667m-53.333334 0a53.333333 53.333333 0 1 0 106.666667 0 53.333333 53.333333 0 1 0-106.666667 0Z
@@ -27,95 +26,51 @@
         <ScrollViewer
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
-            <Grid
-                Margin="8"
-                ColumnDefinitions="108,8,*"
-                RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
-                <Grid.Styles>
-                    <Style Selector="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                    </Style>
-                </Grid.Styles>
-                <TextBlock Text="名称" />
-                <TextBox
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.Name}" />
-                <CheckBox
-                    Grid.Row="2"
-                    Grid.ColumnSpan="99"
-                    Content="自动启动"
-                    IsChecked="{Binding FrpConfig.AutoStart}" />
-                <TextBlock
-                    Grid.Row="4"
-                    Text="服务器地址" />
-                <TextBox
-                    Grid.Row="4"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.ServerAddress}" />
-                <TextBlock
-                    Grid.Row="6"
-                    Text="端口号" />
-                <TextBox
-                    Grid.Row="6"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.ServerPort}" />
-                <TextBlock
-                    Grid.Row="8"
-                    Text="连接密钥" />
-                <TextBox
-                    Grid.Row="8"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.Token}" />
-                <TextBlock
-                    Grid.Row="10"
-                    Text="预连接数量" />
-                <TextBox
-                    Grid.Row="10"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.PoolCount}" />
+            <ctrl:StackFormItemGroup Margin="8">
+                <ctrl:FormItem Label="名称">
+                    <TextBox Text="{Binding Frp.Config.Name}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="选项">
+                    <ctrl:WrapFormItemGroup>
+                        <CheckBox
+                            Content="自动启动"
+                            IsChecked="{Binding Frp.Config.AutoStart}" />
+                        <CheckBox
+                            Content="异常自动停止"
+                            IsChecked="{Binding Frp.Config.LoginFailExit}" />
+                        <CheckBox
+                            Content="启用TLS传输层安全性协议"
+                            IsChecked="{Binding Frp.Config.EnableTls}" />
+                    </ctrl:WrapFormItemGroup>
+                </ctrl:FormItem>
 
-                <CheckBox
-                    Grid.Row="12"
-                    Grid.ColumnSpan="99"
-                    Content="异常自动停止"
-                    IsChecked="{Binding FrpConfig.LoginFailExit}" />
-                <CheckBox
-                    Grid.Row="14"
-                    Grid.ColumnSpan="99"
-                    Content="启用TLS传输层安全性协议"
-                    IsChecked="{Binding FrpConfig.EnableTls}" />
 
-                <TextBlock
-                    Grid.Row="16"
-                    Text="管理面板地址" />
-                <TextBox
-                    Grid.Row="16"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminAddress}" />
+                <ctrl:FormItem Label="服务器地址">
+                    <TextBox Text="{Binding Frp.Config.ServerAddress}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="端口号">
+                    <TextBox Text="{Binding Frp.Config.ServerPort}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="连接密钥">
+                    <TextBox Text="{Binding Frp.Config.Token}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="预连接数量">
+                    <TextBox Text="{Binding Frp.Config.PoolCount}" />
+                </ctrl:FormItem>
 
-                <TextBlock
-                    Grid.Row="18"
-                    Text="管理面板端口" />
-                <TextBox
-                    Grid.Row="18"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminPort}" />
-
-                <TextBlock
-                    Grid.Row="20"
-                    Text="管理面板用户名" />
-                <TextBox
-                    Grid.Row="20"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminUsername}" />
-                <TextBlock
-                    Grid.Row="22"
-                    Text="管理面板密码" />
-                <TextBox
-                    Grid.Row="22"
-                    Grid.Column="2"
-                    Text="{Binding FrpConfig.AdminPassword}" />
-            </Grid>
+                <ctrl:FormItem Label="管理面板地址">
+                    <TextBox Text="{Binding Frp.Config.DashBoardAddress}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="管理面板端口">
+                    <TextBox Text="{Binding Frp.Config.DashBoardPort}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="管理面板用户名">
+                    <TextBox Text="{Binding Frp.Config.DashBoardUsername}" />
+                </ctrl:FormItem>
+                <ctrl:FormItem Label="管理面板密码">
+                    <TextBox Text="{Binding Frp.Config.DashBoardPassword}" />
+                </ctrl:FormItem>
+            </ctrl:StackFormItemGroup>
         </ScrollViewer>
         <GridSplitter
             Grid.Row="1"

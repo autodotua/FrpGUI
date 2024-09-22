@@ -8,13 +8,16 @@
     xmlns:vm="using:FrpGUI.Avalonia.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="vm:LogPanelViewModel"
+    x:DataType="vm:LogViewModel"
     mc:Ignorable="d">
     <ListBox
         x:Name="lbx"
         AutoScrollToSelectedItem="True"
         Background="Transparent"
-        ItemsSource="{Binding Logs}">
+        ItemsSource="{Binding Logs}"
+        ScrollViewer.AllowAutoHide="False"
+        ScrollViewer.BringIntoViewOnFocusChange="True"
+        SelectedItem="{Binding SelectedLog}">
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="ContextMenu">

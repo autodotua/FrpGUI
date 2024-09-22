@@ -3,20 +3,37 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.0.11" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.0.11" />
-    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.11" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.0.11" />
-    <PackageVersion Include="FzLib" Version="2.0.0" />
-    <PackageVersion Include="FzLib.Avalonia" Version="2.0.0" />
+    <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0.4" />
+    <PackageVersion Include="Avalonia.Xaml.Interactivity" Version="11.1.0.4" />
+    <PackageVersion Include="BinToss.GroupBox.Avalonia" Version="1.0.0" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="FzLib" Version="$(FzLibVersion)" />
+    <PackageVersion Include="FzLib.Avalonia" Version="$(FzLibVersion)" />
     <PackageVersion Include="log4net" Version="2.0.17" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.5.0" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.5.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.5.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.5.2" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="ModernWpfUI" Version="0.9.6" />
+    <PackageVersion Include="PieroDeTomi.DotNet.WebUtils" Version="1.0.0" />
+    <PackageVersion Include="Serilog" Version="4.0.1" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageVersion Include="Serilog.Sinks.SQLite" Version="6.0.0" />
     <PackageVersion Include="System.Drawing.Common" Version="8.0.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+    <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
+    <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
   </ItemGroup>
 </Project>
