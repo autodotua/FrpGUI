@@ -31,6 +31,7 @@ namespace FrpGUI.Models
         {
             StringBuilder str = new StringBuilder();
             str.Append("bindPort = ").Append(Port).AppendLine();
+            str.Append("webServer.addr = ").Append('"').Append(DashBoardAddress).Append('"').AppendLine();
             str.Append("webServer.port = ").Append(DashBoardPort).AppendLine();
             str.Append("webServer.user = ").Append('"').Append(DashBoardUsername).Append('"').AppendLine();
             str.Append("webServer.password  = ").Append('"').Append(DashBoardPassword).Append('"').AppendLine();

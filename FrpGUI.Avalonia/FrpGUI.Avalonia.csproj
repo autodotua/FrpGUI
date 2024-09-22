@@ -39,10 +39,10 @@
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug' and '$(FzLocal)' == 'T'">
     <Reference Include="FzLib">
-      <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.dll</HintPath>
+      <HintPath>..\..\FzLib\Publish\Release\net8.0\FzLib.dll</HintPath>
     </Reference>
     <Reference Include="FzLib.Avalonia">
-      <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.Avalonia.dll</HintPath>
+      <HintPath>..\..\FzLib\Publish\Release\net8.0\FzLib.Avalonia.dll</HintPath>
     </Reference>
   </ItemGroup>
   

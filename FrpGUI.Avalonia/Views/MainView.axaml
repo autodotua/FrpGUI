@@ -125,8 +125,9 @@
             Grid.Column="2"
             IsVisible="{Binding ShowWebview}">
             <ContentControl.Content>
-                <OnPlatform Browser="{x:Null}">
-                    <OnPlatform.Default>
+                <OnPlatform Default="{x:Null}">
+                    <!--  在Linux和MacOS上均测试失败  -->
+                    <OnPlatform.Windows>
                         <WebView
                             x:Name="web"
                             Url="{Binding WebViewUrl}">
@@ -138,7 +139,7 @@
                                 </EventTriggerBehavior>
                             </Interaction.Behaviors>
                         </WebView>
-                    </OnPlatform.Default>
+                    </OnPlatform.Windows>
                 </OnPlatform>
             </ContentControl.Content>
         </ContentControl>

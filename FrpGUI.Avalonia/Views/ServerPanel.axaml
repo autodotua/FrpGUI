@@ -43,6 +43,9 @@
             <ctrl:FormItem Label="最大连接数">
                 <TextBox Text="{Binding Frp.Config.MaxPoolCount}" />
             </ctrl:FormItem>
+            <ctrl:FormItem Label="控制面板地址">
+                <TextBox Text="{Binding Frp.Config.DashBoardAddress}" />
+            </ctrl:FormItem>
             <ctrl:FormItem Label="控制面板端口号">
                 <TextBox Text="{Binding Frp.Config.DashBoardPort}" />
             </ctrl:FormItem>

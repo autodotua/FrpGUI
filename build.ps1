@@ -1,4 +1,47 @@
-﻿param(
+﻿<#
+.SYNOPSIS
+    发布 FrpGUI 应用程序到不同平台。
+
+.DESCRIPTION
+    此脚本用于发布 FrpGUI 应用程序到 Windows、Linux、macOS 和浏览器平台。
+
+.PARAMETER w
+    发布到 Windows 平台。
+
+.PARAMETER l
+    发布到 Linux 平台。
+
+.PARAMETER m
+    发布到 macOS 平台。
+
+.PARAMETER c
+    设置此标志以创建客户端的发布版本。
+
+.PARAMETER s
+    设置此标志以创建服务器的发布版本。
+
+.PARAMETER b
+    设置此标志以发布浏览器版本。
+
+.EXAMPLE
+    .\YourScript.ps1 -w -c -s
+    发布到 Windows 平台，创建客户端和服务器的发布版本。
+
+.EXAMPLE
+    .\YourScript.ps1 -l
+    发布到 Linux 平台。
+
+.EXAMPLE
+    .\YourScript.ps1 -m -c
+    发布到 macOS 平台，仅创建客户端的发布版本。
+
+.EXAMPLE
+    .\YourScript.ps1 -b
+    发布到浏览器平台。
+
+#>
+
+param(
     [Parameter()]
     [switch]$w, #Windows
     [switch]$l, #Linux
@@ -51,7 +94,7 @@ try {
 
         Write-Output "正在发布客户端：$runtime"
 
-        dotnet publish FrpGUI.Avalonia.Desktop -r $runtime -c Release -o $outputDirectory --self-contained true /p:PublishSingleFile=true 
+        dotnet publish FrpGUI.Avalonia.Desktop -r $runtime -c Release -o $outputDirectory --self-contained true #/p:PublishSingleFile=true 
 
         $platform = switch ($runtime) {
             "win-x64" { "windows_amd64" }

@@ -14,9 +14,6 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     CustomTitleBar="True"
-    ExtendClientAreaChromeHints="NoChrome"
-    ExtendClientAreaTitleBarHeightHint="0"
-    ExtendClientAreaToDecorationsHint="True"
     Icon="/Assets/icon.ico"
     Loaded="Window_Loaded"
     mc:Ignorable="d">

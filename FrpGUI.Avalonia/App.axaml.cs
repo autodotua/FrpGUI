@@ -30,21 +30,30 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        DialogExtension.ContainerType=DialogContainerType.WindowPreferred;
-        if (!OperatingSystem.IsBrowser())
+
+        //Windows端加载内置浏览器
+        if (OperatingSystem.IsWindows())
         {
+            //由于浏览器总在最上层，因此需要使用Window形式的对话框
+            DialogExtension.ContainerType = DialogContainerType.WindowPreferred;
             AvaloniaWebViewBuilder.Initialize(default);
         }
+
+        //Windows上使用微软雅黑
         if (OperatingSystem.IsWindows())
         {
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("Microsoft YaHei"));
         }
+
+        //浏览器端需要设置内置字体才可正常显示中文
         else if (OperatingSystem.IsBrowser())
         {
             Resources.Add("ContentControlThemeFontFamily", new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
         }
         var builder = Host.CreateApplicationBuilder();
         var uiconfig = AppConfigBase.Get<UIConfig>();
+
+        //浏览器一定是使用服务模式而不是单机模式
         if (OperatingSystem.IsBrowser())
         {
             if (uiconfig.RunningMode == RunningMode.Singleton)
