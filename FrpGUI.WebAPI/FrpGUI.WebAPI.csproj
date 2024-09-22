@@ -31,4 +31,13 @@
     <ProjectReference Include="..\FrpGUI.Service\FrpGUI.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="CreateWindowsService.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DeleteWindowsService.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

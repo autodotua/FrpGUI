@@ -45,11 +45,17 @@
       <HintPath>..\..\模块\Publish\Release\net8.0\FzLib.Avalonia.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   
   <ItemGroup>
     <ProjectReference Include="..\FrpGUI.Core\FrpGUI.Core.csproj" />
     <ProjectReference Include="..\FrpGUI.Service\FrpGUI.Service.csproj" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Update="Assets\icon.ico">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </AvaloniaResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -20,16 +20,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="uiconfig.json" />
     <Content Remove="web.config" />
     <Content Remove="wwwroot\favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="wwwroot\favicon.ico" />
+    <None Include="uiconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="web.config" />
+    <None Include="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

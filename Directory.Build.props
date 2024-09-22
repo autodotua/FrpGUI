@@ -2,9 +2,9 @@
   <PropertyGroup>
     <AvaloniaVersion>11.1.3</AvaloniaVersion>
     <!--FzLib库版本-->
-    <FzLibVersion>2.1.10</FzLibVersion>
+    <FzLibVersion>2.2.1</FzLibVersion>
     
     <!--使用本地FzLib库-->
-    <FzLocal>F</FzLocal>
+    <FzLocal>T</FzLocal>
   </PropertyGroup>
 </Project>

@@ -12,6 +12,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>$(Temp)\$(SolutionName)\$(Configuration)\$(AssemblyName)</OutputPath>
     <BaseIntermediateOutputPath>$(Temp)\$(SolutionName)\obj\$(Configuration)\$(AssemblyName)</BaseIntermediateOutputPath>
+    <ApplicationIcon>../FrpGUI.Avalonia/Assets/icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
