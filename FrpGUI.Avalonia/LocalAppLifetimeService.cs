@@ -1,4 +1,6 @@
-﻿using FrpGUI.Configs;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using FrpGUI.Configs;
 using FrpGUI.Models;
 using FrpGUI.Services;
 using System.Threading;

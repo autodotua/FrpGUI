@@ -9,12 +9,14 @@ using FrpGUI.Avalonia.DataProviders;
 using FrpGUI.Avalonia.ViewModels;
 using FrpGUI.Avalonia.Views;
 using FrpGUI.Configs;
+using FrpGUI.Enums;
 using FrpGUI.Models;
 using FrpGUI.Services;
 using FzLib.Avalonia.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FrpGUI.Avalonia;
@@ -26,6 +28,8 @@ public partial class App : Application
     }
 
     public static IServiceProvider Services { get; private set; }
+
+    public IHost AppHost { get; private set; }
 
     public override void Initialize()
     {
@@ -103,19 +107,14 @@ public partial class App : Application
         Services = AppHost.Services;
         AppHost.Start();
     }
-
-    public IHost AppHost { get; private set; }
-
     public override void OnFrameworkInitializationCompleted()
     {
-        // Line below is needed to remove Avalonia data validation.
-        // Without this line you will get duplicate validations from both Avalonia and CT
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             BindingPlugins.DataValidators.RemoveAt(0);
-            desktop.MainWindow = new MainWindow();
-            desktop.Exit += (s, e) => AppHost.StopAsync();
+            desktop.MainWindow = Services.GetRequiredService<MainWindow>();
+            desktop.Exit += Desktop_Exit;
+            InitializeTrayIcon();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime s)
         {
@@ -125,70 +124,58 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void ExitMenuItem_Click(object sender, EventArgs e)
-    {
-        //if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        //{
-        //    MainViewModel mainViewModel = (desktop.MainWindow as MainWindow).GetDataContext();
-        //    if (mainViewModel != null && mainViewModel.FrpConfigs.Any(p => p.ProcessStatus == ProcessStatus.Running))
-        //    {
-        //        desktop.MainWindow.Show();
-        //        TrayIcon.GetIcons(this)[0].IsVisible = false;
-        //        int count = mainViewModel.FrpConfigs.Where(p => p.ProcessStatus == ProcessStatus.Running).Count();
-        //        if (await desktop.MainWindow.ShowYesNoDialogAsync("退出", $"存在{count}个正在运行的frp进程，是否退出？") == true)
-        //        {
-        //            foreach (var frp in mainViewModel.FrpConfigs)
-        //            {
-        //                await frp.StopAsync();
-        //            }
-        //            desktop.MainWindow.Close();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        desktop.MainWindow.Close();
-        //    }
-        //}
-        //else
-        //{
-        //    throw new PlatformNotSupportedException();
-        //}
-    }
-
-    private void HideMenuItem_Click(object sender, EventArgs e)
-    {
-        TrayIcon.GetIcons(this)[0].IsVisible = false;
-    }
-
-    private void OpenMenuItem_Click(object sender, EventArgs e)
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow.Show();
-            TrayIcon.GetIcons(this)[0].IsVisible = false;
-        }
-        else
-        {
-            throw new PlatformNotSupportedException();
-        }
-    }
-
-    private void TrayIcon_Clicked(object sender, EventArgs e)
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow.Show();
-            TrayIcon.GetIcons(this)[0].IsVisible = false;
-        }
-        else
-        {
-            throw new PlatformNotSupportedException();
-        }
-    }
-
     public async Task ShutdownAsync()
     {
         await AppHost.StopAsync();
         Environment.Exit(0);
+    }
+
+    private async void Desktop_Exit(object sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        TrayIcon.GetIcons(this)[0].Dispose();
+        await AppHost.StopAsync();
+    }
+
+    private async void ExitMenuItem_Click(object sender, EventArgs e)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            throw new PlatformNotSupportedException();
+        }
+        var mainWindow = desktop.MainWindow as MainWindow;
+        await mainWindow.TryCloseAsync();
+    }
+
+    private void InitializeTrayIcon()
+    {
+        Services.GetRequiredService<UIConfig>().PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(UIConfig.ShowTrayIcon))
+            {
+                TrayIcon.GetIcons(this)[0].IsVisible = Services.GetRequiredService<UIConfig>().ShowTrayIcon;
+            }
+        };
+        if (Services.GetRequiredService<UIConfig>().ShowTrayIcon)
+        {
+            TrayIcon.GetIcons(this)[0].IsVisible = true;
+        }
+    }
+    private void TrayIcon_Clicked(object sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            if (desktop.MainWindow.IsVisible)
+            {
+                desktop.MainWindow.Hide();
+            }
+            else
+            {
+                desktop.MainWindow.Show();
+            }
+        }
+        else
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

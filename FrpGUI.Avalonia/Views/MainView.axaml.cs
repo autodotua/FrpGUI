@@ -7,6 +7,7 @@ using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
 
 using FrpGUI.Models;
+using FzLib.Avalonia.Controls;
 using FzLib.Avalonia.Dialogs;
 using FzLib.Avalonia.Messages;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,21 +27,10 @@ public partial class MainView : UserControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        if (TopLevel.GetTopLevel(this) is Window win)
+        if (TopLevel.GetTopLevel(this) is Window)
         {
-            foreach (var control in new Control[] { controlBar, tbkLogo })
-            {
-
-                control.PointerPressed += (s, e) =>
-                {
-                    win.BeginMoveDrag(e);
-                };
-
-                control.DoubleTapped += (s, e) =>
-                {
-                    win.WindowState = win.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-                };
-            }
+            new WindowDragHelper(controlBar).EnableDrag();
+            new WindowDragHelper(tbkLogo).EnableDrag();
         }
     }
 

@@ -15,7 +15,6 @@
     d:DesignWidth="800"
     CustomTitleBar="True"
     Icon="/Assets/icon.ico"
-    Loaded="Window_Loaded"
     mc:Ignorable="d">
     <Grid x:Name="grid">
         <views:MainView x:Name="mainView" />

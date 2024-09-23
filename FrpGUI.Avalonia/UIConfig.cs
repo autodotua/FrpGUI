@@ -14,11 +14,15 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
 {
     private RunningMode runningMode;
 
+    private bool showTrayIcon;
+
     public UIConfig() : base()
     {
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    public static UIConfig DefaultConfig { get; set; }
 
     [JsonIgnore]
     public override string ConfigPath => Path.Combine(AppContext.BaseDirectory, "uiconfig.json");
@@ -30,8 +34,30 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
     }
 
     public string ServerAddress { get; set; } = "http://localhost:5113";
+
     public string ServerToken { get; set; } = "";
+
+    public bool ShowTrayIcon
+    {
+        get => showTrayIcon;
+        set => this.SetValueAndNotify(ref showTrayIcon, value, nameof(ShowTrayIcon));
+    }
+
+
     protected override JsonSerializerContext JsonSerializerContext => FrpAvaloniaSourceGenerationContext.Default;
+
+    public override void Save()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            var json = JsonSerializer.Serialize(this, typeof(UIConfig), JsonHelper.GetJsonOptions(JsonSerializerContext));
+            JsInterop.SetLocalStorage("config", json);
+        }
+        else
+        {
+            base.Save();
+        }
+    }
 
     protected override T GetImpl<T>()
     {
@@ -65,19 +91,4 @@ public class UIConfig : AppConfigBase, INotifyPropertyChanged
             return base.GetImpl<T>();
         }
     }
-
-    public override void Save()
-    {
-        if (OperatingSystem.IsBrowser())
-        {
-            var json = JsonSerializer.Serialize(this, typeof(UIConfig), JsonHelper.GetJsonOptions(JsonSerializerContext));
-            JsInterop.SetLocalStorage("config", json);
-        }
-        else
-        {
-            base.Save();
-        }
-    }
-
-    public static UIConfig DefaultConfig { get; set; }
 }
