@@ -35,7 +35,7 @@
             Spacing="8">
           <TextBlock>
             <Run FontWeight="Bold">单机模式：</Run>
-            <Run>客户端直接调用服务，适用于本机临时使用</Run>
+            <Run>客户端直接调用服务，适用于本机临时使用，支持后台运行，但不支持开机自启</Run>
             <LineBreak />
             <Run FontWeight="Bold">服务模式：</Run>
             <Run>需要单独的后台服务，适用于有远程调用的需求以及长期使用</Run>
