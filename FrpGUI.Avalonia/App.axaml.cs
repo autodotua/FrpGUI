@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FzLib.Program.Startup;
 
 namespace FrpGUI.Avalonia;
 
@@ -52,8 +53,10 @@ public partial class App : Application
         //浏览器端需要设置内置字体才可正常显示中文
         else if (OperatingSystem.IsBrowser())
         {
-            Resources.Add("ContentControlThemeFontFamily", new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
+            Resources.Add("ContentControlThemeFontFamily",
+                new FontFamily("avares://FrpGUI.Avalonia/Assets#Microsoft YaHei"));
         }
+
         var builder = Host.CreateApplicationBuilder();
         var uiconfig = AppConfigBase.Get<UIConfig>();
 
@@ -79,9 +82,11 @@ public partial class App : Application
                 builder.Services.AddSingleton<IDataProvider, WebDataProvider>();
                 break;
         }
+
         var logger = new LocalLogger();
         builder.Services.AddSingleton<LoggerBase>(logger);
         builder.Services.AddSingleton<LocalLogger>(logger);
+        builder.Services.AddStartupManager();
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<MainView>();
@@ -107,14 +112,24 @@ public partial class App : Application
         Services = AppHost.Services;
         AppHost.Start();
     }
+
+    private MainWindow mainWindow;
+
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             BindingPlugins.DataValidators.RemoveAt(0);
-            desktop.MainWindow = Services.GetRequiredService<MainWindow>();
+            mainWindow = Services.GetRequiredService<MainWindow>();
+            var startup = desktop.Args is { Length: > 0 } && desktop.Args[0] == "s";
+            if (!startup)
+            {
+                desktop.MainWindow = mainWindow;
+            }
+
             desktop.Exit += Desktop_Exit;
-            InitializeTrayIcon();
+
+            InitializeTrayIcon(startup);
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime s)
         {
@@ -142,11 +157,12 @@ public partial class App : Application
         {
             throw new PlatformNotSupportedException();
         }
+
         var mainWindow = desktop.MainWindow as MainWindow;
         await mainWindow.TryCloseAsync();
     }
 
-    private void InitializeTrayIcon()
+    private void InitializeTrayIcon(bool force)
     {
         Services.GetRequiredService<UIConfig>().PropertyChanged += (s, e) =>
         {
@@ -155,15 +171,18 @@ public partial class App : Application
                 TrayIcon.GetIcons(this)[0].IsVisible = Services.GetRequiredService<UIConfig>().ShowTrayIcon;
             }
         };
-        if (Services.GetRequiredService<UIConfig>().ShowTrayIcon)
-        {
-            TrayIcon.GetIcons(this)[0].IsVisible = true;
-        }
+        TrayIcon.GetIcons(this)[0].IsVisible = force || Services.GetRequiredService<UIConfig>().ShowTrayIcon;
     }
+
     private void TrayIcon_Clicked(object sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            if (desktop.MainWindow == null)
+            {
+                desktop.MainWindow = mainWindow;
+            }
+
             if (desktop.MainWindow.IsVisible)
             {
                 desktop.MainWindow.Hide();

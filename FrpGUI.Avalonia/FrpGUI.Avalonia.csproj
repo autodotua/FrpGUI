@@ -82,4 +82,8 @@
       <DependentUpon>RuleDialog.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Messages\" />
+  </ItemGroup>
 </Project>

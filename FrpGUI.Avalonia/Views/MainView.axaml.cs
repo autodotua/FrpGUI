@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AvaloniaWebView;
 using CommunityToolkit.Mvvm.Messaging;
-using FrpGUI.Avalonia.Messages;
 using FrpGUI.Avalonia.ViewModels;
 
 using FrpGUI.Models;
@@ -54,17 +53,6 @@ public partial class MainView : UserControl
         RegisterDialogHostMessage();
         this.RegisterGetClipboardMessage();
         this.RegisterGetStorageProviderMessage();
-        WeakReferenceMessenger.Default.Register<InputDialogMessage>(this, async (_, m) =>
-        {
-            try
-            {
-                var result = await this.ShowInputTextDialogAsync(m.Title, m.Message, m.DefaultText, m.Watermark);
-                m.SetResult(result);
-            }
-            catch (Exception exception)
-            {
-                m.SetException(exception);
-            }
-        });
+        this.RegisterInputDialogMessage();
     }
 }
